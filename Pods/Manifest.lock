@@ -1,0 +1,34 @@
+PODS:
+  - Alamofire (5.0.0)
+  - Kingfisher (5.13.1):
+    - Kingfisher/Core (= 5.13.1)
+  - Kingfisher/Core (5.13.1)
+  - ObjectMapper (3.5.1)
+  - PKHUD (5.3.0)
+  - SnapKit (5.0.1)
+
+DEPENDENCIES:
+  - Alamofire (~> 5.0.0)
+  - Kingfisher (~> 5.13.1)
+  - ObjectMapper (~> 3.5.1)
+  - PKHUD (~> 5.3.0)
+  - SnapKit (~> 5.0.1)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - Kingfisher
+    - ObjectMapper
+    - PKHUD
+    - SnapKit
+
+SPEC CHECKSUMS:
+  Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
+  Kingfisher: f33a848445e33c543620812158dc5d47f6bf90df
+  ObjectMapper: 70187b8941977c62ccfb423caf6b50be405cabf0
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+
+PODFILE CHECKSUM: 88b7d8d7e844f0977a39cd7d91e88e8fed225d79
+
+COCOAPODS: 1.9.1

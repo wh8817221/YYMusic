@@ -1,0 +1,6 @@
+framework module Pods_YYMusic {
+  umbrella header "Pods-YYMusic-umbrella.h"
+
+  export *
+  module * { export * }
+}
