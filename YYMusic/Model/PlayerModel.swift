@@ -74,7 +74,7 @@ class ObjectAlbum: Mappable {
 }
 
 class PlayerModels: Mappable {
-    var list: [PlayerModel]?
+    var list: [MusicModel]?
     var maxPageId: Int?
     var pageId: Int?
     var pageSize: Int?
@@ -96,7 +96,7 @@ class PlayerModels: Mappable {
     }
 }
 
-class PlayerModel: Mappable {
+class MusicModel: Mappable {
     var albumId: Int?
     var comments: Int?
     var coverMiddle: String?
@@ -106,7 +106,7 @@ class PlayerModel: Mappable {
     var playUrl32: String?
     var title: String?
     var nickname: String?
-    var trackId: String?
+    var trackId: Int?
     required init?(map: Map){
         
     }

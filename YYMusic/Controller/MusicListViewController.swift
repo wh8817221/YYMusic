@@ -14,10 +14,17 @@ import SnapKit
 class MusicListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [PlayerModel] = []
+    fileprivate var songs: [MusicModel] = [] {
+        didSet {
+            PlayerManager.shared.musicArray = songs
+        }
+    }
     fileprivate var pageSize = 20
     fileprivate var currPage = 1
     fileprivate var totalPage = 0
+    
+    fileprivate lazy var playerBottomView = PlayerBottomView.shared
+    fileprivate var currentMusic: MusicModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,11 +43,15 @@ class MusicListViewController: UIViewController {
         self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
         self.tableView.mj_header?.beginRefreshing()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
-        
-        // tableview  给底部留距离
-        let bottomView = PlayerBottomView.shared
-        bottomView.show(tableView: tableView, superView: self.view)
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
+        //加载底部播放器
+        playerBottomView.show(tableView: tableView, superView: self.view)
+        playerBottomView.reloadCallback = { [weak self](value) in
+            if let m = value as? MusicModel {
+                self?.currentMusic = m
+                self?.tableView.reloadData()
+            }
+        }
     }
 
     @objc fileprivate func openAlumList() {
@@ -103,17 +114,25 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
         }
         lbl2.text = song.title ?? ""
         lbl2.font = UIFont.systemFont(ofSize: 17)
-        
+
         lbl3.text = song.nickname ?? ""
         lbl3.font = UIFont.systemFont(ofSize: 13)
-        lbl3.textColor = UIColor.gray
+        
+        if let c = currentMusic, c.trackId == song.trackId {
+            lbl3.textColor = kThemeColor
+            lbl2.textColor = kThemeColor
+        } else {
+            lbl3.textColor = UIColor.gray
+            lbl2.textColor = UIColor.black
+        }
+        
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print("------->")
+        playerBottomView.reloadData(with: indexPath.row)
     }
     
 }

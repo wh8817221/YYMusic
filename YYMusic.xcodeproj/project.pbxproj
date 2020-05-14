@@ -28,6 +28,7 @@
 		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
 		D24C8843246D0959002F7CD0 /* PlayerBottomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */; };
 		D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */; };
+		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		FDA441EDDD14766985AEC842 /* Pods_YYMusic_YYMusicUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBottomCell.swift; sourceTree = "<group>"; };
 		D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerBottomCell.xib; sourceTree = "<group>"; };
+		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		EA6395E92ABFBAEB0ED8922F /* Pods-YYMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YYMusic.debug.xcconfig"; path = "Target Support Files/Pods-YYMusic/Pods-YYMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -227,6 +229,7 @@
 				D24C883D246CF779002F7CD0 /* DeviceInfo.swift */,
 				D24C882E246C0620002F7CD0 /* CustomHUD.swift */,
 				D24C883B246CF719002F7CD0 /* Common.swift */,
+				D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				D24C8829246C0203002F7CD0 /* MusicListViewController.swift in Sources */,
 				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,
 				D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */,
+				D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,
 				D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */,

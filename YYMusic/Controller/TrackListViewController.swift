@@ -13,7 +13,7 @@ import MJRefresh
 class TrackListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [PlayerModel] = []
+    fileprivate var songs: [MusicModel] = []
     fileprivate var pageSize = 20
     fileprivate var currPage = 1
     fileprivate var totalPage = 0

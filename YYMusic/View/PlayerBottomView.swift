@@ -54,13 +54,15 @@ class PlayerFlowLayout: UICollectionViewFlowLayout {
 
 class PlayerBottomView: UIView {
     static let shared = PlayerBottomView()
-    
+    var reloadCallback: ObjectCallback?
     var selectedIndex: Int = 0
+    
     fileprivate var playerBarH: CGFloat = 65.0
     fileprivate var collectionView: UICollectionView!
     fileprivate var dragStartX: CGFloat = 0
     fileprivate var dragEndX: CGFloat = 0
     fileprivate var dragAtIndex: Int = 0
+    fileprivate var musicModel: MusicModel?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,7 +70,7 @@ class PlayerBottomView: UIView {
         collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
         collectionView.showsHorizontalScrollIndicator = false
-        
+        collectionView.isScrollEnabled = false
         self.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
             make.left.right.bottom.top.equalTo(self)
@@ -92,6 +94,18 @@ class PlayerBottomView: UIView {
             make.bottom.equalTo(superView.snp.bottom).offset(-tabHeight)
             make.height.equalTo(playerBarH)
         }
+    }
+    
+    func reloadData(with index: Int) {
+        PlayerManager.shared.index = index
+        PlayerManager.shared.isPlaying = true
+        let model = PlayerManager.shared.musicArray[index]
+        self.musicModel = model
+        if let callback = self.reloadCallback {
+            callback(self.musicModel!)
+        }
+        PlayerManager.shared.replaceItem(with: model.playUrl32 ?? "")
+        self.collectionView.reloadData()
     }
     
     //手指拖动开始
@@ -137,10 +151,12 @@ class PlayerBottomView: UIView {
 
 extension PlayerBottomView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 3
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PlayerBottomCell.identifier, for: indexPath) as! PlayerBottomCell
+        cell.isSongPlayer = PlayerManager.shared.isPlaying
+        cell.musicModel = musicModel
         return cell
     }
 }
