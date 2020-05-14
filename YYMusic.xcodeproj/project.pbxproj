@@ -10,12 +10,18 @@
 		427166BF0F117ED00CDE1779 /* Pods_YYMusic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D60A01B8CB662060C6F9FC0 /* Pods_YYMusic.framework */; };
 		51438C63A32E7F7993FE73D6 /* Pods_YYMusicTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D83E04A635442EFB0FE1C20 /* Pods_YYMusicTests.framework */; };
 		D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */; };
-		D24C87F7246BFC53002F7CD0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C87F6246BFC53002F7CD0 /* ViewController.swift */; };
 		D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D24C87F8246BFC53002F7CD0 /* Main.storyboard */; };
 		D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D24C87FB246BFC55002F7CD0 /* Assets.xcassets */; };
 		D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D24C87FD246BFC55002F7CD0 /* LaunchScreen.storyboard */; };
 		D24C880A246BFC56002F7CD0 /* YYMusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8809246BFC56002F7CD0 /* YYMusicTests.swift */; };
 		D24C8815246BFC56002F7CD0 /* YYMusicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8814246BFC56002F7CD0 /* YYMusicUITests.swift */; };
+		D24C8829246C0203002F7CD0 /* MusicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8826246C0203002F7CD0 /* MusicListViewController.swift */; };
+		D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C882A246C0233002F7CD0 /* PlayerModel.swift */; };
+		D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C882C246C0603002F7CD0 /* NetWorkingTool.swift */; };
+		D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C882E246C0620002F7CD0 /* CustomHUD.swift */; };
+		D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8830246C064B002F7CD0 /* AlamofireManager.swift */; };
+		D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8832246C06D4002F7CD0 /* CommonResult.swift */; };
+		D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8834246C07A2002F7CD0 /* RequestHelper.swift */; };
 		FDA441EDDD14766985AEC842 /* Pods_YYMusic_YYMusicUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +53,6 @@
 		97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YYMusic_YYMusicUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24C87EF246BFC53002F7CD0 /* YYMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YYMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D24C87F6246BFC53002F7CD0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D24C87F9246BFC53002F7CD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D24C87FB246BFC55002F7CD0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D24C87FE246BFC55002F7CD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -58,6 +63,13 @@
 		D24C8810246BFC56002F7CD0 /* YYMusicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YYMusicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24C8814246BFC56002F7CD0 /* YYMusicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YYMusicUITests.swift; sourceTree = "<group>"; };
 		D24C8816246BFC56002F7CD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D24C8826246C0203002F7CD0 /* MusicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicListViewController.swift; sourceTree = "<group>"; };
+		D24C882A246C0233002F7CD0 /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
+		D24C882C246C0603002F7CD0 /* NetWorkingTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetWorkingTool.swift; sourceTree = "<group>"; };
+		D24C882E246C0620002F7CD0 /* CustomHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomHUD.swift; sourceTree = "<group>"; };
+		D24C8830246C064B002F7CD0 /* AlamofireManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlamofireManager.swift; sourceTree = "<group>"; };
+		D24C8832246C06D4002F7CD0 /* CommonResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonResult.swift; sourceTree = "<group>"; };
+		D24C8834246C07A2002F7CD0 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
 		EA6395E92ABFBAEB0ED8922F /* Pods-YYMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YYMusic.debug.xcconfig"; path = "Target Support Files/Pods-YYMusic/Pods-YYMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,10 +150,13 @@
 			isa = PBXGroup;
 			children = (
 				D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */,
-				D24C87F6246BFC53002F7CD0 /* ViewController.swift */,
 				D24C87F8246BFC53002F7CD0 /* Main.storyboard */,
 				D24C87FB246BFC55002F7CD0 /* Assets.xcassets */,
 				D24C87FD246BFC55002F7CD0 /* LaunchScreen.storyboard */,
+				D24C8825246C0203002F7CD0 /* Controller */,
+				D24C8824246C0203002F7CD0 /* Model */,
+				D24C8827246C0203002F7CD0 /* NetWork */,
+				D24C8828246C0203002F7CD0 /* Tools */,
 				D24C8800246BFC55002F7CD0 /* Info.plist */,
 			);
 			path = YYMusic;
@@ -163,6 +178,41 @@
 				D24C8816246BFC56002F7CD0 /* Info.plist */,
 			);
 			path = YYMusicUITests;
+			sourceTree = "<group>";
+		};
+		D24C8824246C0203002F7CD0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D24C882A246C0233002F7CD0 /* PlayerModel.swift */,
+				D24C8832246C06D4002F7CD0 /* CommonResult.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D24C8825246C0203002F7CD0 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D24C8826246C0203002F7CD0 /* MusicListViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		D24C8827246C0203002F7CD0 /* NetWork */ = {
+			isa = PBXGroup;
+			children = (
+				D24C8830246C064B002F7CD0 /* AlamofireManager.swift */,
+				D24C882C246C0603002F7CD0 /* NetWorkingTool.swift */,
+				D24C8834246C07A2002F7CD0 /* RequestHelper.swift */,
+			);
+			path = NetWork;
+			sourceTree = "<group>";
+		};
+		D24C8828246C0203002F7CD0 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				D24C882E246C0620002F7CD0 /* CustomHUD.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -404,8 +454,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D24C87F7246BFC53002F7CD0 /* ViewController.swift in Sources */,
+				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,
+				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,
+				D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */,
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
+				D24C8829246C0203002F7CD0 /* MusicListViewController.swift in Sources */,
+				D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */,
+				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
+				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

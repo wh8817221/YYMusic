@@ -8,7 +8,8 @@ target 'YYMusic' do
   pod 'ObjectMapper', '~> 3.5.1'
   pod 'PKHUD', '~> 5.3.0'
   pod 'SnapKit', '~> 5.0.1'
-
+  pod 'MJRefresh', '~> 3.3.1'
+  
   target 'YYMusicTests' do
     inherit! :search_paths
     # Pods for testing
