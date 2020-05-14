@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PlayerBottomCell" customModule="YYMusic" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="422" height="73"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="422" height="73"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="musicicon" translatesAutoresizingMaskIntoConstraints="NO" id="LxU-RY-ba4">
+                        <rect key="frame" x="10" y="16.5" width="50" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="C9H-xZ-fNs"/>
+                            <constraint firstAttribute="height" constant="50" id="rqy-01-D1i"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="songer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNK-F7-Zvi">
+                        <rect key="frame" x="70" y="45.5" width="297" height="12.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yN6-bO-P6Y">
+                        <rect key="frame" x="377" y="24" width="35" height="35"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="35" id="e8C-JW-tpz"/>
+                            <constraint firstAttribute="width" constant="35" id="k5k-lz-cO5"/>
+                        </constraints>
+                        <state key="normal" title="Button" image="icons_play_music1"/>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="SongName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xYQ-Ha-qZp">
+                        <rect key="frame" x="70" y="15" width="297" height="22.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="LxU-RY-ba4" firstAttribute="centerY" secondItem="ZTg-uK-7eu" secondAttribute="centerY" id="929-MU-Sp4"/>
+                <constraint firstItem="xYQ-Ha-qZp" firstAttribute="bottom" secondItem="ZTg-uK-7eu" secondAttribute="centerY" constant="-4" id="DwK-hm-ubj"/>
+                <constraint firstItem="yN6-bO-P6Y" firstAttribute="leading" secondItem="xYQ-Ha-qZp" secondAttribute="trailing" constant="10" id="KbZ-Qm-XNt"/>
+                <constraint firstItem="LxU-RY-ba4" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="Lnz-2A-JtI"/>
+                <constraint firstItem="rNK-F7-Zvi" firstAttribute="leading" secondItem="xYQ-Ha-qZp" secondAttribute="leading" id="TpA-xB-jOf"/>
+                <constraint firstItem="yN6-bO-P6Y" firstAttribute="centerY" secondItem="LxU-RY-ba4" secondAttribute="centerY" id="Wb7-z0-gRq"/>
+                <constraint firstItem="xYQ-Ha-qZp" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="WeX-uh-5jP"/>
+                <constraint firstAttribute="bottom" secondItem="rNK-F7-Zvi" secondAttribute="bottom" constant="15" id="dna-x8-kih"/>
+                <constraint firstItem="rNK-F7-Zvi" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="centerY" constant="4" id="f2M-Cs-sNr"/>
+                <constraint firstItem="rNK-F7-Zvi" firstAttribute="trailing" secondItem="xYQ-Ha-qZp" secondAttribute="trailing" id="iON-yc-7ZR"/>
+                <constraint firstAttribute="trailing" secondItem="yN6-bO-P6Y" secondAttribute="trailing" constant="10" id="mBJ-cb-Ltx"/>
+                <constraint firstItem="xYQ-Ha-qZp" firstAttribute="leading" secondItem="LxU-RY-ba4" secondAttribute="trailing" constant="10" id="qSv-C9-My1"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="422" height="85"/>
+            <connections>
+                <outlet property="headerImageView" destination="LxU-RY-ba4" id="Bth-mm-Dg4"/>
+                <outlet property="playAndPauseBtn" destination="yN6-bO-P6Y" id="Kqu-1P-Cu3"/>
+                <outlet property="songNameLbl" destination="xYQ-Ha-qZp" id="uST-Gd-Hky"/>
+                <outlet property="songerLbl" destination="rNK-F7-Zvi" id="FNe-6c-6NK"/>
+            </connections>
+            <point key="canvasLocation" x="78.260869565217391" y="78.683035714285708"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="icons_play_music1" width="35" height="35"/>
+        <image name="musicicon" width="200" height="200"/>
+    </resources>
+</document>

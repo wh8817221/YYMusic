@@ -3,6 +3,7 @@ import Alamofire
 enum RequestHelper {
     static let baseURL = "http://mobile.ximalaya.com"
     case getMusicList([String: Any])
+    case getAlbumTrackList([String: Any])
     fileprivate func extend(_ params: [String: Any]) -> [String: Any] {
         let extendParams = params
 //        extendParams["os_type"] = 1
@@ -15,6 +16,11 @@ enum RequestHelper {
         var params = [String: Any]()
         var url = RequestHelper.baseURL
         switch self {
+        case .getAlbumTrackList(let tmp):
+            var param = tmp
+            param["albumId"] = 23
+            url += "/mobile/others/ca/album/23"
+            params = param
         case .getMusicList(let tmp):
             let page = tmp["pageId"]
             let size = tmp["pageSize"]

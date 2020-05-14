@@ -22,6 +22,12 @@
 		D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8830246C064B002F7CD0 /* AlamofireManager.swift */; };
 		D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8832246C06D4002F7CD0 /* CommonResult.swift */; };
 		D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8834246C07A2002F7CD0 /* RequestHelper.swift */; };
+		D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8836246CED2A002F7CD0 /* TrackListViewController.swift */; };
+		D24C883A246CF254002F7CD0 /* PlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */; };
+		D24C883C246CF719002F7CD0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883B246CF719002F7CD0 /* Common.swift */; };
+		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
+		D24C8843246D0959002F7CD0 /* PlayerBottomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */; };
+		D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */; };
 		FDA441EDDD14766985AEC842 /* Pods_YYMusic_YYMusicUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +76,12 @@
 		D24C8830246C064B002F7CD0 /* AlamofireManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlamofireManager.swift; sourceTree = "<group>"; };
 		D24C8832246C06D4002F7CD0 /* CommonResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonResult.swift; sourceTree = "<group>"; };
 		D24C8834246C07A2002F7CD0 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
+		D24C8836246CED2A002F7CD0 /* TrackListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
+		D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBottomView.swift; sourceTree = "<group>"; };
+		D24C883B246CF719002F7CD0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
+		D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBottomCell.swift; sourceTree = "<group>"; };
+		D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerBottomCell.xib; sourceTree = "<group>"; };
 		EA6395E92ABFBAEB0ED8922F /* Pods-YYMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YYMusic.debug.xcconfig"; path = "Target Support Files/Pods-YYMusic/Pods-YYMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,6 +165,7 @@
 				D24C87F8246BFC53002F7CD0 /* Main.storyboard */,
 				D24C87FB246BFC55002F7CD0 /* Assets.xcassets */,
 				D24C87FD246BFC55002F7CD0 /* LaunchScreen.storyboard */,
+				D24C8838246CF237002F7CD0 /* View */,
 				D24C8825246C0203002F7CD0 /* Controller */,
 				D24C8824246C0203002F7CD0 /* Model */,
 				D24C8827246C0203002F7CD0 /* NetWork */,
@@ -193,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				D24C8826246C0203002F7CD0 /* MusicListViewController.swift */,
+				D24C8836246CED2A002F7CD0 /* TrackListViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -210,9 +224,21 @@
 		D24C8828246C0203002F7CD0 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				D24C883D246CF779002F7CD0 /* DeviceInfo.swift */,
 				D24C882E246C0620002F7CD0 /* CustomHUD.swift */,
+				D24C883B246CF719002F7CD0 /* Common.swift */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		D24C8838246CF237002F7CD0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */,
+				D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */,
+				D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,6 +353,7 @@
 				D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */,
 				D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
+				D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,14 +481,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D24C883A246CF254002F7CD0 /* PlayerBottomView.swift in Sources */,
 				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,
 				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,
 				D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */,
+				D24C8843246D0959002F7CD0 /* PlayerBottomCell.swift in Sources */,
+				D24C883C246CF719002F7CD0 /* Common.swift in Sources */,
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
 				D24C8829246C0203002F7CD0 /* MusicListViewController.swift in Sources */,
+				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,
 				D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,
+				D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,17 +1,16 @@
 //
-//  MusicListViewController.swift
+//  TrackListViewController.swift
 //  YYMusic
 //
-//  Created by 王浩 on 2020/5/13.
+//  Created by 王浩 on 2020/5/14.
 //  Copyright © 2020 haoge. All rights reserved.
 //
 
 import UIKit
 import Kingfisher
 import MJRefresh
-import SnapKit
 
-class MusicListViewController: UIViewController {
+class TrackListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     fileprivate var songs: [PlayerModel] = []
@@ -21,7 +20,7 @@ class MusicListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "音乐列表"
+        self.title = "专辑列表"
         self.tableView.estimatedRowHeight = 70
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
@@ -36,19 +35,8 @@ class MusicListViewController: UIViewController {
         self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
         self.tableView.mj_header?.beginRefreshing()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
-        
-        // tableview  给底部留距离
-        let bottomView = PlayerBottomView.shared
-        bottomView.show(tableView: tableView, superView: self.view)
     }
 
-    @objc fileprivate func openAlumList() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        let vc = sb.instantiateViewController(withIdentifier: "TrackListViewController") as? TrackListViewController
-        self.navigationController?.pushViewController(vc!, animated: true)
-    }
-    
     func getMusicList(_ first: Bool) {
         if first {
             pageSize = 15
@@ -60,7 +48,7 @@ class MusicListViewController: UIViewController {
         var param = [String: Any]()
         param["pageId"] = currPage
         param["pageSize"] = pageSize
-        let d = RequestHelper.getMusicList(param).generate()
+        let d = RequestHelper.getAlbumTrackList(param).generate()
         NetWorkingTool.shared.requestData(generate: d, successCallback: { [weak self](data: PlayerModels?) in
             // refresh
             self?.tableView.mj_header?.endRefreshing()
@@ -84,7 +72,7 @@ class MusicListViewController: UIViewController {
     }
 }
 
-extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
+extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.songs.count
