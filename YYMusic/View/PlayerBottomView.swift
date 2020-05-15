@@ -147,11 +147,23 @@ class PlayerBottomView: UIView {
     @objc func timerAct() {
         let currentTime = PlayerManager.shared.getCurrentTime()
         let totalTime = PlayerManager.shared.getTotalTime()
+
         //如果当前时间=总时长 就直接下一首(或者单曲循环)
         if currentTime == totalTime {
             self.autoNext()
         }
-        
+        //更新进度圆环
+        if let cell = collectionView.visibleCells.first as? PlayerBottomCell {
+            let cT = Double(currentTime ?? "0")
+            let dT = Double(totalTime ?? "0")
+            if let ct = cT, let dt = dT, dt > 0.0 {
+                cell.progress = CGFloat(ct/dt)
+            }
+            //播放完归零
+            if currentTime == totalTime {
+                cell.progress = CGFloat(0.0)
+            }
+        }
         //存储歌曲总时间, 第一次进入才存
         if let t = totalTime, (Int(t) ?? 0) > 0{
             //只记录一次总时间,防止不停的调用存储

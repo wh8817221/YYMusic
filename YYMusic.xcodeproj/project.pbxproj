@@ -30,6 +30,7 @@
 		D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
+		D24CA60E246E3C8C00C9AB73 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24CA60D246E3C8C00C9AB73 /* ProgressView.swift */; };
 		FDA441EDDD14766985AEC842 /* Pods_YYMusic_YYMusicUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,7 @@
 		D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerBottomCell.xib; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		D24CA60D246E3C8C00C9AB73 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		EA6395E92ABFBAEB0ED8922F /* Pods-YYMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YYMusic.debug.xcconfig"; path = "Target Support Files/Pods-YYMusic/Pods-YYMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -233,6 +235,7 @@
 				D24C883B246CF719002F7CD0 /* Common.swift */,
 				D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */,
 				D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */,
+				D24CA60D246E3C8C00C9AB73 /* ProgressView.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -500,6 +503,7 @@
 				D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */,
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
+				D24CA60E246E3C8C00C9AB73 /* ProgressView.swift in Sources */,
 				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,
 				D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */,
 			);

@@ -33,6 +33,18 @@ class PlayerBottomCell: UICollectionViewCell {
             }
         }
     }
+    
+    /*圆环进度指示器*/
+    var progress: CGFloat = 0.0 {
+        didSet{
+            if progress > 1 || progress < 0 { return }
+            if arcLayer != nil {
+                arcLayer.removeFromSuperlayer()
+                drawCircle(rect: playAndPauseBtn.frame, progress: progress)
+            }
+        }
+    }
+    
     /*歌手头像*/
     @IBOutlet weak var headerImageView: UIImageView!
     /*歌名*/
@@ -41,6 +53,7 @@ class PlayerBottomCell: UICollectionViewCell {
     @IBOutlet weak var songerLbl: UILabel!
     /*播放暂停按钮*/
     @IBOutlet weak var playAndPauseBtn: UIButton!
+    fileprivate var arcLayer: CAShapeLayer!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -57,6 +70,29 @@ class PlayerBottomCell: UICollectionViewCell {
         playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .normal)
         playAndPauseBtn.setImage(UIImage(named: "icons_stop_music1"), for: .selected)
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
+        drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
+    }
+    
+    //绘制圆环
+    fileprivate func drawCircle(rect: CGRect, progress: CGFloat) {
+        let xCenter = rect.size.width * 0.5
+        let yCenter = rect.size.height * 0.5
+        let radius = rect.size.width/2-2.5
+        //绘制环形进度环
+        // - M_PI * 0.5为改变初始位置
+        let to = -CGFloat(Double.pi)*0.5 + progress * CGFloat(Double.pi)*2
+        
+        let path = UIBezierPath()
+        path.addArc(withCenter: CGPoint(x: xCenter, y: yCenter), radius: CGFloat(radius), startAngle: -CGFloat(Double.pi)*0.5, endAngle: to, clockwise: true)
+    
+        arcLayer = CAShapeLayer()
+        arcLayer.path = path.cgPath  //46,169,230
+        arcLayer.fillColor = UIColor.clear.cgColor
+        
+        arcLayer.strokeColor = kThemeColor.cgColor
+        arcLayer.lineWidth = 2.5
+        arcLayer.lineCap = CAShapeLayerLineCap(rawValue: "round")
+        playAndPauseBtn.layer.addSublayer(arcLayer)
     }
     
     @objc func playAndPause(_ sender: UIButton) {
