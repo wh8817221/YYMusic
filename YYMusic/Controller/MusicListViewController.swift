@@ -46,6 +46,10 @@ class MusicListViewController: UIViewController {
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
         //加载底部播放器
         playerBottomView.show(tableView: tableView, superView: self.view)
+        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+            self.currentMusic = music
+            playerBottomView.reloadUI(music: music)
+        }
         playerBottomView.reloadCallback = { [weak self](value) in
             if let m = value as? MusicModel {
                 self?.currentMusic = m
@@ -125,7 +129,6 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
             lbl3.textColor = UIColor.gray
             lbl2.textColor = UIColor.black
         }
-        
         
         return cell
     }

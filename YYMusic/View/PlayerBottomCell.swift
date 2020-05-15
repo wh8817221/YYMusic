@@ -11,7 +11,7 @@ import Kingfisher
 
 class PlayerBottomCell: UICollectionViewCell {
     static let identifier = String(describing: PlayerBottomCell.self)
-    
+    var tapCallback: ObjectCallback?
     var isSongPlayer: Bool = false {
         didSet{
             self.playAndPauseBtn.isSelected = isSongPlayer
@@ -41,12 +41,7 @@ class PlayerBottomCell: UICollectionViewCell {
     @IBOutlet weak var songerLbl: UILabel!
     /*播放暂停按钮*/
     @IBOutlet weak var playAndPauseBtn: UIButton!
-    //    /*下一首按钮*/
-    //    var nextBtn: UIButton!
-    //    /*进度*/
-    //    var progressSlider: UISlider!
-    //    /*定时器*/
-    //     var timer: Timer!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
@@ -77,6 +72,7 @@ class PlayerBottomCell: UICollectionViewCell {
             //开始动画
             startAnimation()
         }
+        tapCallback?(PlayerManager.shared.isPlaying)
     }
     
     func startAnimation() {

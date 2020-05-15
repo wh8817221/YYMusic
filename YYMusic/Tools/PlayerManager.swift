@@ -16,13 +16,14 @@ class PlayerManager: NSObject {
     /*播放下标*/
     var index: Int = 0
     /*标记是不是没点列表直接点了播放按钮如果是就默认播放按钮*/
-    var isFristPlayerPauseBtn: Bool = false
+    var isFristPlayerPauseBtn: Bool = true
     /*开始播放*///0是开始 1 暂停
     var isStartPlayer: ((_ index: Int) -> Void)?
     /*是不是正在播放*/
     var isPlaying: Bool = false
     /*播放器*/
-    fileprivate var player: AVPlayer!
+    var player: AVPlayer!
+    
     override init() {
         super.init()
         if player == nil {
@@ -32,11 +33,37 @@ class PlayerManager: NSObject {
             try? session.setActive(true, options: [])
         }
     }
+    
+    //当前时间
+    func getCurrentTime() -> String? {
+        if self.player.currentTime().timescale == 0  {
+            return nil
+        }
+        //获取当前时间
+        let value = self.player.currentTime().value
+        let timescale = self.player.currentTime().timescale
+        let currentTime = value/Int64(timescale)
+        return "\(currentTime)"
+    }
+    
+    //总时长
+    func getTotalTime() -> String? {
+        if self.player.currentItem?.duration.timescale == 0 {
+            return nil
+        }
+        //获取音乐总时长
+        let d = self.player.currentItem?.duration.value
+        let t = self.player.currentItem?.duration.timescale
+        let totalTime = d!/Int64(t!)
+        return "\(totalTime)"
+    }
+    
     //播放
     func playerPlay() {
         player.play()
         isPlaying = true
     }
+    
     //暂停
     func playerPause() {
         player.pause()

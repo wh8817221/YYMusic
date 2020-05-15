@@ -96,13 +96,34 @@ class PlayerModels: Mappable {
     }
 }
 
-class MusicModel: Mappable {
-    var albumId: Int?
-    var comments: Int?
+class MusicModel: NSObject, Mappable, NSCoding {
+    
+    required init?(coder: NSCoder) {
+        self.coverMiddle = coder.decodeObject(forKey: "coverMiddle") as? String
+        self.coverLarge = coder.decodeObject(forKey: "coverLarge") as? String
+        
+        self.coverSmall = coder.decodeObject(forKey: "coverSmall") as? String
+        self.playUrl32 = coder.decodeObject(forKey: "playUrl32") as? String
+        self.title = coder.decodeObject(forKey: "title") as? String
+        self.nickname = coder.decodeObject(forKey: "nickname") as? String
+        self.trackId = coder.decodeObject(forKey: "trackId") as? Int
+    }
+
+    func encode(with coder: NSCoder) {
+        coder.encode(coverMiddle, forKey:"coverMiddle")
+        coder.encode(coverLarge, forKey:"coverLarge")
+        
+        coder.encode(coverSmall, forKey:"coverSmall")
+        coder.encode(playUrl32, forKey:"playUrl32")
+        coder.encode(title, forKey:"title")
+        coder.encode(nickname, forKey:"nickname")
+        coder.encode(trackId, forKey:"trackId")
+    }
+
     var coverMiddle: String?
     var coverSmall: String?
-    
     var coverLarge: String?
+    
     var playUrl32: String?
     var title: String?
     var nickname: String?
@@ -111,12 +132,7 @@ class MusicModel: Mappable {
         
     }
     
-    init() {
-    }
-    
     func mapping(map: Map) {
-        albumId <- map["albumId"]
-        comments <- map["comments"]
         coverMiddle <- map["coverMiddle"]
         coverSmall <- map["coverSmall"]
         
