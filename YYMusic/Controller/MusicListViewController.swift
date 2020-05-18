@@ -45,7 +45,8 @@ class MusicListViewController: UIViewController {
         
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
         //加载底部播放器
-        playerBottomView.show(tableView: tableView, superView: self.view)
+        playerBottomView.show(tableView: tableView, superVc: self)
+        //获取上次播放存储的歌曲
         if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
             self.currentMusic = music
             playerBottomView.reloadUI(music: music)
@@ -135,7 +136,12 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        playerBottomView.reloadData(with: indexPath.row)
+        let song = songs[indexPath.row]
+        if PlayerManager.shared.isPlaying && song.trackId == PlayerManager.shared.currentModel?.trackId {
+            return
+        }
+        
+        playerBottomView.reloadData(with: indexPath.row, model: song)
     }
     
 }

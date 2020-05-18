@@ -51,3 +51,4 @@ func calculateTextSize(text: String, font: UIFont) -> CGSize {
     let size = str.size(withAttributes: [NSAttributedString.Key.font: font])
     return size
 }
+

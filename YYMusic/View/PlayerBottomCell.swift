@@ -11,13 +11,16 @@ import Kingfisher
 
 class PlayerBottomCell: UICollectionViewCell {
     static let identifier = String(describing: PlayerBottomCell.self)
-    var tapCallback: ObjectCallback?
-    var isSongPlayer: Bool = false {
+    var callback: ObjectCallback?
+    var isPlaying: Bool? {
         didSet{
-            self.playAndPauseBtn.isSelected = isSongPlayer
-            if isSongPlayer {
-                //开始动画
-                startAnimation()
+            if let isPlaying = isPlaying {
+               if isPlaying {
+                    self.playAndPauseBtn.isSelected = isPlaying
+                    if isPlaying {
+                       startTimer()
+                    }
+                }
             }
         }
     }
@@ -55,6 +58,8 @@ class PlayerBottomCell: UICollectionViewCell {
     @IBOutlet weak var playAndPauseBtn: UIButton!
     fileprivate var arcLayer: CAShapeLayer!
     
+    fileprivate var timer: Timer!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
@@ -72,7 +77,33 @@ class PlayerBottomCell: UICollectionViewCell {
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
     }
+ 
+    //MARK:-开启定时器
+    func startTimer() {
+        startAnimation()
+        self.timer = Timer(timeInterval: 0.1, target: self, selector: #selector(timerAct), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer, forMode: .common)
+    }
     
+    //MARK:-关闭定时器
+    func stopTimer() {
+        stopAnimation()
+        self.timer.invalidate()
+        self.timer = nil
+    }
+    
+    @objc func timerAct() {
+        PlayerManager.shared.timerAct { [weak self](value) in
+            if let p = value as? CGFloat {
+                self?.progress = p
+                if p >= 1.0 {
+                    self?.autoNext()
+                    self?.progress = 0.0
+                }
+            }
+        }
+    }
+
     //绘制圆环
     fileprivate func drawCircle(rect: CGRect, progress: CGFloat) {
         let xCenter = rect.size.width * 0.5
@@ -98,17 +129,77 @@ class PlayerBottomCell: UICollectionViewCell {
     @objc func playAndPause(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if !sender.isSelected {
-            //暂停播放
-            PlayerManager.shared.playerPause()
-            //停止动画
-            self.stopAnimation()
+            tapPlayButton(isPlay: false)
         } else {
-            //开始播放
-            PlayerManager.shared.playerPlay()
-            //开始动画
-            startAnimation()
+            tapPlayButton(isPlay: true)
         }
-        tapCallback?(PlayerManager.shared.isPlaying)
+    }
+    //继续播放
+    func playActive() {
+        PlayerManager.shared.playerPlay()
+        self.startTimer()
+    }
+    //暂停播放
+    func pauseActive() {
+        PlayerManager.shared.playerPause()
+        self.stopTimer()
+    }
+    
+    //加载播放
+    func loadMusic(model: MusicModel) {
+        PlayerManager.shared.playReplaceItem(with: model.playUrl32 ?? "", callback: {[weak self] (value) in
+            if let callback = self?.callback {
+                self?.startTimer()
+                //回调刷新界面
+                callback(model)
+            }
+        })
+    }
+    
+    //MARK:-播放按钮
+    func tapPlayButton(isPlay: Bool) {
+        self.playAndPauseBtn.isSelected = isPlay
+        //第一次点击底部播放按钮并且还是未在播放状态
+        if PlayerManager.shared.isFristPlayerPauseBtn && !PlayerManager.shared.isPlaying {
+            PlayerManager.shared.isFristPlayerPauseBtn = false
+            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+                loadMusic(model: music)
+            } else {
+                //归档没找到默认播放第一个
+                if let model = PlayerManager.shared.currentModel {
+                    loadMusic(model: model)
+                }
+            }
+        } else {
+            PlayerManager.shared.isFristPlayerPauseBtn = false
+            if isPlay {
+                playActive()
+            } else {
+                pauseActive()
+            }
+        }
+    }
+    
+    //MARK:-自动下一首或者是单曲循环
+    func autoNext() {
+        self.stopTimer()
+        if PlayerManager.shared.isSinglecycle {
+            //单曲循环播放
+            if let model = self.musicModel {
+                loadMusic(model: model)
+            }
+        } else {
+            //下一首
+            PlayerManager.shared.playNext(callback: {[weak self] (value) in
+                 if let m = value as? MusicModel {
+                     self?.musicModel = m
+                     if let callback = self?.callback {
+                         self?.startTimer()
+                         callback(m)
+                     }
+                 }
+            })
+        }
     }
     
     func startAnimation() {
@@ -116,7 +207,7 @@ class PlayerBottomCell: UICollectionViewCell {
             let rotationAnimationX = CABasicAnimation(keyPath: "transform.rotation.z")
             rotationAnimationX.beginTime = 0
             rotationAnimationX.toValue = 2 * CGFloat(Double.pi)
-            rotationAnimationX.duration = 5
+            rotationAnimationX.duration = 6
             rotationAnimationX.isRemovedOnCompletion = false
             rotationAnimationX.repeatCount = MAXFLOAT
             headerImageView.layer.add(rotationAnimationX, forKey: "rotationAnimationX")
