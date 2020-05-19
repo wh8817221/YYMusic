@@ -204,11 +204,6 @@ class PlayerManager: NSObject {
         vc?.present(playVC!, animated: true, completion: nil)
     }
     
-    //后台播放
-    func playBack(application: UIApplication) {
-        
-    }
-    
     //MARK:-锁屏传值
     func lockScreeen(totalTime: String) {
         if PlayerManager.shared.musicArray.count > 0 {

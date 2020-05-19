@@ -8,64 +8,46 @@
 
 import UIKit
 import Kingfisher
-import MJRefresh
 
 class TrackListViewController: UIViewController {
     
+    var type: BillListType?
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [MusicModel] = []
-    fileprivate var pageSize = 20
-    fileprivate var currPage = 1
-    fileprivate var totalPage = 0
+    fileprivate var songs: [BDSongModel] = [] {
+        didSet {
+            //获取上次播放存储的歌曲
+            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+                self.currentMusic = music
+                playerBottomView.reloadUI(music: music)
+            }
+        }
+    }
+    
+    fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
+    fileprivate var currentMusic: MusicModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "专辑列表"
+        self.title = self.type?.getName()
         self.tableView.estimatedRowHeight = 70
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        
-        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
-            self.getMusicList(true)
-        })
-        tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: {
-            self.getMusicList(false)
-        })
-        self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
-        self.tableView.mj_header?.beginRefreshing()
-        
+        //加载底部播放器
+        playerBottomView.show(tableView: tableView, superVc: self)
+        self.getMusicList()
     }
 
-    func getMusicList(_ first: Bool) {
-        if first {
-            pageSize = 15
-            currPage = 1
-            totalPage = 0
-        } else {
-            currPage += 1
-        }
+    func getMusicList() {
         var param = [String: Any]()
-        param["pageId"] = currPage
-        param["pageSize"] = pageSize
-        let d = RequestHelper.getAlbumTrackList(param).generate()
-        NetWorkingTool.shared.requestData(generate: d, successCallback: { [weak self](data: PlayerModels?) in
-            // refresh
-            self?.tableView.mj_header?.endRefreshing()
-            self?.tableView.mj_footer?.endRefreshing()
-            if let list = data {
-                self?.totalPage = data?.maxPageId ?? 0
-                self?.tableView.mj_footer?.isHidden = (self?.currPage)! >= (self?.totalPage)!
-                if first {
-                    self?.songs = []
-                    if let list = list.list, !list.isEmpty {
-                        self?.songs = list
-                    }
-                } else {
-                    if let list = list.list, !list.isEmpty {
-                        self?.songs.append(contentsOf: list)
-                    }
-                }
+        param["method"] = "baidu.ting.billboard.billList"
+        param["type"] = type?.rawValue
+        param["size"] = 100
+        param["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
+        let d = RequestHelper.getCommonList(param).generate()
+        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongList?) in
+            if let list = data?.song_list {
+                self?.songs = list
                 self?.tableView.reloadData()
             }
         })
@@ -86,13 +68,13 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
         let lbl3 = cell.viewWithTag(3) as! UILabel
         img1.layer.cornerRadius = img1.frame.height/2
         img1.layer.masksToBounds = true
-        if let urlStr = song.coverSmall, let url = URL(string: urlStr) {
+        if let urlStr = song.pic_big, let url = URL(string: urlStr) {
             img1.kf.setImage(with: url)
         }
         lbl2.text = song.title ?? ""
         lbl2.font = UIFont.systemFont(ofSize: 17)
         
-        lbl3.text = song.nickname ?? ""
+        lbl3.text = song.author ?? ""
         lbl3.font = UIFont.systemFont(ofSize: 13)
         lbl3.textColor = UIColor.gray
         
@@ -101,7 +83,28 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print("------->")
+        let song = songs[indexPath.row]
+        getSongPlay(songid: song.song_id, indexPath: indexPath)
+    }
+    
+    func getSongPlay(songid: String?, indexPath: IndexPath) {
+        var param = [String: Any]()
+        param["method"] = "baidu.ting.song.play"
+        param["songid"] = songid
+        param["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
+        let d = RequestHelper.getCommonList(param).generate()
+        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongInfo?) in
+            if let s = data {
+                let song = MusicModel()
+                song.playUrl32 = s.bitrate?.file_link
+                song.coverSmall = s.songinfo?.pic_small
+                song.nickname = s.songinfo?.author
+                song.title = s.songinfo?.title
+                song.coverLarge = s.songinfo?.pic_big
+                song.coverMiddle = s.songinfo?.pic_premium
+                self?.playerBottomView.reloadData(with: indexPath.row, model: song)
+            }
+        })
     }
     
 }

@@ -27,6 +27,7 @@ class Result<T: Mappable>: Mappable {
     }
 }
 
+
 class ObjectAlbum: Mappable {
     var albumId: Int?
     var avatarPath: String?
@@ -128,6 +129,11 @@ class MusicModel: NSObject, Mappable, NSCoding {
     var title: String?
     var nickname: String?
     var trackId: Int?
+    
+    override init() {
+        super.init()
+    }
+    
     required init?(map: Map){
         
     }

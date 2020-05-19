@@ -147,9 +147,7 @@ class WHPlayerBottomView: UIControl {
         //记录播放状态和播放歌曲角标
         PlayerManager.shared.isPlaying = true
         PlayerManager.shared.index = index
-        self.musicModel = model
-        //播放音乐
-        PlayerManager.shared.selectPlayItem(with: model)
+        loadMusic(model: model)
     }
     
     //MARK:-开启定时器
@@ -224,6 +222,7 @@ class WHPlayerBottomView: UIControl {
     //加载播放
     func loadMusic(model: MusicModel) {
         self.musicModel = model
+        self.playAndPauseBtn.isSelected = true
         PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
             self?.startTimer()
         })

@@ -12,9 +12,18 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        initRootViewController()
         //开启接收远程事件
         application.beginReceivingRemoteControlEvents()
         return true
+    }
+    
+    func initRootViewController() {
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = getStoryboardInstantiateViewController(identifier: "MainViewController")
+        self.window?.backgroundColor = .white
+        self.window?.makeKeyAndVisible()
     }
     
     override func remoteControlReceived(with event: UIEvent?) {

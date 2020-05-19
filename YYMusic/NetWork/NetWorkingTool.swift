@@ -14,7 +14,7 @@ class NetWorkingTool: NSObject {
     static let shared = NetWorkingTool()
     fileprivate var sessionManager = AlamofireManager.sharedSessionManager
     //是否打印返回数据
-    fileprivate var isPrint: Bool = false
+    fileprivate var isPrint: Bool = true
     /**
      获取服务器数据，并转化为模型
      */
@@ -60,7 +60,7 @@ class NetWorkingTool: NSObject {
                             }
                             errorCallback?(result)
                         } else {
-                            self.processResponseError(result.ret!, msg: result.msg, error: result.error)
+                           self.processResponseError(result.ret ?? 0, msg: result.msg, error: result.error)
                         }
                     }
 
@@ -72,6 +72,60 @@ class NetWorkingTool: NSObject {
         })
     }
     
+    func requestDataBD<T: BaseResult>(generate: (url:String, params: [String: Any]?, headers: HTTPHeaders?), isShowHUD: Bool = true, showText: String? = nil, method: HTTPMethod = .post, successCallback: @escaping (_ result: T?) -> Void, errorCallback: ((T) -> Void)? = nil, networkError: (() -> Void)? = nil, authCallback: ((Any?) -> Void)? = nil) {
+
+        if isShowHUD {
+            CustomHUD.showProgress()
+        }
+        
+        self.sessionManager.request(generate.url, method: method, parameters: generate.params, encoding: method == .get ? URLEncoding.default : JSONEncoding.default, headers: generate.headers).validate().responseJSON(completionHandler: { (response) in
+            if let _ = response.error {
+                if let _ = networkError {
+                    networkError?()
+                } else {
+                    CustomHUD.showHideErrorHUD()
+                }
+            } else if let value = response.value {
+                
+                if self.isPrint {
+                    debugPrint(value)
+                }
+                
+                if let json = value as? [String: Any] {
+                    let map = Map(mappingType: .toJSON, JSON: json)
+                    let result = T(JSON: map.JSON)!
+                    if result.error_code == 22000 {
+                        if isShowHUD {
+                            if let text = showText {
+                                CustomHUD.showSuccessHUD(subtitle: text, completion: {
+                                    successCallback(result)
+                                })
+                            } else {
+                                CustomHUD.hideProgress()
+                                successCallback(result)
+                            }
+                        } else {
+                            successCallback(result)
+                        }
+                    } else {
+                        if let _ = errorCallback {
+                            if isShowHUD {
+                               CustomHUD.hideProgress()
+                            }
+                            errorCallback?(result)
+                        } else {
+                           self.processResponseError(result.error_code ?? 0, msg: result.error_message, error: result.error)
+                        }
+                    }
+
+                } else {
+                    //返回json格式不正常
+                    CustomHUD.showHideTextHUD("数据格式错误")
+                }
+            }
+        })
+    }
+
     func processResponseError(_ code: Int, msg: String?, error: Any?) {
         CustomHUD.showHideTextHUD(msg)
     }

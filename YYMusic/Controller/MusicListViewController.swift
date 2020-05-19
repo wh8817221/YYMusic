@@ -150,8 +150,8 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
         if PlayerManager.shared.isPlaying && song.trackId == PlayerManager.shared.currentModel?.trackId {
             return
         }
-        
         playerBottomView.reloadData(with: indexPath.row, model: song)
+        
     }
     
 }
