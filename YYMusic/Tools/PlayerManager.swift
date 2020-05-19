@@ -55,29 +55,38 @@ class PlayerManager: NSObject {
             try? session.setActive(true, options: [])
         }
     }
+    //存储歌曲时缺少Index,重新设置index
+    func resetIndex(model: MusicModel?) {
+        for (index,m) in self.musicArray.enumerated() {
+            if m.trackId == model?.trackId {
+                PlayerManager.shared.index = index
+            }
+        }
+    }
     
     //当前时间
     func getCurrentTime() -> String? {
-        if self.player.currentTime().timescale == 0  {
-            return nil
-        }
         //获取当前时间
         let value = self.player.currentTime().value
         let timescale = self.player.currentTime().timescale
-        let currentTime = value/Int64(timescale)
-        return "\(currentTime)"
+        if self.player.currentTime().timescale > 0  {
+            let currentTime = value/Int64(timescale)
+            return "\(currentTime)"
+        }
+        return nil
     }
     
     //总时长
     func getTotalTime() -> String? {
-        if self.player.currentItem?.duration.timescale == 0 {
-            return nil
-        }
         //获取音乐总时长
         let d = self.player.currentItem?.duration.value
         let t = self.player.currentItem?.duration.timescale
-        let totalTime = d!/Int64(t!)
-        return "\(totalTime)"
+        if self.player.currentItem?.duration.timescale != 0 {
+            let totalTime = d!/Int64(t!)
+            return "\(totalTime)"
+        }
+        
+        return nil
     }
     
     func timerAct(callback: ObjectCallback?) {
@@ -123,7 +132,7 @@ class PlayerManager: NSObject {
             self.index -= 1
         }
         
-        self.playReplaceItem(with: self.currentModel?.playUrl32 ?? "", callback: callback)
+        self.playReplaceItem(with: self.currentModel, callback: callback)
     }
     
     //下一首
@@ -133,49 +142,71 @@ class PlayerManager: NSObject {
         } else {
             self.index += 1
         }
-        self.playReplaceItem(with: self.currentModel?.playUrl32 ?? "", callback: callback)
+        self.playReplaceItem(with: self.currentModel, callback: callback)
     }
   
     func playerVolume(with volumeFloat: CGFloat) {
         self.player.volume = Float(volumeFloat)
     }
 
-    func playerProgress(with progressFloat: Double, callback: ObjectCallback?) {
-        let time = CMTime(seconds: progressFloat, preferredTimescale: 1)
-        self.player.seek(to: time) { [weak self](finished) in
+    func playerProgress(with progress: Double) {
+        var progress = progress
+        // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
+        if (progress == CMTimeGetSeconds(self.player.currentItem!.duration)) {
+            progress -= 0.5
+        }
+        let time = CMTimeMakeWithSeconds(progress, preferredTimescale: Int32(NSEC_PER_SEC))
+        self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { [weak self](finished) in
             self?.playerPlay()
-            if let callback = callback {
-                callback((self?.currentModel)!)
-            }
         }
     }
     
-    //当前播放
-    func playReplaceItem(with urlString: String, callback: ObjectCallback?) {
-        let url = URL(string: urlString)
+    //MARK:-列表选择播放
+    func selectPlayItem(with model: MusicModel?) {
+        let url = URL(string: model?.playUrl32 ?? "")
+        let item = AVPlayerItem(url: url!)
+        self.player.replaceCurrentItem(with: item)
+        self.playerPlay()
+        //存储当前播放的歌曲
+        UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
+        //获取总时间
+        if let time = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
+            lockScreeen(totalTime: time)
+        }
+        NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
+    }
+    
+    //自动/切换播放
+    func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
+        let url = URL(string: model?.playUrl32 ?? "")
         let item = AVPlayerItem(url: url!)
         self.player.replaceCurrentItem(with: item)
         self.playerPlay()
         
         if let callback = callback {
-            callback((self.currentModel)!)
+            callback((model)!)
         }
         
         //存储当前播放的歌曲
-        UserDefaultsManager.shared.archiver(object: (self.currentModel)!, key: CURRENTMUSIC)
+        UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
         //获取总时间
         if let time = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
             lockScreeen(totalTime: time)
         }
+        NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
     }
     
     //展示音乐播放界面
-    func presentPlayController(vc: UIViewController?, mode: MusicModel?, callback: ObjectCallback?) {
+    func presentPlayController(vc: UIViewController?, model: MusicModel?) {
         let playVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PlayViewController") as? PlayViewController
-        playVC?.model = mode
-        playVC?.callback = callback
+        playVC?.model = model
         playVC?.modalPresentationStyle = .fullScreen
         vc?.present(playVC!, animated: true, completion: nil)
+    }
+    
+    //后台播放
+    func playBack(application: UIApplication) {
+        
     }
     
     //MARK:-锁屏传值

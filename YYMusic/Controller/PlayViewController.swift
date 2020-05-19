@@ -10,8 +10,6 @@ import UIKit
 class PlayViewController: UIViewController {
     
     var model: MusicModel?
-    var callback: ObjectCallback?
-    
     fileprivate var playMode: PlayMode = .none
     @IBOutlet weak var closedBtn: UIButton!
     @IBOutlet weak var nexBtn: UIButton!
@@ -31,6 +29,13 @@ class PlayViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if self.timer != nil {
+           self.stopTimer()
+        }
     }
     
     func setUI() {
@@ -101,7 +106,8 @@ class PlayViewController: UIViewController {
                 let ts = String(format: "%02lld", Int(totalTime)!%60)
                 totalTimeLbl.text = "\(tm):\(ts)"
                 if let t = Float(totalTime), t > 0 {
-                    sliderView.value = (Float(curentTime) ?? 0)/t
+                    sliderView.value = (Float(curentTime) ?? 0)
+                    sliderView.maximumValue = Float(t)
                 }
             } else {
                 //总时间
@@ -109,49 +115,76 @@ class PlayViewController: UIViewController {
                     let tm = String(format: "%02lld", Int(totalTime)!/60)
                     let ts = String(format: "%02lld", Int(totalTime)!%60)
                     totalTimeLbl.text = "\(tm):\(ts)"
+                    sliderView.maximumValue = Float(totalTime)!
                 }
                 //更新播放进度
                 sliderView.value = 0
             }
         }
+        
+        sliderView.addTarget(self, action: #selector(sliderProgress(_:)), for: .valueChanged)
     }
     
-    func upDateUI(model: MusicModel?) {
-        self.model = model
-        stopTimer()
-        //获取背景图
-        if let str = model?.coverLarge, let url = URL(string: str) {
-           backgroundImageV.kf.setImage(with: url)
-        }
-        //歌名和歌手
-        musicNameLbl.text = model?.title ?? ""
-        songerNameLbl.text = model?.nickname ?? ""
-        if let str = model?.coverMiddle, let url = URL(string: str) {
-           headerImageV.kf.setImage(with: url)
-        }
-        PlayerManager.shared.isPlaying = true
-        startTimer()
+    @objc fileprivate func sliderProgress(_ sender: UISlider) {
+        PlayerManager.shared.playerProgress(with: Double(sender.value))
     }
     
-    //单曲循环/循环播放
+    func upDateUI() {
+        if let m = PlayerManager.shared.currentModel {
+            self.model = m
+            //获取背景图
+            if let str = m.coverLarge, let url = URL(string: str) {
+               backgroundImageV.kf.setImage(with: url)
+            }
+            //歌名和歌手
+            musicNameLbl.text = m.title ?? ""
+            songerNameLbl.text = m.nickname ?? ""
+            if let str = m.coverMiddle, let url = URL(string: str) {
+               headerImageV.kf.setImage(with: url)
+            }
+            PlayerManager.shared.isPlaying = true
+            startTimer()
+        }
+    }
+    
+    //暂停播放
+    @objc func playAndPause(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if !sender.isSelected {
+            playMode = .pause
+            stopTimer()
+        } else {
+            playMode = .play
+            startTimer()
+        }
+        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+    }
+    
+    //MARK:-前一首
     @objc func previusAction(_ sender: UIButton) {
         playMode = .previous
-        if let c = callback {
-           c(playMode)
-        }
-        upDateUI(model: PlayerManager.shared.currentModel)
+        //切换歌曲, 默认自动播放
+        playAndPauseBtn.isSelected = true
+        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+        
+        delay(0.25, closure: { [weak self] in
+            self?.upDateUI()
+        })
+        
     }
     
-    //单曲循环/循环播放
+    //MARK:-上一首
     @objc func nextAction(_ sender: UIButton) {
         playMode = .next
-        if let c = callback {
-           c(playMode)
-        }
-        upDateUI(model: PlayerManager.shared.currentModel)
+        //切换歌曲, 默认自动播放
+        playAndPauseBtn.isSelected = true
+        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+        delay(0.25, closure: { [weak self] in
+            self?.upDateUI()
+        })
     }
     
-    //单曲循环/循环播放
+    //MARK:-单曲循环/循环播放
     @objc func singleCircle(_ sender: UIButton) {
         if PlayerManager.shared.isSinglecycle {
             PlayerManager.shared.isSinglecycle = false
@@ -177,58 +210,44 @@ class PlayViewController: UIViewController {
         self.timer = nil
     }
     
-    //暂停播放
-    @objc func playAndPause(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        if !sender.isSelected {
-            playMode = .pause
-            stopTimer()
-        } else {
-            playMode = .play
-            startTimer()
-        }
-        
-        if let c = callback {
-           c(playMode)
-        }
-    }
-    
     @objc func timerAct() {
         //当前时间
         let curentTime = PlayerManager.shared.getCurrentTime() ?? "0"
         let m = String(format: "%02lld", Int(curentTime)!/60)
         let s = String(format: "%02lld", Int(curentTime)!%60)
         currentTimeLbl.text = "\(m):\(s)"
-        //总时间
+
         let totalTime = PlayerManager.shared.getTotalTime() ?? "0"
         let tm = String(format: "%02lld", Int(totalTime)!/60)
         let ts = String(format: "%02lld", Int(totalTime)!%60)
         totalTimeLbl.text = "\(tm):\(ts)"
         //更新播放进度
-        sliderView.minimumValue = 0
         if let t = Float(totalTime), t > 0 {
-            sliderView.value = (Float(curentTime) ?? 0)/t
-            if sliderView.value == 1.0 {
-                print("相等了")
-            }
+            sliderView.minimumValue = 0
+            //当前播放进度
+            sliderView.value = (Float(curentTime) ?? 0)
+            sliderView.maximumValue = Float(t)
         }
         
-        if curentTime == totalTime {
-            if let c = callback {
-                c(PlayMode.auto)
-            }
+        if curentTime == totalTime && totalTime != "0" {
+            self.playMode = .auto
+            NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+            delay(0.2, closure: { [weak self] in
+                self?.upDateUI()
+            })
         }
     }
+
     
     func startAnimation() {
-        if headerImageV.layer.animation(forKey: "rotationAnimationX") == nil {
+        if headerImageV.layer.animation(forKey: "rotationAnimationZ") == nil {
             let rotationAnimationX = CABasicAnimation(keyPath: "transform.rotation.z")
             rotationAnimationX.beginTime = 0
             rotationAnimationX.toValue = 2 * CGFloat(Double.pi)
             rotationAnimationX.duration = 6
             rotationAnimationX.isRemovedOnCompletion = false
             rotationAnimationX.repeatCount = MAXFLOAT
-            headerImageV.layer.add(rotationAnimationX, forKey: "rotationAnimationX")
+            headerImageV.layer.add(rotationAnimationX, forKey: "rotationAnimationZ")
         } else {
             let layer = headerImageV.layer
             let pausedTime = layer.timeOffset
@@ -250,5 +269,9 @@ class PlayViewController: UIViewController {
     //关闭
     @objc fileprivate func closedAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    deinit {
+        print("我被杀死了")
     }
 }

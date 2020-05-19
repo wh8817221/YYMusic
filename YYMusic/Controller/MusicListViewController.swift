@@ -17,13 +17,20 @@ class MusicListViewController: UIViewController {
     fileprivate var songs: [MusicModel] = [] {
         didSet {
             PlayerManager.shared.musicArray = songs
+            //获取上次播放存储的歌曲
+            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+                self.currentMusic = music
+                //从新更新角标
+                PlayerManager.shared.resetIndex(model: music)
+                playerBottomView.reloadUI(music: music)
+            }
         }
     }
     fileprivate var pageSize = 20
     fileprivate var currPage = 1
     fileprivate var totalPage = 0
     
-    fileprivate lazy var playerBottomView = PlayerBottomView.shared
+    fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
     fileprivate var currentMusic: MusicModel?
     
     override func viewDidLoad() {
@@ -42,23 +49,20 @@ class MusicListViewController: UIViewController {
         })
         self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
         self.tableView.mj_header?.beginRefreshing()
-        
-//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "专辑", style: .plain, target: self, action: #selector(openAlumList))
+ 
         //加载底部播放器
         playerBottomView.show(tableView: tableView, superVc: self)
-        //获取上次播放存储的歌曲
-        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
-            self.currentMusic = music
-            playerBottomView.reloadUI(music: music)
-        }
-        playerBottomView.reloadCallback = { [weak self](value) in
-            if let m = value as? MusicModel {
-                self?.currentMusic = m
-                self?.tableView.reloadData()
-            }
-        }
+        
+        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayList)
     }
 
+    @objc fileprivate func reloadPlay(_ sender: Notification) {
+        if let mode = sender.object as? MusicModel {
+            self.currentMusic = mode
+            self.tableView.reloadData()
+        }
+    }
+    
     @objc fileprivate func openAlumList() {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "TrackListViewController") as? TrackListViewController
@@ -98,6 +102,10 @@ class MusicListViewController: UIViewController {
             }
         })
     }
+    
+    deinit {
+        NotificationCenter.removeObserver(observer: self, name: .kReloadPlayList)
+    }
 }
 
 extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -124,6 +132,8 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
         lbl3.font = UIFont.systemFont(ofSize: 13)
         
         if let c = currentMusic, c.trackId == song.trackId {
+            //更新index
+            PlayerManager.shared.index = indexPath.row
             lbl3.textColor = kThemeColor
             lbl2.textColor = kThemeColor
         } else {

@@ -12,8 +12,30 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        //开启接收远程事件
+        application.beginReceivingRemoteControlEvents()
         return true
+    }
+    
+    override func remoteControlReceived(with event: UIEvent?) {
+        if event?.type == UIEvent.EventType.remoteControl {
+            switch event?.subtype {
+            case .remoteControlPause:
+                //暂停
+                WHPlayerBottomView.shared.tapPlayButton(isPlay: false)
+            case .remoteControlPlay:
+                //播放
+                WHPlayerBottomView.shared.tapPlayButton(isPlay: true)
+            case .remoteControlPreviousTrack:
+                //前一首
+                WHPlayerBottomView.shared.previousMusic()
+            case .remoteControlNextTrack:
+                //下一首
+                WHPlayerBottomView.shared.nextMusic()
+            default:
+                break
+            }
+        }
     }
 }
 

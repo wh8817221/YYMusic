@@ -55,7 +55,6 @@ class PlayerFlowLayout: UICollectionViewFlowLayout {
 class PlayerBottomView: UIView {
     
     static let shared = PlayerBottomView()
-    var reloadCallback: ObjectCallback?
     var selectedIndex: Int = 0
     
     fileprivate var playerBarH: CGFloat = 65.0
@@ -63,10 +62,8 @@ class PlayerBottomView: UIView {
     fileprivate var dragStartX: CGFloat = 0
     fileprivate var dragEndX: CGFloat = 0
     fileprivate var dragAtIndex: Int = 0
-    fileprivate var musicModel: MusicModel?
-    fileprivate var timer: Timer!
-    fileprivate var isFirstTime: Bool = true
     fileprivate var parentVC: UIViewController?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         let layout = PlayerFlowLayout()
@@ -82,6 +79,28 @@ class PlayerBottomView: UIView {
         collectionView.register(UINib(nibName: "PlayerBottomCell", bundle: nil), forCellWithReuseIdentifier: PlayerBottomCell.identifier)
         collectionView.delegate = self
         collectionView.dataSource = self
+        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
+    }
+    
+    //MARK:-刷新播放状态
+    @objc fileprivate func reloadPlay(_ sender: Notification) {
+        if let mode = sender.object as? PlayMode {
+            if let cell = collectionView.visibleCells.first as? PlayerBottomCell {
+                switch mode {
+                case .play, .pause:
+                    cell.tapPlayButton(isPlay: mode == .play)
+                case .next:
+                    cell.nextMusic()
+                    cell.playAndPauseBtn.isSelected = true
+                case .previous:
+                    cell.previousMusic()
+                    cell.playAndPauseBtn.isSelected = true
+                default:
+                    cell.autoNext()
+                    cell.playAndPauseBtn.isSelected = true
+                }
+            }
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -102,7 +121,6 @@ class PlayerBottomView: UIView {
     
     //刷新界面
     func reloadUI(music: MusicModel) {
-        self.musicModel = music
         self.collectionView.reloadData()
     }
     
@@ -110,13 +128,8 @@ class PlayerBottomView: UIView {
         //记录播放状态和播放歌曲角标
         PlayerManager.shared.isPlaying = true
         PlayerManager.shared.index = index
-        self.musicModel = model
-        //回调刷新列表
-        if let callback = self.reloadCallback {
-            callback(model)
-        }
         //播放音乐
-        PlayerManager.shared.playReplaceItem(with: model.playUrl32 ?? "", callback: nil)
+        PlayerManager.shared.selectPlayItem(with: model)
         self.collectionView.reloadData()
     }
     
@@ -170,39 +183,11 @@ extension PlayerBottomView: UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PlayerBottomCell.identifier, for: indexPath) as! PlayerBottomCell
         cell.isPlaying = PlayerManager.shared.isPlaying
-        cell.musicModel = musicModel
-        cell.callback = { [weak self](value) in
-            if let model = value as? MusicModel {
-                self?.musicModel = model
-                //回调刷新列表
-                if let callback = self?.reloadCallback {
-                    callback(model)
-                }
-            }
-        }
+        cell.musicModel = PlayerManager.shared.currentModel
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        PlayerManager.shared.presentPlayController(vc: self.parentVC, mode: self.musicModel, callback: { (value) in
-//            if let mode = value as? PlayMode {
-//                switch mode {
-//                case .play, .pause:
-//                    if let cell = collectionView.visibleCells.first as? PlayerBottomCell {
-//                        cell.tapPlayButton(isPlay: mode == .play)
-//                    }
-//                case .next:
-//                    self.stopTimer()
-//                    PlayerManager.shared.playNext()
-//                    self.reloadData(with: PlayerManager.shared.index)
-//                case .previous:
-//                    self.stopTimer()
-//                    PlayerManager.shared.playPrevious()
-//                    self.reloadData(with: PlayerManager.shared.index)
-//                default:
-//                    self.autoNext()
-//                }
-//            }
-        })
+//        PlayerManager.shared.presentPlayController(vc: self.parentVC)
     }
 }
