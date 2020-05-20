@@ -19,6 +19,16 @@ enum PlayMode: Int {
     case auto = 5
 }
 
+//播放状态
+enum PlayerCycle {
+    /**单曲循环*/
+    case single
+    /**顺序播放*/
+    case order
+    /**随机播放*/
+    case random
+}
+
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
         
@@ -34,8 +44,9 @@ class PlayerManager: NSObject {
     var isPlaying: Bool = false
     /*播放器*/
     var player: AVPlayer!
-    /*标记是否在单曲循环 (如果是yes是当前这首播放完时自动还从新开始播放)当前播放的*/
-    var isSinglecycle: Bool = false
+    
+    /*播放状态*/
+    var cycle: PlayerCycle = .order
     /**获取当前播放的歌曲*/
     var currentModel: MusicModel? {
         get {
@@ -55,6 +66,17 @@ class PlayerManager: NSObject {
             try? session.setActive(true, options: [])
         }
     }
+    
+    func hasBeenFavoriteMusic() -> Bool{
+        return false
+//        for (FYfavoriteItem *item in self.favoriteMusic) {
+//            if (item.trackId == [self.tracksVM trackIdForRow:_indexPathRow]) {
+//                return YES;
+//            }
+//        }
+//        return NO;
+    }
+    
     //存储歌曲时缺少Index,重新设置index
     func resetIndex(model: MusicModel?) {
         for (index,m) in self.musicArray.enumerated() {
@@ -182,7 +204,6 @@ class PlayerManager: NSObject {
         let item = AVPlayerItem(url: url!)
         self.player.replaceCurrentItem(with: item)
         self.playerPlay()
-        
         if let callback = callback {
             callback((model)!)
         }
@@ -198,10 +219,10 @@ class PlayerManager: NSObject {
     
     //展示音乐播放界面
     func presentPlayController(vc: UIViewController?, model: MusicModel?) {
-        let playVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PlayViewController") as? PlayViewController
-        playVC?.model = model
-        playVC?.modalPresentationStyle = .fullScreen
-        vc?.present(playVC!, animated: true, completion: nil)
+        let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
+        playVC.model = model
+        playVC.modalPresentationStyle = .fullScreen
+        vc?.present(playVC, animated: true, completion: nil)
     }
     
     //MARK:-锁屏传值

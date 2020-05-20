@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "music_tuijian.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon_point@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -199,7 +199,7 @@ class PlayerBottomCell: UICollectionViewCell {
     //MARK:-自动下一首或者是单曲循环
     func autoNext() {
         self.stopTimer()
-        if PlayerManager.shared.isSinglecycle {
+        if PlayerManager.shared.cycle == .single {
             //单曲循环播放
             if let model = self.musicModel {
                 loadMusic(model: model)

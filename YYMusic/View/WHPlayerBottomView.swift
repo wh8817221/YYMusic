@@ -277,7 +277,7 @@ class WHPlayerBottomView: UIControl {
     //MARK:-自动下一首或者是单曲循环
     func autoNext() {
         self.stopTimer()
-        if PlayerManager.shared.isSinglecycle {
+        if PlayerManager.shared.cycle == .single {
             //单曲循环播放
             if let model = self.musicModel {
                 loadMusic(model: model)
@@ -290,13 +290,16 @@ class WHPlayerBottomView: UIControl {
     
     func startAnimation() {
         if headerImageView.layer.animation(forKey: "rotationAnimationZ") == nil {
-            let rotationAnimationX = CABasicAnimation(keyPath: "transform.rotation.z")
-            rotationAnimationX.beginTime = 0
-            rotationAnimationX.toValue = 2 * CGFloat(Double.pi)
-            rotationAnimationX.duration = 6
-            rotationAnimationX.isRemovedOnCompletion = false
-            rotationAnimationX.repeatCount = MAXFLOAT
-            headerImageView.layer.add(rotationAnimationX, forKey: "rotationAnimationZ")
+            let rotationAnimationZ = CABasicAnimation(keyPath: "transform.rotation.z")
+            rotationAnimationZ.timingFunction = CAMediaTimingFunction(name: .linear)
+            rotationAnimationZ.fromValue = 0 // 开始角度
+            rotationAnimationZ.toValue = 2*CGFloat(Double.pi)
+            rotationAnimationZ.duration = 10
+            rotationAnimationZ.autoreverses = false
+            rotationAnimationZ.isRemovedOnCompletion = false
+            rotationAnimationZ.repeatCount = MAXFLOAT
+            rotationAnimationZ.fillMode = .forwards
+            headerImageView.layer.add(rotationAnimationZ, forKey: "rotationAnimationZ")
         } else {
             let layer = headerImageView.layer
             let pausedTime = layer.timeOffset

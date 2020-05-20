@@ -65,5 +65,7 @@ enum NotificationName: String {
     case kReloadPlayStatus
     //刷新播放列表
     case kReloadPlayList
+    //监听时间变化
+    case kMusicTimeChange
 }
 

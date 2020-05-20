@@ -63,3 +63,10 @@ func getStoryboardInstantiateViewController(identifier: String) -> UIViewControl
     return sb.instantiateViewController(withIdentifier: identifier)
 }
 
+func timeIntervalToMMSSFormat(interval: TimeInterval) -> String {
+    let ti = Int(interval)
+    let seconds: Int = ti%60
+    let minutes: Int = (ti/60)%60
+    return String(format: "%02ld:%02ld", arguments: [minutes, seconds])
+}
+
