@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import MediaPlayer
+import HWPanModal
 
 enum PlayMode: Int {
     case none = 0
@@ -221,8 +222,7 @@ class PlayerManager: NSObject {
     func presentPlayController(vc: UIViewController?, model: MusicModel?) {
         let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
         playVC.model = model
-        playVC.modalPresentationStyle = .fullScreen
-        vc?.present(playVC, animated: true, completion: nil)
+        vc?.presentPanModal(playVC)
     }
     
     //MARK:-锁屏传值

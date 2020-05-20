@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import HWPanModal
 
 class MainPlayViewController: UIViewController {
     var model: MusicModel?
@@ -72,4 +73,26 @@ class MainPlayViewController: UIViewController {
     deinit {
         print("我被杀死了")
     }
+    
+    //MARK:- HWPanModalPresentable
+    override func topOffset() -> CGFloat {
+        return 0
+    }
+    
+    override func transitionDuration() -> TimeInterval {
+        return 0.5
+    }
+    
+    override func shouldRoundTopCorners() -> Bool {
+        return false
+    }
+    
+    override func showDragIndicator() -> Bool {
+        return false
+    }
+    
+    override func allowScreenEdgeInteractive() -> Bool {
+        return true
+    }
 }
+

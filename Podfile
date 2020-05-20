@@ -2,6 +2,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 target 'YYMusic' do
   platform :ios, '10.0'
   use_frameworks!
+  # 忽略pod警告
+  inhibit_all_warnings!
 
   pod 'Alamofire', '~> 5.0.0'
   pod 'Kingfisher', '~> 5.13.1'
@@ -9,6 +11,7 @@ target 'YYMusic' do
   pod 'PKHUD', '~> 5.3.0'
   pod 'SnapKit', '~> 5.0.1'
   pod 'MJRefresh', '~> 3.3.1'
+  pod 'HWPanModal', '~> 0.6.7'
   
   target 'YYMusicTests' do
     inherit! :search_paths
