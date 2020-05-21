@@ -27,7 +27,8 @@ class PlayDetailViewController: UIViewController {
     @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var moreBtn: UIButton!
     fileprivate var timer: Timer!
-
+    fileprivate var isSlider: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -97,8 +98,11 @@ class PlayDetailViewController: UIViewController {
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
         
         sliderView.isContinuous = true
+        
         if PlayerManager.shared.isPlaying {
-            self.startTimer()
+            let currentTime = PlayerManager.shared.getCurrentTime()
+            let totalTime = PlayerManager.shared.getTotalTime()
+            self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
         } else {
             if let currentTime = PlayerManager.shared.getCurrentTime() {
                 let totalTime = PlayerManager.shared.getTotalTime()
@@ -109,8 +113,23 @@ class PlayDetailViewController: UIViewController {
                 }
             }
         }
-        
-        sliderView.addTarget(self, action: #selector(sliderProgress(_:)), for: .valueChanged)
+        //开始事件
+        sliderView.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        //结束事件
+        sliderView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        //值改变事件
+        sliderView.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+        self.addObserverToPlayer()
+    }
+    
+    func addObserverToPlayer() {
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
+    }
+    
+    @objc fileprivate func musicTimeInterval() {
+        let currentTime = PlayerManager.shared.getCurrentTime()
+        let totalTime = PlayerManager.shared.getTotalTime()
+        self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
     }
     
     //暂停播放
@@ -118,10 +137,8 @@ class PlayDetailViewController: UIViewController {
         sender.isSelected = !sender.isSelected
         if !sender.isSelected {
             playMode = .pause
-            stopTimer()
         } else {
             playMode = .play
-            startTimer()
         }
         NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
     }
@@ -136,16 +153,44 @@ class PlayDetailViewController: UIViewController {
             let ts = CMTimeGetSeconds(tt)
             startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
             totalTimeLbl.text = timeIntervalToMMSSFormat(interval: ts)
+            
             //当前播放进度
             sliderView.minimumValue = 0.0
             sliderView.maximumValue = Float(ts)
-            sliderView.value = Float(cs)
+            if !isSlider {
+               sliderView.value = Float(cs)
+            }
+
+            if cs == ts {
+                self.playMode = .auto
+                NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+                delay(0.2, closure: { [weak self] in
+                    self?.upDateUI()
+                })
+            }
         }
     }
     
-    @objc fileprivate func sliderProgress(_ sender: UISlider) {
-        PlayerManager.shared.playerProgress(with: Double(sender.value), completionHandler: { [weak self](finished) in
-        })
+    @objc fileprivate func touchDown(_ slider: UISlider) {
+        isSlider = true
+    }
+    
+    @objc fileprivate func touchUpInside(_ slider: UISlider) {
+        isSlider = false
+        //暂停情况--->滑动默认播放
+        if !self.playAndPauseBtn.isSelected {
+            self.playAndPause(self.playAndPauseBtn)
+        }
+        //更新播放进度
+        PlayerManager.shared.playerProgress(with: Double(slider.value))
+    }
+    
+    @objc fileprivate func valueChanged(_ slider: UISlider) {
+        isSlider = true
+        //这里只更新开始时间
+        let ct = CMTime(value: CMTimeValue(slider.value), timescale: CMTimeScale(1.0))
+        let cs = CMTimeGetSeconds(ct)
+        startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
     }
     
     func upDateUI() {
@@ -153,7 +198,6 @@ class PlayDetailViewController: UIViewController {
             self.model = m
             self.updateModel()
             PlayerManager.shared.isPlaying = true
-            startTimer()
         }
     }
     
@@ -193,34 +237,6 @@ class PlayDetailViewController: UIViewController {
         default:
             PlayerManager.shared.cycle = .order
             sender.setImage(UIImage(named: "icon_order"), for: .normal)
-        }
-    }
-    
-    //MARK:-开启定时器
-    func startTimer() {
-        //开始定时器开始记录存储总时间
-        self.timer = Timer(timeInterval: 0.1, target: self, selector: #selector(timerAct), userInfo: nil, repeats: true)
-        RunLoop.current.add(timer, forMode: .common)
-    }
-    
-    //MARK:-关闭定时器
-    func stopTimer() {
-        if timer == nil { return }
-        self.timer.invalidate()
-        self.timer = nil
-    }
-    
-    @objc func timerAct() {
-        //当前时间
-        let curentTime = PlayerManager.shared.getCurrentTime()
-        let totalTime = PlayerManager.shared.getTotalTime()
-//        self.updateProgressLabelCurrentTime(currentTime: curentTime, totalTime: totalTime)
-        if curentTime == totalTime && totalTime != "0" {
-            self.playMode = .auto
-            NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
-            delay(0.2, closure: { [weak self] in
-                self?.upDateUI()
-            })
         }
     }
 }

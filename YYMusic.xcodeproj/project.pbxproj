@@ -327,8 +327,8 @@
 		D2D10CCA2474C8200051E3E2 /* PlayTools */ = {
 			isa = PBXGroup;
 			children = (
-				D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */,
 				D2D10CCD2474C8200051E3E2 /* MainPlayViewController.swift */,
+				D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */,
 				D2D10CD32474DA4D0051E3E2 /* PlayDetailViewController.swift */,
 				D2D10CD42474DA4D0051E3E2 /* PlayDetailViewController.xib */,
 				D2B2F48124753202007FECBF /* LyricViewController.swift */,

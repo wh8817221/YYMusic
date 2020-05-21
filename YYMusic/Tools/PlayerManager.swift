@@ -184,18 +184,19 @@ class PlayerManager: NSObject {
         self.player.volume = Float(volumeFloat)
     }
 
-    func playerProgress(with progress: Double, completionHandler: @escaping (Bool) -> Void) {
+    func playerProgress(with progress: Double) {
         var progress = progress
-        // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
-//        if (progress == CMTimeGetSeconds(self.player.currentItem!.duration)) {
-//            progress -= 0.5
-//        }
+        if self.isPlaying {
+            // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
+            if (progress == CMTimeGetSeconds(self.player.currentItem!.duration)) {
+                progress -= 0.5
+            }
+        }
         let time = CMTimeMakeWithSeconds(progress, preferredTimescale: Int32(NSEC_PER_SEC))
         self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { [weak self](finished) in
-            if finished && (self?.isPlaying)! {
-                self?.playerPlay()
-            }
-            completionHandler(finished)
+//            if finished {
+//                self?.playerPlay()
+//            }
         }
     }
     
@@ -269,6 +270,7 @@ class PlayerManager: NSObject {
         timeObserve = player.addPeriodicTimeObserver(forInterval: cmt, queue: DispatchQueue.main) { [weak self](time) in
             //控制中心
             self?.updateLockedScreenMusic()
+            NotificationCenter.post(name: .kMusicTimeInterval)
         }
     }
 
