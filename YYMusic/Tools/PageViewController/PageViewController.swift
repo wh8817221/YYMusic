@@ -1,14 +1,13 @@
 //
-//  BasePageViewController.swift
+//  PageViewController.swift
 //  YYMusic
 //
-//  Created by 王浩 on 2020/5/19.
+//  Created by 王浩 on 2020/5/20.
 //  Copyright © 2020 haoge. All rights reserved.
 //
-
 import UIKit
 
-class BasePageViewController: UIPageViewController {
+class PageViewController: UIPageViewController {
     lazy var pageBarView: PageBarView = {[unowned self] in
         let v = PageBarView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 44))
         v.delegate = self
@@ -25,10 +24,11 @@ class BasePageViewController: UIPageViewController {
             self.pageBarView.titles = allTitles!
         }
     }
-
+    /**滚动角标的回调*/
+    var callback: ((_ index: Int) -> Void)?
     convenience init() {
         self.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        self.view.addSubview(pageBarView)
+//        self.view.addSubview(pageBarView)
     }
     
     override func viewDidLoad() {
@@ -43,7 +43,7 @@ class BasePageViewController: UIPageViewController {
         // Dispose of any resources that can be recreated.
     }
 }
-extension BasePageViewController {
+extension PageViewController {
     func showPage(index: Int) {
         let btn = self.pageBarView.scrollView.viewWithTag(index + 10) as? UIButton
         self.pageBarView.btnAction(btn!)
@@ -64,7 +64,7 @@ extension BasePageViewController {
     }
 }
 
-extension BasePageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let viewControllerIndex = allViewControllers?.firstIndex(of: viewController) else {
             return nil
@@ -107,8 +107,15 @@ extension BasePageViewController: UIPageViewControllerDataSource, UIPageViewCont
     }
 }
 
-extension BasePageViewController: PageBarViewDelegate {
+extension PageViewController: PageBarViewDelegate {
     func changeSelected(index: Int) {
+        showIndex(index: index)
+        if let callback = self.callback {
+            callback(index)
+        }
+    }
+    //选择音乐/歌词
+    func selectedSegmentControl(index: Int) {
         showIndex(index: index)
     }
 }

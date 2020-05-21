@@ -11,22 +11,10 @@ import AVFoundation
 
 class PlayDetailViewController: UIViewController {
     
-    var model: MusicModel? {
-        didSet{
-            if let str = model?.coverMiddle, let url = URL(string: str) {
-                SingerImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
-                }
-            }
-            SingerImageView.startTransitionAnimation()
-            
-            //歌名和歌手
-            songName.text = model?.title ?? ""
-            songerName.text = model?.nickname ?? ""
-        }
-    }
-    
+    var model: MusicModel?
+    var callback: ObjectCallback?
     fileprivate var playMode: PlayMode = .none
-    @IBOutlet weak var SingerImageView: UIImageView!
+    @IBOutlet weak var singerImageView: UIImageView!
     @IBOutlet weak var songerName: UILabel!
     @IBOutlet weak var songName: UILabel!
     @IBOutlet weak var likeBtn: UIButton!
@@ -39,17 +27,29 @@ class PlayDetailViewController: UIViewController {
     @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var moreBtn: UIButton!
     fileprivate var timer: Timer!
-    fileprivate var newItem: Bool?
-    
-    fileprivate var musicIsPlaying: Bool?
-    fileprivate var musicIsChange: Bool?
-    fileprivate var musicIsCan: Bool?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        updateModel()
     }
-
+    
+    func updateModel() {
+        if let str = model?.coverMiddle, let url = URL(string: str) {
+            singerImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
+            }
+        }
+        singerImageView.startTransitionAnimation()
+        
+        //歌名和歌手
+        songName.text = model?.title ?? ""
+        songerName.text = model?.nickname ?? ""
+        
+        if let callback = callback {
+            callback(model!)
+        }
+    }
+    
     func setUI() {
         if PlayerManager.shared.hasBeenFavoriteMusic() {
             likeBtn.setImage(UIImage(named: "red_heart"), for: .normal)
@@ -57,8 +57,8 @@ class PlayDetailViewController: UIViewController {
             likeBtn.setImage(UIImage(named: "empty_heart"), for: .normal)
         }
         //歌手头像
-        SingerImageView.layer.cornerRadius = 7
-        SingerImageView.layer.masksToBounds = true
+        singerImageView.layer.cornerRadius = 10
+        singerImageView.layer.masksToBounds = true
         
         songName.textColor = .white
         songName.font = UIFont.boldSystemFont(ofSize: 17)
@@ -96,43 +96,23 @@ class PlayDetailViewController: UIViewController {
         nextBtn.addTarget(self, action: #selector(nextAction(_:)), for: .touchUpInside)
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
         
-//        self.updateProgressLabelCurrentTime(currentTime: <#TimeInterval#>, duration: <#TimeInterval#>)
-        
+        sliderView.isContinuous = true
         if PlayerManager.shared.isPlaying {
-            startTimer()
+            self.startTimer()
         } else {
-            sliderView.minimumValue = 0
-            if let curentTime = PlayerManager.shared.getCurrentTime(), Double(curentTime)! > 0 {
-                let m = String(format: "%02lld", Int(curentTime)!/60)
-                let s = String(format: "%02lld", Int(curentTime)!%60)
-                startTimeLbl.text = "\(m):\(s)"
-                //总时间
-                let totalTime = PlayerManager.shared.getTotalTime() ?? "0"
-                let tm = String(format: "%02lld", Int(totalTime)!/60)
-                let ts = String(format: "%02lld", Int(totalTime)!%60)
-                totalTimeLbl.text = "\(tm):\(ts)"
-                if let t = Float(totalTime), t > 0 {
-                    sliderView.value = (Float(curentTime) ?? 0)
-                    sliderView.maximumValue = Float(t)
-                }
+            if let currentTime = PlayerManager.shared.getCurrentTime() {
+                let totalTime = PlayerManager.shared.getTotalTime()
+                self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
             } else {
-                //总时间
                 if let totalTime = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
-                    let tm = String(format: "%02lld", Int(totalTime)!/60)
-                    let ts = String(format: "%02lld", Int(totalTime)!%60)
-                    totalTimeLbl.text = "\(tm):\(ts)"
-                    sliderView.maximumValue = Float(totalTime)!
+                    self.updateProgressLabelCurrentTime(currentTime: "0", totalTime: totalTime)
                 }
-                //更新播放进度
-                sliderView.value = 0
             }
         }
         
         sliderView.addTarget(self, action: #selector(sliderProgress(_:)), for: .valueChanged)
-//        self.addObserver(to: PlayerManager.shared.player)
-        
     }
-
+    
     //暂停播放
     @objc func playAndPause(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
@@ -147,29 +127,31 @@ class PlayDetailViewController: UIViewController {
     }
     
     /** 设置时间数据 */
-    func updateProgressLabelCurrentTime(currentTime: TimeInterval, duration: TimeInterval) {
-        startTimeLbl.text = timeIntervalToMMSSFormat(interval: currentTime)
-        totalTimeLbl.text = timeIntervalToMMSSFormat(interval: duration)
-//        if musicIsCan == true {
-//            var currentTimef = CGFloat(currentTime)
-//            var currentTimei = Int(currentTime)
-//            if currentTimef == currentTimei {
-//                musicIsCan = false
-//            }
-//        }
-//        if musicIsChange == false && musicIsCan == false {
-//            sliderView.setValue(Float(currentTime/duration), animated: true)
-//        }
-        sliderView.setValue(Float(currentTime/duration), animated: true)
+    func updateProgressLabelCurrentTime(currentTime: String?, totalTime: String?) {
+        if let c = currentTime, let t = totalTime {
+            let ct = CMTime(value: CMTimeValue(c)!, timescale: CMTimeScale(1.0))
+            let tt = CMTime(value: CMTimeValue(t)!, timescale: CMTimeScale(1.0))
+            
+            let cs = CMTimeGetSeconds(ct)
+            let ts = CMTimeGetSeconds(tt)
+            startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
+            totalTimeLbl.text = timeIntervalToMMSSFormat(interval: ts)
+            //当前播放进度
+            sliderView.minimumValue = 0.0
+            sliderView.maximumValue = Float(ts)
+            sliderView.value = Float(cs)
+        }
     }
     
     @objc fileprivate func sliderProgress(_ sender: UISlider) {
-        PlayerManager.shared.playerProgress(with: Double(sender.value))
+        PlayerManager.shared.playerProgress(with: Double(sender.value), completionHandler: { [weak self](finished) in
+        })
     }
     
     func upDateUI() {
         if let m = PlayerManager.shared.currentModel {
             self.model = m
+            self.updateModel()
             PlayerManager.shared.isPlaying = true
             startTimer()
         }
@@ -188,7 +170,7 @@ class PlayDetailViewController: UIViewController {
 
     }
     
-    //MARK:-上一首
+    //MARK:下一首
     @objc func nextAction(_ sender: UIButton) {
         playMode = .next
         //切换歌曲, 默认自动播放
@@ -223,51 +205,22 @@ class PlayDetailViewController: UIViewController {
     
     //MARK:-关闭定时器
     func stopTimer() {
+        if timer == nil { return }
         self.timer.invalidate()
         self.timer = nil
     }
     
     @objc func timerAct() {
         //当前时间
-        let curentTime = PlayerManager.shared.getCurrentTime() ?? "0"
-        let m = String(format: "%02lld", Int(curentTime)!/60)
-        let s = String(format: "%02lld", Int(curentTime)!%60)
-        startTimeLbl.text = "\(m):\(s)"
-
-        let totalTime = PlayerManager.shared.getTotalTime() ?? "0"
-        let tm = String(format: "%02lld", Int(totalTime)!/60)
-        let ts = String(format: "%02lld", Int(totalTime)!%60)
-        totalTimeLbl.text = "\(tm):\(ts)"
-        //更新播放进度
-        if let t = Float(totalTime), t > 0 {
-            sliderView.minimumValue = 0
-            //当前播放进度
-            sliderView.value = (Float(curentTime) ?? 0)
-            sliderView.maximumValue = Float(t)
-        }
-        
+        let curentTime = PlayerManager.shared.getCurrentTime()
+        let totalTime = PlayerManager.shared.getTotalTime()
+//        self.updateProgressLabelCurrentTime(currentTime: curentTime, totalTime: totalTime)
         if curentTime == totalTime && totalTime != "0" {
             self.playMode = .auto
             NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
             delay(0.2, closure: { [weak self] in
                 self?.upDateUI()
             })
-        }
-    }
-    
-    //MARK:-kvo
-    /** 给AVPlayer添加监控 */
-    func addObserver(to player: AVPlayer) {
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeChange)
-    }
-    /** 通知 监听时间变化，设置时间 */
-    @objc func musicTimeInterval() {
-        if let c = PlayerManager.shared.player.currentItem?.currentTime() {
-            let current = CMTimeGetSeconds(c)
-            if let t = PlayerManager.shared.player.currentItem?.duration {
-                let total = CMTimeGetSeconds(t)
-                self.updateProgressLabelCurrentTime(currentTime: current, duration: total)
-            }
         }
     }
 }

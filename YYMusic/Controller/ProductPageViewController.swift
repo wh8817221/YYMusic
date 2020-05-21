@@ -24,7 +24,7 @@ class ProductPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
       
-        let pageVC = BasePageViewController()
+        let pageVC = PageViewController()
         pageVC.pageBarView.type = .FontSize
         pageVC.allViewControllers = VCs
         pageVC.allTitles = ["歌曲","歌词"]
@@ -35,7 +35,6 @@ class ProductPageViewController: UIViewController {
         pageVC.view.frame = rect
         pageVC.didMove(toParent: self)
         view.gestureRecognizers = pageVC.gestureRecognizers
-        
     }
 
     

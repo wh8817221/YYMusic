@@ -10,7 +10,7 @@ import UIKit
 
 let TOTALTIME = "TOTALTIME"
 let CURRENTMUSIC = "CURRENTMUSIC"
-
+let CYCLE = "CYCLE"
 class UserDefaultsManager: NSObject {
     static let shared = UserDefaultsManager()
     fileprivate var userDefaults = UserDefaults.standard

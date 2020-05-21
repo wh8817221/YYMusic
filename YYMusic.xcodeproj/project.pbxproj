@@ -30,6 +30,10 @@
 		D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
+		D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48124753202007FECBF /* LyricViewController.swift */; };
+		D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F48224753202007FECBF /* LyricViewController.xib */; };
+		D2B2F48624753976007FECBF /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48524753976007FECBF /* PageViewController.swift */; };
+		D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48F2476575C007FECBF /* SelectScrollview.swift */; };
 		D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */; };
 		D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */; };
 		D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB22473B1C20051E3E2 /* BDModel.swift */; };
@@ -37,7 +41,6 @@
 		D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */; };
 		D2D10CBA2473C6F70051E3E2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB82473C6F70051E3E2 /* MainViewController.swift */; };
 		D2D10CBF2473EBDE0051E3E2 /* PageBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CBE2473EBDE0051E3E2 /* PageBarView.swift */; };
-		D2D10CC12473ECB70051E3E2 /* BasePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CC02473ECB70051E3E2 /* BasePageViewController.swift */; };
 		D2D10CC32473EDA40051E3E2 /* ProductPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CC22473EDA40051E3E2 /* ProductPageViewController.swift */; };
 		D2D10CC52473EEBA0051E3E2 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CC42473EEBA0051E3E2 /* TestViewController.swift */; };
 		D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */; };
@@ -103,6 +106,10 @@
 		D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerBottomCell.xib; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		D2B2F48124753202007FECBF /* LyricViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricViewController.swift; sourceTree = "<group>"; };
+		D2B2F48224753202007FECBF /* LyricViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LyricViewController.xib; sourceTree = "<group>"; };
+		D2B2F48524753976007FECBF /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		D2B2F48F2476575C007FECBF /* SelectScrollview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectScrollview.swift; sourceTree = "<group>"; };
 		D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterExtension.swift; sourceTree = "<group>"; };
 		D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHPlayerBottomView.swift; sourceTree = "<group>"; };
 		D2D10CB22473B1C20051E3E2 /* BDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDModel.swift; sourceTree = "<group>"; };
@@ -110,7 +117,6 @@
 		D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNavigationViewController.swift; sourceTree = "<group>"; };
 		D2D10CB82473C6F70051E3E2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D2D10CBE2473EBDE0051E3E2 /* PageBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageBarView.swift; sourceTree = "<group>"; };
-		D2D10CC02473ECB70051E3E2 /* BasePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePageViewController.swift; sourceTree = "<group>"; };
 		D2D10CC22473EDA40051E3E2 /* ProductPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPageViewController.swift; sourceTree = "<group>"; };
 		D2D10CC42473EEBA0051E3E2 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainPlayViewController.xib; sourceTree = "<group>"; };
@@ -313,7 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				D2D10CBE2473EBDE0051E3E2 /* PageBarView.swift */,
-				D2D10CC02473ECB70051E3E2 /* BasePageViewController.swift */,
+				D2B2F48524753976007FECBF /* PageViewController.swift */,
 			);
 			path = PageViewController;
 			sourceTree = "<group>";
@@ -325,7 +331,10 @@
 				D2D10CCD2474C8200051E3E2 /* MainPlayViewController.swift */,
 				D2D10CD32474DA4D0051E3E2 /* PlayDetailViewController.swift */,
 				D2D10CD42474DA4D0051E3E2 /* PlayDetailViewController.xib */,
+				D2B2F48124753202007FECBF /* LyricViewController.swift */,
+				D2B2F48224753202007FECBF /* LyricViewController.xib */,
 				D2D10CD72474E23D0051E3E2 /* MusicSlider.swift */,
+				D2B2F48F2476575C007FECBF /* SelectScrollview.swift */,
 			);
 			path = PlayTools;
 			sourceTree = "<group>";
@@ -439,6 +448,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */,
 				D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */,
 				D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
@@ -585,9 +595,10 @@
 				D24C883C246CF719002F7CD0 /* Common.swift in Sources */,
 				D2D10CBF2473EBDE0051E3E2 /* PageBarView.swift in Sources */,
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
+				D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */,
 				D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */,
 				D24C8829246C0203002F7CD0 /* MusicListViewController.swift in Sources */,
-				D2D10CC12473ECB70051E3E2 /* BasePageViewController.swift in Sources */,
+				D2B2F48624753976007FECBF /* PageViewController.swift in Sources */,
 				D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */,
 				D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */,
 				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,
@@ -600,6 +611,7 @@
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */,
 				D2D10CD82474E23D0051E3E2 /* MusicSlider.swift in Sources */,
+				D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */,
 				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,
 				D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */,
 			);

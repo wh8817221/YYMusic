@@ -21,13 +21,13 @@ enum PlayMode: Int {
 }
 
 //播放状态
-enum PlayerCycle {
+enum PlayerCycle: Int {
     /**单曲循环*/
-    case single
+    case single = 0
     /**顺序播放*/
-    case order
+    case order = 1
     /**随机播放*/
-    case random
+    case random = 2
 }
 
 class PlayerManager: NSObject {
@@ -45,9 +45,13 @@ class PlayerManager: NSObject {
     var isPlaying: Bool = false
     /*播放器*/
     var player: AVPlayer!
-    
+    var currentPlayerItem: AVPlayerItem!
     /*播放状态*/
-    var cycle: PlayerCycle = .order
+    var cycle: PlayerCycle = .order {
+        didSet{
+            UserDefaultsManager.shared.userDefaultsSet(object: cycle.rawValue, key: CYCLE)
+        }
+    }
     /**获取当前播放的歌曲*/
     var currentModel: MusicModel? {
         get {
@@ -57,9 +61,17 @@ class PlayerManager: NSObject {
             return nil
         }
     }
+    /**播放时间监听*/
+    fileprivate var timeObserve: Any?
     fileprivate var isFirstTime: Bool = true
     override init() {
         super.init()
+        
+        //获取播放模式
+        if let c = UserDefaultsManager.shared.userDefaultsGet(key: CYCLE) as? Int {
+            self.cycle = PlayerCycle(rawValue: c) ?? .order
+        }
+        
         if player == nil {
             player = AVPlayer()
             let session = AVAudioSession.sharedInstance()
@@ -172,67 +184,67 @@ class PlayerManager: NSObject {
         self.player.volume = Float(volumeFloat)
     }
 
-    func playerProgress(with progress: Double) {
+    func playerProgress(with progress: Double, completionHandler: @escaping (Bool) -> Void) {
         var progress = progress
         // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
-        if (progress == CMTimeGetSeconds(self.player.currentItem!.duration)) {
-            progress -= 0.5
-        }
+//        if (progress == CMTimeGetSeconds(self.player.currentItem!.duration)) {
+//            progress -= 0.5
+//        }
         let time = CMTimeMakeWithSeconds(progress, preferredTimescale: Int32(NSEC_PER_SEC))
         self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { [weak self](finished) in
-            self?.playerPlay()
+            if finished && (self?.isPlaying)! {
+                self?.playerPlay()
+            }
+            completionHandler(finished)
         }
     }
     
     //MARK:-列表选择播放
     func selectPlayItem(with model: MusicModel?) {
         let url = URL(string: model?.playUrl32 ?? "")
-        let item = AVPlayerItem(url: url!)
-        self.player.replaceCurrentItem(with: item)
+        currentPlayerItem = AVPlayerItem(url: url!)
+        self.player.replaceCurrentItem(with: currentPlayerItem)
         self.playerPlay()
+        addMusicTimeMake()
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
-        //获取总时间
-        if let time = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
-            lockScreeen(totalTime: time)
-        }
         NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
     }
     
     //自动/切换播放
     func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
         let url = URL(string: model?.playUrl32 ?? "")
-        let item = AVPlayerItem(url: url!)
-        self.player.replaceCurrentItem(with: item)
+        currentPlayerItem = AVPlayerItem(url: url!)
+        self.player.replaceCurrentItem(with: currentPlayerItem)
         self.playerPlay()
         if let callback = callback {
             callback((model)!)
         }
-        
+        addMusicTimeMake()
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
-        //获取总时间
-        if let time = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
-            lockScreeen(totalTime: time)
-        }
         NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
+        
     }
     
     //展示音乐播放界面
     func presentPlayController(vc: UIViewController?, model: MusicModel?) {
         let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
         playVC.model = model
-        vc?.presentPanModal(playVC)
+//        vc?.presentPanModal(playVC)
+        playVC.modalPresentationStyle = .fullScreen
+        vc?.present(playVC, animated: true, completion: nil)
     }
     
-    //MARK:-锁屏传值
-    func lockScreeen(totalTime: String) {
+    //MARK:-锁屏时候的设置，效果需要在真机上才可以看到
+    func updateLockedScreenMusic() {
         if PlayerManager.shared.musicArray.count > 0 {
             let model = PlayerManager.shared.musicArray[PlayerManager.shared.index]
             var info = [String: Any]()
-            //设置歌曲时长
-            info[MPMediaItemPropertyPlaybackDuration] = Double(totalTime) ?? 0.0
-            info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
+            // 设置持续时间（歌曲的总时间）
+            info[MPMediaItemPropertyPlaybackDuration] = self.player.currentItem?.duration.value
+            // 设置当前播放进度
+            info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.player.currentItem?.currentTime().value
             //设置歌曲名
             info[MPMediaItemPropertyTitle] = model.title ?? ""
             //设置演唱者
@@ -250,5 +262,20 @@ class PlayerManager: NSObject {
             info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
             MPNowPlayingInfoCenter.default().nowPlayingInfo = info
         }
+    }
+    
+    func addMusicTimeMake() {
+        let cmt = CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(1.0))
+        timeObserve = player.addPeriodicTimeObserver(forInterval: cmt, queue: DispatchQueue.main) { [weak self](time) in
+            //控制中心
+            self?.updateLockedScreenMusic()
+        }
+    }
+
+    //清空播放器监听属性
+    func releasePlayer() {
+        NotificationCenter.default.removeObserver(self)
+        self.currentPlayerItem = nil
+        self.player = nil
     }
 }

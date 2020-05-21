@@ -33,4 +33,8 @@ class MainViewController: UITabBarController {
     override var preferredStatusBarStyle : UIStatusBarStyle {
         return .lightContent
     }
+    
+    deinit {
+        PlayerManager.shared.releasePlayer()
+    }
 }

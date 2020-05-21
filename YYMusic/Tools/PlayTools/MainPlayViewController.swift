@@ -11,7 +11,6 @@ import HWPanModal
 
 class MainPlayViewController: UIViewController {
     var model: MusicModel?
-    
     @IBOutlet weak var backgroudView: UIView!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var closedBtn: UIButton!
@@ -19,18 +18,49 @@ class MainPlayViewController: UIViewController {
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     fileprivate var visualEffectView: UIVisualEffectView!
     
+    fileprivate var selectView: SelectScrollview!
+    //默认选中的位置
+    fileprivate var selectIndex: Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addPanRecognizer()
         self.setUI()
-                
-        let pageVC = PlayDetailViewController(nibName: "PlayDetailViewController", bundle: nil)
-        pageVC.view.frame = contentView.bounds
-        pageVC.model = model
-        self.addChild(pageVC)
-        contentView.addSubview(pageVC.view)
+
+        //音乐控制器
+        let playVC = PlayDetailViewController(nibName: "PlayDetailViewController", bundle: nil)
+        playVC.model = model
+        playVC.callback = { [weak self](value) in
+            if let m = value as? MusicModel {
+                self?.model = m
+                self?.updateBackgroudImage()
+            }
+        }
+
+        //歌词控制器
+        let lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
+
+        selectView = SelectScrollview(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
+        selectView.callback = { [weak self] (value) in
+            if let index = value as? Int {
+                self?.segmentedControl.selectedSegmentIndex = index
+            }
+        }
+        contentView.addSubview(selectView)
+        selectView.snp.makeConstraints { (make) in
+            make.right.top.left.bottom.equalTo(contentView)
+        }
+        //初始化选中的位置
+        selectView.selectIndex(index: selectIndex)
     }
 
+    func updateBackgroudImage() {
+        //获取背景图
+        if let str = model?.coverLarge, let url = URL(string: str) {
+            backgroundImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
+            }
+        }
+    }
+    
     func addPanRecognizer() {
         let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(closePlay))
         swipeRecognizer.direction = .down
@@ -46,15 +76,19 @@ class MainPlayViewController: UIViewController {
         //关闭按钮
         closedBtn.setImage(UIImage(named: "arrow"), for: .normal)
         closedBtn.addTarget(self, action: #selector(closedAction(_:)), for: .touchUpInside)
+        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], for: .normal)
+        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], for: .selected)
+        segmentedControl.addTarget(self, action: #selector(segmentClick(_:)), for: .valueChanged)
     }
 
+    @objc fileprivate func segmentClick(_ sender: UISegmentedControl) {
+        selectView.selectIndex(index: sender.selectedSegmentIndex)
+    }
+    
     func setupBackgroudImage() {
         backgroundImageView.contentMode = .scaleAspectFill
-        //获取背景图
-        if let str = model?.coverLarge, let url = URL(string: str) {
-            backgroundImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
-            }
-        }
+
+        self.updateBackgroudImage()
         
         let effect = UIBlurEffect(style: .light)
         visualEffectView = UIVisualEffectView(effect: effect)
@@ -92,7 +126,7 @@ class MainPlayViewController: UIViewController {
     }
     
     override func allowScreenEdgeInteractive() -> Bool {
-        return true
+        return false
     }
 }
 

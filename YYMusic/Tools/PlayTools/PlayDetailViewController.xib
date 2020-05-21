@@ -10,13 +10,13 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayDetailViewController" customModule="YYMusic" customModuleProvider="target">
             <connections>
-                <outlet property="SingerImageView" destination="cpG-K2-NG1" id="vdN-BE-mdZ"/>
                 <outlet property="likeBtn" destination="HNM-9N-dS9" id="DG4-An-7sJ"/>
                 <outlet property="moreBtn" destination="KF3-2T-cpg" id="34d-En-jne"/>
                 <outlet property="nextBtn" destination="Ttq-y2-oHy" id="dx7-8U-pWp"/>
                 <outlet property="playAndPauseBtn" destination="2Bk-Yy-q2X" id="2XA-al-wae"/>
                 <outlet property="playModeBtn" destination="Iu7-2d-3lo" id="1eS-nP-RoW"/>
                 <outlet property="previousBtn" destination="kBF-PR-ptw" id="oqc-Np-P8p"/>
+                <outlet property="singerImageView" destination="cpG-K2-NG1" id="n04-sm-dtL"/>
                 <outlet property="sliderView" destination="0Xl-iP-4vE" id="3gZ-fw-07Z"/>
                 <outlet property="songName" destination="yIk-8S-dEl" id="J9V-2i-bdi"/>
                 <outlet property="songerName" destination="QPo-tZ-l6C" id="jId-v1-6oT"/>

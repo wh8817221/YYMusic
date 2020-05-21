@@ -13,6 +13,7 @@ class TestViewController: UIViewController {
     var state: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.blue
         let lbl = UILabel()
         lbl.text = "当前页面\(state!)"
         lbl.font = UIFont.boldSystemFont(ofSize: 20)

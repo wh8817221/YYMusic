@@ -79,7 +79,7 @@ class PlayerBottomView: UIView {
         collectionView.register(UINib(nibName: "PlayerBottomCell", bundle: nil), forCellWithReuseIdentifier: PlayerBottomCell.identifier)
         collectionView.delegate = self
         collectionView.dataSource = self
-        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
+//        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
     }
     
     //MARK:-刷新播放状态

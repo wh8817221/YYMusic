@@ -34,7 +34,7 @@ class PageBarView: UIView {
     var type: PageBarViewType = .None {
         willSet {
             if newValue == .FontSize {
-                self.viewLine.backgroundColor = .white
+                self.viewLine.backgroundColor = .red
                 self.backgroundColor = UIColor.red
             }
             else if newValue == .TextColor {

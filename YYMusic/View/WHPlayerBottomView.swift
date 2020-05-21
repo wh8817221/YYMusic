@@ -52,6 +52,7 @@ class WHPlayerBottomView: UIControl {
         self.backgroundColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
         
         headerImageView = UIImageView()
+        headerImageView.image = UIImage(named: "musicicon")
         headerImageView.layer.cornerRadius = 25
         headerImageView.layer.masksToBounds = true
         self.addSubview(headerImageView)
@@ -75,6 +76,7 @@ class WHPlayerBottomView: UIControl {
         songNameLbl = UILabel()
         songNameLbl.textColor = kThemeColor
         songNameLbl.font = kFont17
+        songNameLbl.text = "歌曲名"
         self.addSubview(songNameLbl)
         songNameLbl.snp.makeConstraints { (make) in
             make.top.equalTo(self.snp.top).offset(15)
@@ -85,6 +87,7 @@ class WHPlayerBottomView: UIControl {
         songerLbl = UILabel()
         songerLbl.textColor = .white
         songerLbl.font = kFont12
+        songerLbl.text = "歌手"
         self.addSubview(songerLbl)
         songerLbl.snp.makeConstraints { (make) in
             make.left.right.equalTo(self.songNameLbl)

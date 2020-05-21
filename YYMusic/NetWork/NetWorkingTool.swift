@@ -14,7 +14,7 @@ class NetWorkingTool: NSObject {
     static let shared = NetWorkingTool()
     fileprivate var sessionManager = AlamofireManager.sharedSessionManager
     //是否打印返回数据
-    fileprivate var isPrint: Bool = true
+    fileprivate var isPrint: Bool = false
     /**
      获取服务器数据，并转化为模型
      */
