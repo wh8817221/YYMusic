@@ -34,6 +34,7 @@
 		D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F48224753202007FECBF /* LyricViewController.xib */; };
 		D2B2F48624753976007FECBF /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48524753976007FECBF /* PageViewController.swift */; };
 		D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48F2476575C007FECBF /* SelectScrollview.swift */; };
+		D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49124767BDA007FECBF /* BaseViewController.swift */; };
 		D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */; };
 		D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */; };
 		D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB22473B1C20051E3E2 /* BDModel.swift */; };
@@ -110,6 +111,7 @@
 		D2B2F48224753202007FECBF /* LyricViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LyricViewController.xib; sourceTree = "<group>"; };
 		D2B2F48524753976007FECBF /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		D2B2F48F2476575C007FECBF /* SelectScrollview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectScrollview.swift; sourceTree = "<group>"; };
+		D2B2F49124767BDA007FECBF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterExtension.swift; sourceTree = "<group>"; };
 		D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHPlayerBottomView.swift; sourceTree = "<group>"; };
 		D2D10CB22473B1C20051E3E2 /* BDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDModel.swift; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 		D2D10CB62473C6F70051E3E2 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				D2B2F49124767BDA007FECBF /* BaseViewController.swift */,
 				D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */,
 				D2D10CB82473C6F70051E3E2 /* MainViewController.swift */,
 			);
@@ -584,6 +587,7 @@
 			files = (
 				D24C883A246CF254002F7CD0 /* PlayerBottomView.swift in Sources */,
 				D2D10CBA2473C6F70051E3E2 /* MainViewController.swift in Sources */,
+				D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */,
 				D2D10CC32473EDA40051E3E2 /* ProductPageViewController.swift in Sources */,
 				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,
 				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,

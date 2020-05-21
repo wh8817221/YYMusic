@@ -28,10 +28,8 @@ class WHPlayerBottomView: UIControl {
     var progress: CGFloat = 0.0 {
         didSet{
             if progress > 1 || progress < 0 { return }
-            if arcLayer != nil {
-                arcLayer.removeFromSuperlayer()
-                drawCircle(rect: playAndPauseBtn.frame, progress: progress)
-            }
+            arcLayer.removeFromSuperlayer()
+            drawCircle(rect: playAndPauseBtn.frame, progress: progress)
         }
     }
     
@@ -43,9 +41,18 @@ class WHPlayerBottomView: UIControl {
     var songerLbl: UILabel!
     /*播放暂停按钮*/
     var playAndPauseBtn: UIButton!
-    fileprivate var arcLayer: CAShapeLayer!
+    fileprivate var isFirstTime: Bool = true
+    fileprivate lazy var arcLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.fillColor = UIColor.clear.cgColor
+        
+        layer.strokeColor = kThemeColor.cgColor
+        layer.lineWidth = 2.5
+        layer.lineCap = CAShapeLayerLineCap(rawValue: "round")
+        return layer
+    }()
+    
     fileprivate var playerBarH: CGFloat = 65.0
-    fileprivate var timer: Timer!
     fileprivate var parentVC: UIViewController?
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -97,7 +104,31 @@ class WHPlayerBottomView: UIControl {
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
         NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
         
+    }
+    
+    @objc fileprivate func musicTimeInterval() {
+        let currentTime = PlayerManager.shared.getCurrentTime()
+        let totalTime = PlayerManager.shared.getTotalTime()
+        //更新进度圆环 如果当前时间=总时长 就直接下一首(或者单曲循环)
+        let cT = Double(currentTime ?? "0")
+        let dT = Double(totalTime ?? "0")
+        if let ct = cT, let dt = dT, dt > 0.0 {
+            self.progress = CGFloat(ct/dt)
+            if CGFloat(ct/dt) >= 1.0 {
+                self.autoNext()
+                self.progress = 0.0
+            }
+        }
+        //存储歌曲总时间, 第一次进入才存
+        if let t = totalTime, (Int(t) ?? 0) > 0{
+            //只记录一次总时间,防止不停的调用存储
+            if isFirstTime {
+                isFirstTime = false
+                UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
+            }
+        }
     }
     
     //MARK:-刷新播放状态
@@ -152,54 +183,19 @@ class WHPlayerBottomView: UIControl {
         PlayerManager.shared.index = index
         loadMusic(model: model)
     }
-    
-    //MARK:-开启定时器
-    func startTimer() {
-        startAnimation()
-        self.timer = Timer(timeInterval: 0.1, target: self, selector: #selector(timerAct), userInfo: nil, repeats: true)
-        RunLoop.current.add(timer, forMode: .common)
-    }
-    
-    //MARK:-关闭定时器
-    func stopTimer() {
-        if timer != nil {
-            stopAnimation()
-            self.timer.invalidate()
-            self.timer = nil
-        }
-    }
-    
-    @objc func timerAct() {
-        PlayerManager.shared.timerAct { [weak self](value) in
-            if let p = value as? CGFloat {
-                self?.progress = p
-                if p >= 1.0 {
-                    self?.autoNext()
-                    self?.progress = 0.0
-                }
-            }
-        }
-    }
 
-    //绘制圆环
+    //绘制进度圆环
     fileprivate func drawCircle(rect: CGRect, progress: CGFloat) {
         let xCenter = rect.size.width * 0.5
         let yCenter = rect.size.height * 0.5
-        let radius = rect.size.width/2-2.5
+        let radius = rect.size.width/2-2
         //绘制环形进度环
         // - M_PI * 0.5为改变初始位置
         let to = -CGFloat(Double.pi)*0.5 + progress * CGFloat(Double.pi)*2
         
         let path = UIBezierPath()
         path.addArc(withCenter: CGPoint(x: xCenter, y: yCenter), radius: CGFloat(radius), startAngle: -CGFloat(Double.pi)*0.5, endAngle: to, clockwise: true)
-    
-        arcLayer = CAShapeLayer()
         arcLayer.path = path.cgPath  //46,169,230
-        arcLayer.fillColor = UIColor.clear.cgColor
-        
-        arcLayer.strokeColor = kThemeColor.cgColor
-        arcLayer.lineWidth = 2.5
-        arcLayer.lineCap = CAShapeLayerLineCap(rawValue: "round")
         playAndPauseBtn.layer.addSublayer(arcLayer)
     }
     
@@ -214,12 +210,12 @@ class WHPlayerBottomView: UIControl {
     //继续播放
     func playActive() {
         PlayerManager.shared.playerPlay()
-        self.startTimer()
+        startAnimation()
     }
     //暂停播放
     func pauseActive() {
         PlayerManager.shared.playerPause()
-        self.stopTimer()
+        stopAnimation()
     }
     
     //加载播放
@@ -227,7 +223,7 @@ class WHPlayerBottomView: UIControl {
         self.musicModel = model
         self.playAndPauseBtn.isSelected = true
         PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
-            self?.startTimer()
+            self?.startAnimation()
         })
     }
     
@@ -257,29 +253,28 @@ class WHPlayerBottomView: UIControl {
     
     //前一首
     func previousMusic() {
-        stopTimer()
+        stopAnimation()
         PlayerManager.shared.playPrevious(callback: {[weak self] (value) in
              if let m = value as? MusicModel {
-                 self?.musicModel = m
-                 self?.startTimer()
+                self?.musicModel = m
+                self?.startAnimation()
              }
         })
     }
     
     //下一首
     func nextMusic() {
-        stopTimer()
+        stopAnimation()
         PlayerManager.shared.playNext(callback: {[weak self] (value) in
              if let m = value as? MusicModel {
-                 self?.musicModel = m
-                 self?.startTimer()
+                self?.musicModel = m
+                self?.startAnimation()
              }
         })
     }
     
     //MARK:-自动下一首或者是单曲循环
     func autoNext() {
-        self.stopTimer()
         if PlayerManager.shared.cycle == .single {
             //单曲循环播放
             if let model = self.musicModel {
@@ -323,5 +318,6 @@ class WHPlayerBottomView: UIControl {
 
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
     }
 }

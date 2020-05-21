@@ -9,7 +9,7 @@
 import UIKit
 import HWPanModal
 
-class MainPlayViewController: UIViewController {
+class MainPlayViewController: BaseViewController {
     var model: MusicModel?
     @IBOutlet weak var backgroudView: UIView!
     @IBOutlet weak var backgroundImageView: UIImageView!
@@ -23,6 +23,8 @@ class MainPlayViewController: UIViewController {
     fileprivate var selectIndex: Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
+        //更新状态栏
+        self.statusBarStyle = .lightContent
         self.addPanRecognizer()
         self.setUI()
 

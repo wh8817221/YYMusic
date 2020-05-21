@@ -64,6 +64,7 @@ class PlayerManager: NSObject {
     /**播放时间监听*/
     fileprivate var timeObserve: Any?
     fileprivate var isFirstTime: Bool = true
+    
     override init() {
         super.init()
         
@@ -193,10 +194,7 @@ class PlayerManager: NSObject {
             }
         }
         let time = CMTimeMakeWithSeconds(progress, preferredTimescale: Int32(NSEC_PER_SEC))
-        self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { [weak self](finished) in
-//            if finished {
-//                self?.playerPlay()
-//            }
+        self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) {(finished) in
         }
     }
     

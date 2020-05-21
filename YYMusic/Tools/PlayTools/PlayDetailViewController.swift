@@ -35,6 +35,11 @@ class PlayDetailViewController: UIViewController {
         updateModel()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+    }
+    
     func updateModel() {
         if let str = model?.coverMiddle, let url = URL(string: str) {
             singerImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
