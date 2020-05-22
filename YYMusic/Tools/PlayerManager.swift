@@ -202,7 +202,7 @@ class PlayerManager: NSObject {
         self.player.volume = Float(volumeFloat)
     }
 
-    func playerProgress(with progress: Double) {
+    func playerProgress(with progress: Double, completionHandler: ((CMTime) -> Void)? = nil) {
         var progress = progress
         if self.isPlaying {
             // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
@@ -211,7 +211,10 @@ class PlayerManager: NSObject {
             }
         }
         let time = CMTimeMakeWithSeconds(progress, preferredTimescale: Int32(NSEC_PER_SEC))
-        self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) {(finished) in
+        self.player.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { (finished) in
+            if finished {
+                completionHandler?(time)
+            }
         }
     }
     

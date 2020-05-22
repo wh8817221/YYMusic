@@ -181,6 +181,8 @@ class WHPlayerBottomView: UIControl {
         //记录播放状态和播放歌曲角标
         PlayerManager.shared.isPlaying = true
         PlayerManager.shared.index = index
+        //每次切换都要清空一下进度
+        self.progress = 0.0
         loadMusic(model: model)
     }
 

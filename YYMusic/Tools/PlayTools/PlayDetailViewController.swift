@@ -11,6 +11,7 @@ import AVFoundation
 
 class PlayDetailViewController: UIViewController {
     
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     var model: MusicModel?
     var callback: ObjectCallback?
     fileprivate var playMode: PlayMode = .none
@@ -33,6 +34,10 @@ class PlayDetailViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         updateModel()
+        //适配iPhoneX以后机型
+        if screenHeight >= 812 {
+            bottomConstraint.constant = 20
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -134,7 +139,10 @@ class PlayDetailViewController: UIViewController {
     @objc fileprivate func musicTimeInterval() {
         let currentTime = PlayerManager.shared.getCurrentTime()
         let totalTime = PlayerManager.shared.getTotalTime()
-        self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
+        //滑动状态不更新
+        if !isSlider {
+           self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
+        }
     }
     
     //暂停播放
@@ -181,13 +189,17 @@ class PlayDetailViewController: UIViewController {
     }
     
     @objc fileprivate func touchUpInside(_ slider: UISlider) {
-        isSlider = false
+        
         //暂停情况--->滑动默认播放
         if !self.playAndPauseBtn.isSelected {
             self.playAndPause(self.playAndPauseBtn)
         }
-        //更新播放进度
-        PlayerManager.shared.playerProgress(with: Double(slider.value))
+        //滑动结束更新播放进度
+        PlayerManager.shared.playerProgress(with: Double(slider.value), completionHandler: { [weak self](value) in
+            let cs = CMTimeGetSeconds(value)
+            self?.sliderView.value = Float(cs)
+            self?.isSlider = false
+        })
     }
     
     @objc fileprivate func valueChanged(_ slider: UISlider) {

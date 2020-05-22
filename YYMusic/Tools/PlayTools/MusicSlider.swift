@@ -16,9 +16,10 @@ class MusicSlider: UISlider {
     }
 
     func setup() {
-        let thumbImage = UIImage(named: "music_slider_circle")
-        self.setThumbImage(thumbImage, for: .highlighted)
-        self.setThumbImage(thumbImage, for: .normal)
+        let highlighted = UIImage(named: "music_slider_circle")
+        let normal = UIImage(named: "icon_dot")
+        self.setThumbImage(highlighted, for: .highlighted)
+        self.setThumbImage(normal, for: .normal)
     }
     
     override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
