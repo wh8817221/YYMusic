@@ -149,3 +149,17 @@ class Bitrate: Mappable {
         show_link <- map["show_link"]
     }
 }
+
+class Lrclink: Mappable {
+    var time: Double?
+    var lrc: String?
+    init() {
+    }
+    required init?(map: Map){
+        
+    }
+    func mapping(map: Map) {
+        time <- map["time"]
+        lrc <- map["lrc"]
+    }
+}

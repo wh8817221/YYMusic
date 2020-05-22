@@ -40,6 +40,7 @@ class MainPlayViewController: BaseViewController {
 
         //歌词控制器
         let lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
+        lyricVC.model = model
 
         selectView = SelectScrollview(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
         selectView.callback = { [weak self] (value) in

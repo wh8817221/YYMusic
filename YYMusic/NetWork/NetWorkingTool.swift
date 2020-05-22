@@ -14,7 +14,7 @@ class NetWorkingTool: NSObject {
     static let shared = NetWorkingTool()
     fileprivate var sessionManager = AlamofireManager.sharedSessionManager
     //是否打印返回数据
-    fileprivate var isPrint: Bool = false
+    fileprivate var isPrint: Bool = true
     /**
      获取服务器数据，并转化为模型
      */
@@ -126,6 +126,38 @@ class NetWorkingTool: NSObject {
         })
     }
 
+    /**
+        下载文件
+        */
+   func downloadFile(fileURL: URL, method: HTTPMethod = .get, parameters: [String: Any]? = nil, headers: HTTPHeaders? = nil, progressCallback: ((_ progress: Double) -> Void)? = nil, successCallback: @escaping (_ url: URL?) -> Void) {
+       CustomHUD.showProgress()
+  
+       let destination: DownloadRequest.Destination = { (url, response) in
+           
+           let fileManager = FileManager.default
+           let directoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+           let pathComponent = response.suggestedFilename
+           let fileURL = directoryURL.appendingPathComponent(pathComponent!)
+           if fileManager.fileExists(atPath: fileURL.path) {
+               try! fileManager.removeItem(at: fileURL)
+           }
+           return (destinationURL: fileURL, options: [.removePreviousFile, .createIntermediateDirectories])
+       }
+
+       let _ = AF.download(fileURL, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: headers, interceptor: nil, to: destination)
+           .downloadProgress(queue: DispatchQueue.global(qos: .utility)) { (progress) in
+               progressCallback?(progress.fractionCompleted)
+           }
+           .response{ (defaultResponse) in
+               if defaultResponse.error == nil {
+                   CustomHUD.hideProgress()
+                   successCallback(defaultResponse.fileURL)
+               } else {
+                   CustomHUD.showHideErrorHUD()
+               }
+           }
+   }
+    
     func processResponseError(_ code: Int, msg: String?, error: Any?) {
         CustomHUD.showHideTextHUD(msg)
     }

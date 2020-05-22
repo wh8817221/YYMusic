@@ -129,7 +129,7 @@ class MusicModel: NSObject, Mappable, NSCoding {
     var title: String?
     var nickname: String?
     var trackId: Int?
-    
+    var lrclink: String?
     override init() {
         super.init()
     }

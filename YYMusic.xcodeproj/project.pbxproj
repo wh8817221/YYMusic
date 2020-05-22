@@ -35,6 +35,8 @@
 		D2B2F48624753976007FECBF /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48524753976007FECBF /* PageViewController.swift */; };
 		D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48F2476575C007FECBF /* SelectScrollview.swift */; };
 		D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49124767BDA007FECBF /* BaseViewController.swift */; };
+		D2B2F49424768CB8007FECBF /* LrcAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */; };
+		D2B2F49724776B31007FECBF /* shaonian.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F49624776B31007FECBF /* shaonian.txt */; };
 		D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */; };
 		D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */; };
 		D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB22473B1C20051E3E2 /* BDModel.swift */; };
@@ -112,6 +114,8 @@
 		D2B2F48524753976007FECBF /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		D2B2F48F2476575C007FECBF /* SelectScrollview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectScrollview.swift; sourceTree = "<group>"; };
 		D2B2F49124767BDA007FECBF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LrcAnalyzer.swift; sourceTree = "<group>"; };
+		D2B2F49624776B31007FECBF /* shaonian.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shaonian.txt; sourceTree = "<group>"; };
 		D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterExtension.swift; sourceTree = "<group>"; };
 		D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHPlayerBottomView.swift; sourceTree = "<group>"; };
 		D2D10CB22473B1C20051E3E2 /* BDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDModel.swift; sourceTree = "<group>"; };
@@ -212,6 +216,7 @@
 				D24C87FB246BFC55002F7CD0 /* Assets.xcassets */,
 				D24C87FD246BFC55002F7CD0 /* LaunchScreen.storyboard */,
 				D24C8800246BFC55002F7CD0 /* Info.plist */,
+				D2B2F49524776B2B007FECBF /* Source */,
 				D2D10CB62473C6F70051E3E2 /* Main */,
 				D24C8838246CF237002F7CD0 /* View */,
 				D24C8825246C0203002F7CD0 /* Controller */,
@@ -298,6 +303,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		D2B2F49524776B2B007FECBF /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				D2B2F49624776B31007FECBF /* shaonian.txt */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
 		D2D10CAD2472354A0051E3E2 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +351,7 @@
 				D2B2F48224753202007FECBF /* LyricViewController.xib */,
 				D2D10CD72474E23D0051E3E2 /* MusicSlider.swift */,
 				D2B2F48F2476575C007FECBF /* SelectScrollview.swift */,
+				D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */,
 			);
 			path = PlayTools;
 			sourceTree = "<group>";
@@ -454,6 +468,7 @@
 				D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */,
 				D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */,
 				D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */,
+				D2B2F49724776B31007FECBF /* shaonian.txt in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
 				D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */,
 				D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */,
@@ -610,6 +625,7 @@
 				D2D10CC52473EEBA0051E3E2 /* TestViewController.swift in Sources */,
 				D2D10CDA2474FB620051E3E2 /* UIViewExtention.swift in Sources */,
 				D24C8831246C064B002F7CD0 /* AlamofireManager.swift in Sources */,
+				D2B2F49424768CB8007FECBF /* LrcAnalyzer.swift in Sources */,
 				D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */,
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,

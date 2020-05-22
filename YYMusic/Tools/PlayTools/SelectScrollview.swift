@@ -94,7 +94,7 @@ class SelectScrollview: UIView{
 extension SelectScrollview: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == viewConrtollerScroll {
-            self.currentPage  = Int((scrollView.contentOffset.x + screenWidth/2)/screenWidth)
+            self.currentPage = Int((scrollView.contentOffset.x + screenWidth/2)/screenWidth)
         }
     }
     

@@ -102,6 +102,7 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
                 song.title = s.songinfo?.title
                 song.coverLarge = s.songinfo?.pic_big
                 song.coverMiddle = s.songinfo?.pic_premium
+                song.lrclink = s.songinfo?.lrclink
                 self?.playerBottomView.reloadData(with: indexPath.row, model: song)
             }
         })
