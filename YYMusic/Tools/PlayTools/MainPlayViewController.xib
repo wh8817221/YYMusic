@@ -15,6 +15,7 @@
                 <outlet property="closedBtn" destination="jKz-aH-Ohe" id="GX2-WZ-nCG"/>
                 <outlet property="contentView" destination="OgK-hv-LrF" id="QqF-ct-CDL"/>
                 <outlet property="segmentedControl" destination="vrF-re-t3i" id="VPe-DQ-lCT"/>
+                <outlet property="topConstraint" destination="bci-Kv-Jed" id="oZT-RV-FdS"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

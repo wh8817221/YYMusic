@@ -13,6 +13,7 @@ class LrcAnalyzer: NSObject {
     var lrcArray: [Lrclink] = []
     
     func analyzerLrc(by url: URL) -> [Lrclink]? {
+        self.lrcArray = []
         if let lrcConnect = try? String(contentsOf: url, encoding: .utf8) {
             self.analyzerLrc(lrcConnect: lrcConnect)
         }
@@ -20,6 +21,7 @@ class LrcAnalyzer: NSObject {
     }
     
     func analyzerLrc(by path: String) -> [Lrclink]? {
+        self.lrcArray = []
         if let lrcConnect = try? String(contentsOfFile: path, encoding: .utf8) {
             self.analyzerLrc(lrcConnect: lrcConnect)
         }
@@ -67,4 +69,22 @@ class LrcAnalyzer: NSObject {
         }
     }
 
+    /**
+     时间戳正则
+     "\\[\\d{1,2}\\:\\d{1,2}\\.\\d{1,2}\\]"
+     这个是完整的分秒毫秒的正则(分钟可能超过两位数,1-XX可以自己规定)
+     
+     "\\[\\d{1,2}\\:\\d{1,2}\\]"
+     这个是不包括毫秒的正则
+     */
+//    func lrcRegular(obj: String) {
+//        let regular1 = "\\[\\d{1,2}\\:\\d{1,2}\\.\\d{1,2}\\]"
+//        let regular2 = "\\[\\d{1,2}\\:\\d{1,2}\\]"
+//        let regularExpression1 = try? NSRegularExpression(pattern: regular1, options: .caseInsensitive)
+//        let regularExpression2 = try? NSRegularExpression(pattern: regular1, options: .caseInsensitive)
+//        let range1 = NSRange(location: 0, length: obj.count)
+//        let range2 = NSRange(location: 0, length: obj.count)
+//
+//        let isExtict = regularExpression1?.numberOfMatches(in: <#T##String#>, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: <#T##NSRange#>)
+//    }
 }

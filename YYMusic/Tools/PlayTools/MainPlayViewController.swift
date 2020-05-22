@@ -12,6 +12,7 @@ import HWPanModal
 class MainPlayViewController: BaseViewController {
     var model: MusicModel?
     @IBOutlet weak var backgroudView: UIView!
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var closedBtn: UIButton!
     @IBOutlet weak var contentView: UIView!
@@ -23,6 +24,10 @@ class MainPlayViewController: BaseViewController {
     fileprivate var selectIndex: Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
+        //适配iPhoneX以后机型
+        if screenHeight >= 812 {
+            topConstraint.constant = 20+24
+        }
         //更新状态栏
         self.statusBarStyle = .lightContent
         self.addPanRecognizer()

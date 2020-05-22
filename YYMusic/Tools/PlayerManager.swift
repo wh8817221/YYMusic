@@ -11,6 +11,13 @@ import AVFoundation
 import MediaPlayer
 import HWPanModal
 
+@objc protocol PlayMusicDelegate {
+    /**切换歌曲*/
+    @objc func playMusicChange(_ mode: Int, object: Any?)
+    /**加载播放进度*/
+    @objc func playMusicTimeChange(_ currentTime: Float64, totalTime: Float64)
+}
+
 enum PlayMode: Int {
     case none = 0
     case next = 1
@@ -32,20 +39,24 @@ enum PlayerCycle: Int {
 
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
-        
+    weak var delegate: PlayMusicDelegate?
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
     /*播放下标*/
     var index: Int = 0
     /*标记是不是没点列表直接点了播放按钮如果是就默认播放按钮*/
     var isFristPlayerPauseBtn: Bool = true
-    /*开始播放*///0是开始 1 暂停
-    var isStartPlayer: ((_ index: Int) -> Void)?
     /*是不是正在播放*/
     var isPlaying: Bool = false
     /*播放器*/
     var player: AVPlayer!
-    var currentPlayerItem: AVPlayerItem!
+    var currentPlayerItem: AVPlayerItem! {
+        didSet{
+            if currentPlayerItem != nil {
+                currentPlayerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+            }
+        }
+    }
     /*播放状态*/
     var cycle: PlayerCycle = .order {
         didSet{
@@ -79,16 +90,38 @@ class PlayerManager: NSObject {
             try? session.setCategory(.playback)
             try? session.setActive(true, options: [])
         }
+        
+        //播放完毕的通知
+//        NotificationCenter.addObserver(observer: self, selector: #selector(playerItemDidPlayToEndTime(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        //耳机插入和拔掉通知
+        NotificationCenter.addObserver(observer: self, selector: #selector(audioRouteChangeListener(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
+        
+    }
+
+//    //MARK:-播放完毕通知
+//    @objc fileprivate func playerItemDidPlayToEndTime(_ notification: Notification) {
+//        print("播放完毕========>\(currentModel?.title ?? "")歌曲")
+//    }
+    
+    //MARK:-播放完毕通知
+    @objc fileprivate func audioRouteChangeListener(_ notification: Notification) {
+        let info = notification.userInfo
+        if let routeChangeReason = info?[AVAudioSessionRouteChangeReasonKey] as? AVAudioSession.RouteChangeReason {
+            switch routeChangeReason {
+            case .newDeviceAvailable:
+                print("插入耳机========>\(currentModel?.title ?? "")歌曲")
+                self.playerPlay()
+            case .oldDeviceUnavailable:
+                print("拔掉耳机========>\(currentModel?.title ?? "")歌曲")
+                self.playerPause()
+            default:
+                break
+            }
+        }
     }
     
     func hasBeenFavoriteMusic() -> Bool{
         return false
-//        for (FYfavoriteItem *item in self.favoriteMusic) {
-//            if (item.trackId == [self.tracksVM trackIdForRow:_indexPathRow]) {
-//                return YES;
-//            }
-//        }
-//        return NO;
     }
     
     //存储歌曲时缺少Index,重新设置index
@@ -147,7 +180,15 @@ class PlayerManager: NSObject {
             }
         }
     }
-    
+    //播放状态
+    func playerStatus() -> Int {
+        if currentPlayerItem.status == .readyToPlay {
+            return 1
+        } else {
+            return 0
+        }
+    }
+
     //播放
     func playerPlay() {
         player.play()
@@ -207,13 +248,13 @@ class PlayerManager: NSObject {
         addMusicTimeMake()
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
-        NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
     }
     
     //自动/切换播放
     func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
         let url = URL(string: model?.playUrl32 ?? "")
         currentPlayerItem = AVPlayerItem(url: url!)
+
         self.player.replaceCurrentItem(with: currentPlayerItem)
         self.playerPlay()
         if let callback = callback {
@@ -222,8 +263,6 @@ class PlayerManager: NSObject {
         addMusicTimeMake()
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
-        NotificationCenter.post(name: .kReloadPlayList, object: (model)!)
-        
     }
     
     //展示音乐播放界面
@@ -237,6 +276,7 @@ class PlayerManager: NSObject {
     
     //MARK:-锁屏时候的设置，效果需要在真机上才可以看到
     func updateLockedScreenMusic() {
+        //开辟子线程监控锁屏
         if PlayerManager.shared.musicArray.count > 0 {
             let model = PlayerManager.shared.musicArray[PlayerManager.shared.index]
             var info = [String: Any]()
@@ -264,18 +304,40 @@ class PlayerManager: NSObject {
     }
     
     func addMusicTimeMake() {
+        var tempTime: Float64?
         let cmt = CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(1.0))
         timeObserve = player.addPeriodicTimeObserver(forInterval: cmt, queue: DispatchQueue.main) { [weak self](time) in
-            //控制中心
-            self?.updateLockedScreenMusic()
-            NotificationCenter.post(name: .kMusicTimeInterval)
+            //过滤重复的时间
+            let ct = CMTimeGetSeconds(time)
+            if ct == tempTime {
+                return
+            }
+            tempTime = ct
+            if self?.delegate != nil {
+                if let duration = self?.player.currentItem?.duration {
+                    let tt = CMTimeGetSeconds(duration)
+                    self?.delegate?.playMusicTimeChange(ct, totalTime: tt)
+                }
+            }
+            //控制中心,锁屏时候展示(在这里会导致主线程卡顿)
+//            self?.updateLockedScreenMusic()
+//            NotificationCenter.post(name: .kMusicTimeInterval)
         }
     }
 
     //清空播放器监听属性
     func releasePlayer() {
+        self.removeObserver(self, forKeyPath: "status")
         NotificationCenter.default.removeObserver(self)
         self.currentPlayerItem = nil
         self.player = nil
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let item = object as? AVPlayerItem {
+            if keyPath == "status" {
+                print("当前播放状态=====>\(item.status)")
+            }
+        }
     }
 }

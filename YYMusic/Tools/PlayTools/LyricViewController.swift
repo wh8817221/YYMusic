@@ -64,15 +64,14 @@ class LyricViewController: UIViewController {
     }
     
     func loadLrclink() {
-        self.lrcArray = []
+        //本地文件
         if let path = Bundle.main.path(forResource: "shaonian", ofType: "txt") {
             if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: path) {
-                print(lrcs)
                 self.lrcArray = lrcs
                 self.tableView.reloadData()
             }
         }
-        
+        //网络文件
 //        if let lrclink = model?.lrclink {
 //            NetWorkingTool.shared.downloadFile(fileURL: URL(string: lrclink)!, successCallback: { (fileUrl) in
 //                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!) {
@@ -99,6 +98,7 @@ extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             cell.textLabel?.textColor = .white
         }
+        cell.selectionStyle = .none
         return cell
     }
     

@@ -93,15 +93,15 @@ class PlayerBottomCell: UICollectionViewCell {
     }
     
     @objc func timerAct() {
-        PlayerManager.shared.timerAct { [weak self](value) in
-            if let p = value as? CGFloat {
-                self?.progress = p
-                if p >= 1.0 {
-                    self?.autoNext()
-                    self?.progress = 0.0
-                }
-            }
-        }
+//        PlayerManager.shared.timerAct { [weak self](value) in
+//            if let p = value as? CGFloat {
+//                self?.progress = p
+//                if p >= 1.0 {
+//                    self?.autoNext()
+//                    self?.progress = 0.0
+//                }
+//            }
+//        }
     }
 
     //绘制圆环
@@ -147,9 +147,9 @@ class PlayerBottomCell: UICollectionViewCell {
     
     //加载播放
     func loadMusic(model: MusicModel) {
-        PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
-            self?.startTimer()
-        })
+//        PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
+//            self?.startTimer()
+//        })
     }
     
     //MARK:-播放按钮

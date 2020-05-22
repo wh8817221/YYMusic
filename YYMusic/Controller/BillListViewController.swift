@@ -66,7 +66,6 @@ class BillListViewController: UIViewController {
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        
         initData()
     }
 

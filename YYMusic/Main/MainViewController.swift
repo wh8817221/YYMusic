@@ -26,7 +26,6 @@ class MainViewController: UITabBarController {
 //        let line = UIView(frame: CGRect(x: 0, y: -0.5, width: screenWidth, height: 0.5))
 //        line.backgroundColor = .gray
 //        self.tabBar.insertSubview(line, at: 0)
-        
     }
     
     // MARK: - UIApplication
@@ -35,6 +34,7 @@ class MainViewController: UITabBarController {
     }
     
     deinit {
+        //释放播放器相关
         PlayerManager.shared.releasePlayer()
     }
 }

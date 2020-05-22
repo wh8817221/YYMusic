@@ -52,23 +52,8 @@ class MusicListViewController: UIViewController {
  
         //加载底部播放器
         playerBottomView.show(tableView: tableView, superVc: self)
-        
-        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayList)
     }
 
-    @objc fileprivate func reloadPlay(_ sender: Notification) {
-        if let mode = sender.object as? MusicModel {
-            self.currentMusic = mode
-            self.tableView.reloadData()
-        }
-    }
-    
-    @objc fileprivate func openAlumList() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        let vc = sb.instantiateViewController(withIdentifier: "TrackListViewController") as? TrackListViewController
-        self.navigationController?.pushViewController(vc!, animated: true)
-    }
-    
     func getMusicList(_ first: Bool) {
         if first {
             pageSize = 15
@@ -102,10 +87,7 @@ class MusicListViewController: UIViewController {
             }
         })
     }
-    
-    deinit {
-        NotificationCenter.removeObserver(observer: self, name: .kReloadPlayList)
-    }
+
 }
 
 extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {

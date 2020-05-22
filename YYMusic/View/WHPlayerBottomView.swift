@@ -104,8 +104,8 @@ class WHPlayerBottomView: UIControl {
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
         NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
-        
+        //设置代理
+        PlayerManager.shared.delegate = self
     }
     
     @objc fileprivate func musicTimeInterval() {
@@ -157,14 +157,13 @@ class WHPlayerBottomView: UIControl {
     func show(tableView: UITableView, superVc: UIViewController) {
         self.parentVC = superVc
         // tableview  给底部留距离
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: playerBarH+tabHeight))
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: playerBarH))
         superVc.view.addSubview(self)
         self.snp.makeConstraints { (make) in
             make.left.right.equalTo(superVc.view)
-            make.bottom.equalTo(superVc.view.snp.bottom).offset(-tabHeight)
+            make.bottom.equalTo(superVc.view.snp.bottom)
             make.height.equalTo(playerBarH)
         }
-        
         self.addTarget(self, action: #selector(tapBottomView(_:)), for: .touchUpInside)
     }
     
@@ -207,11 +206,13 @@ class WHPlayerBottomView: UIControl {
             tapPlayButton(isPlay: true)
         }
     }
+    
     //继续播放
     func playActive() {
         PlayerManager.shared.playerPlay()
         startAnimation()
     }
+    
     //暂停播放
     func pauseActive() {
         PlayerManager.shared.playerPause()
@@ -318,6 +319,24 @@ class WHPlayerBottomView: UIControl {
 
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
-        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+    }
+}
+
+extension WHPlayerBottomView: PlayMusicDelegate {
+    func playMusicChange(_ mode: Int, object: Any?) {
+        
+    }
+    
+    func playMusicTimeChange(_ currentTime: Float64, totalTime: Float64) {
+        self.progress = CGFloat(currentTime/totalTime)
+        if CGFloat(currentTime/totalTime) >= 1.0 {
+            self.autoNext()
+            self.progress = 0.0
+        }
+        //存储歌曲总时间, 第一次进入才存,防止不停的调用存储
+        if isFirstTime {
+            isFirstTime = false
+            UserDefaultsManager.shared.userDefaultsSet(object: "\(totalTime)", key: TOTALTIME)
+        }
     }
 }

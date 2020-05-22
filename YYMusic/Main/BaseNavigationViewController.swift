@@ -11,13 +11,6 @@ class BaseNavigationViewController: UINavigationController, UIGestureRecognizerD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        self.navigation.configuration.isEnabled = true
-//        self.navigation.configuration.barTintColor = .white
-//        self.navigation.configuration.tintColor = .black
-//        self.navigation.configuration.titleTextAttributes = [.foregroundColor: UIColor.black]
-//        self.navigation.configuration.isShadowHidden = true
-//        self.navigation.configuration.backItem = UINavigationController.Configuration.BackItem(style: .image(UIImage(named: "nav_back")))
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -26,8 +19,6 @@ class BaseNavigationViewController: UINavigationController, UIGestureRecognizerD
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // 0.5 shadow
-//        self.navigationBar.hideBottomHairline()
     }
     
     override func didReceiveMemoryWarning() {
