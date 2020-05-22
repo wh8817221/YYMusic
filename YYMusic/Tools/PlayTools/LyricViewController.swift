@@ -43,12 +43,9 @@ class LyricViewController: UIViewController {
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
     }
     
-    @objc fileprivate func musicTimeInterval() {
-        let currentTime = PlayerManager.shared.getCurrentTime()
-        if let c = currentTime {
-            let ct = CMTime(value: CMTimeValue(c)!, timescale: CMTimeScale(1.0))
-            let cs = CMTimeGetSeconds(ct)
-
+    @objc fileprivate func musicTimeInterval(_ sender: Notification) {
+        if let timeArr = sender.object as? [Float64] {
+            let cs = timeArr[0]
             if !isDragging {
                 //歌词滚动显示
                 for (index,lrc) in self.lrcArray.enumerated() {
@@ -62,7 +59,7 @@ class LyricViewController: UIViewController {
             }
         }
     }
-    
+ 
     func loadLrclink() {
         //本地文件
         if let path = Bundle.main.path(forResource: "shaonian", ofType: "txt") {

@@ -18,7 +18,6 @@ class MainPlayViewController: BaseViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     fileprivate var visualEffectView: UIVisualEffectView!
-    
     fileprivate var selectView: SelectScrollview!
     //默认选中的位置
     fileprivate var selectIndex: Int = 0
@@ -113,7 +112,7 @@ class MainPlayViewController: BaseViewController {
     }
     
     deinit {
-        print("我被杀死了")
+        print("\(self)释放了")
     }
     
     //MARK:- HWPanModalPresentable

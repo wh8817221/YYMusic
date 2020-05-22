@@ -11,12 +11,10 @@ import AVFoundation
 import MediaPlayer
 import HWPanModal
 
-@objc protocol PlayMusicDelegate {
-    /**切换歌曲*/
-    @objc func playMusicChange(_ mode: Int, object: Any?)
-    /**加载播放进度*/
-    @objc func playMusicTimeChange(_ currentTime: Float64, totalTime: Float64)
-}
+//@objc protocol PlayMusicDelegate {
+//    /**切换歌曲*/
+//    @objc func playMusicChange(_ mode: Int, object: Any?)
+//}
 
 enum PlayMode: Int {
     case none = 0
@@ -39,7 +37,7 @@ enum PlayerCycle: Int {
 
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
-    weak var delegate: PlayMusicDelegate?
+//    weak var delegate: PlayMusicDelegate?
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
     /*播放下标*/
@@ -158,28 +156,6 @@ class PlayerManager: NSObject {
         return nil
     }
     
-    func timerAct(callback: ObjectCallback?) {
-        let currentTime = self.getCurrentTime()
-        let totalTime = self.getTotalTime()
-
-        //更新进度圆环 如果当前时间=总时长 就直接下一首(或者单曲循环)
-        let cT = Double(currentTime ?? "0")
-        let dT = Double(totalTime ?? "0")
-        if let ct = cT, let dt = dT, dt > 0.0 {
-            if let callback = callback {
-                callback(CGFloat(ct/dt))
-            }
-        }
-        
-        //存储歌曲总时间, 第一次进入才存
-        if let t = totalTime, (Int(t) ?? 0) > 0{
-            //只记录一次总时间,防止不停的调用存储
-            if isFirstTime {
-                isFirstTime = false
-                UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
-            }
-        }
-    }
     //播放状态
     func playerStatus() -> Int {
         if currentPlayerItem.status == .readyToPlay {
@@ -202,7 +178,7 @@ class PlayerManager: NSObject {
     }
 
     //前一首
-    func playPrevious(callback: ((_ value: Any)->Void)?) {
+    func playPrevious(callback: ObjectCallback?) {
         if self.index == 0 {
             self.index = self.musicArray.count - 1
         } else {
@@ -213,7 +189,7 @@ class PlayerManager: NSObject {
     }
     
     //下一首
-    func playNext(callback: ((_ value: Any)->Void)?) {
+    func playNext(callback: ObjectCallback?) {
         if self.index == self.musicArray.count - 1 {
             self.index = 0
         } else {
@@ -239,26 +215,14 @@ class PlayerManager: NSObject {
         }
     }
     
-    //MARK:-列表选择播放
-    func selectPlayItem(with model: MusicModel?) {
-        let url = URL(string: model?.playUrl32 ?? "")
-        currentPlayerItem = AVPlayerItem(url: url!)
-        self.player.replaceCurrentItem(with: currentPlayerItem)
-        self.playerPlay()
-        addMusicTimeMake()
-        //存储当前播放的歌曲
-        UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
-    }
-    
     //自动/切换播放
     func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
         let url = URL(string: model?.playUrl32 ?? "")
         currentPlayerItem = AVPlayerItem(url: url!)
-
         self.player.replaceCurrentItem(with: currentPlayerItem)
         self.playerPlay()
         if let callback = callback {
-            callback((model)!)
+            callback(model!)
         }
         addMusicTimeMake()
         //存储当前播放的歌曲
@@ -313,15 +277,12 @@ class PlayerManager: NSObject {
                 return
             }
             tempTime = ct
-            if self?.delegate != nil {
-                if let duration = self?.player.currentItem?.duration {
-                    let tt = CMTimeGetSeconds(duration)
-                    self?.delegate?.playMusicTimeChange(ct, totalTime: tt)
-                }
+            if let duration = self?.player.currentItem?.duration {
+                let tt = CMTimeGetSeconds(duration)
+                NotificationCenter.post(name: .kMusicTimeInterval, object: [ct,tt])
             }
             //控制中心,锁屏时候展示(在这里会导致主线程卡顿)
 //            self?.updateLockedScreenMusic()
-//            NotificationCenter.post(name: .kMusicTimeInterval)
         }
     }
 
@@ -336,7 +297,7 @@ class PlayerManager: NSObject {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let item = object as? AVPlayerItem {
             if keyPath == "status" {
-                print("当前播放状态=====>\(item.status)")
+                print("当前播放状态=====>\(item.status.rawValue)")
             }
         }
     }

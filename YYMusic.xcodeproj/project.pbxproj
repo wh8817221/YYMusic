@@ -23,11 +23,8 @@
 		D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8832246C06D4002F7CD0 /* CommonResult.swift */; };
 		D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8834246C07A2002F7CD0 /* RequestHelper.swift */; };
 		D24C8837246CED2A002F7CD0 /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8836246CED2A002F7CD0 /* TrackListViewController.swift */; };
-		D24C883A246CF254002F7CD0 /* PlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */; };
 		D24C883C246CF719002F7CD0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883B246CF719002F7CD0 /* Common.swift */; };
 		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
-		D24C8843246D0959002F7CD0 /* PlayerBottomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */; };
-		D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
 		D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48124753202007FECBF /* LyricViewController.swift */; };
@@ -102,11 +99,8 @@
 		D24C8832246C06D4002F7CD0 /* CommonResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonResult.swift; sourceTree = "<group>"; };
 		D24C8834246C07A2002F7CD0 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
 		D24C8836246CED2A002F7CD0 /* TrackListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
-		D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBottomView.swift; sourceTree = "<group>"; };
 		D24C883B246CF719002F7CD0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
-		D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBottomCell.swift; sourceTree = "<group>"; };
-		D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerBottomCell.xib; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		D2B2F48124753202007FECBF /* LyricViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricViewController.swift; sourceTree = "<group>"; };
@@ -295,9 +289,6 @@
 		D24C8838246CF237002F7CD0 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				D24C8839246CF254002F7CD0 /* PlayerBottomView.swift */,
-				D24C8841246D0959002F7CD0 /* PlayerBottomCell.swift */,
-				D24C8842246D0959002F7CD0 /* PlayerBottomCell.xib */,
 				D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */,
 			);
 			path = View;
@@ -471,7 +462,6 @@
 				D2B2F49724776B31007FECBF /* shaonian.txt in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
 				D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */,
-				D24C8844246D0959002F7CD0 /* PlayerBottomCell.xib in Resources */,
 				D2D10CD62474DA4D0051E3E2 /* PlayDetailViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -600,7 +590,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D24C883A246CF254002F7CD0 /* PlayerBottomView.swift in Sources */,
 				D2D10CBA2473C6F70051E3E2 /* MainViewController.swift in Sources */,
 				D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */,
 				D2D10CC32473EDA40051E3E2 /* ProductPageViewController.swift in Sources */,
@@ -608,7 +597,6 @@
 				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,
 				D2D10CDC247500850051E3E2 /* StringExtention.swift in Sources */,
 				D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */,
-				D24C8843246D0959002F7CD0 /* PlayerBottomCell.swift in Sources */,
 				D2D10CB52473BE4A0051E3E2 /* BillListViewController.swift in Sources */,
 				D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */,
 				D24C883C246CF719002F7CD0 /* Common.swift in Sources */,

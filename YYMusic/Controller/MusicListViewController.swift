@@ -113,15 +113,15 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
         lbl3.text = song.nickname ?? ""
         lbl3.font = UIFont.systemFont(ofSize: 13)
         
-        if let c = currentMusic, c.trackId == song.trackId {
-            //更新index
-            PlayerManager.shared.index = indexPath.row
-            lbl3.textColor = kThemeColor
-            lbl2.textColor = kThemeColor
-        } else {
+//        if let c = currentMusic, c.trackId == song.trackId {
+//            //更新index
+//            PlayerManager.shared.index = indexPath.row
+//            lbl3.textColor = kThemeColor
+//            lbl2.textColor = kThemeColor
+//        } else {
             lbl3.textColor = UIColor.gray
             lbl2.textColor = UIColor.black
-        }
+//        }
         
         return cell
     }
@@ -133,7 +133,6 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
             return
         }
         playerBottomView.reloadData(with: indexPath.row, model: song)
-        
     }
     
 }

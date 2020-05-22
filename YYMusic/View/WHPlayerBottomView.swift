@@ -104,8 +104,8 @@ class WHPlayerBottomView: UIControl {
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
         NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
-        //设置代理
-        PlayerManager.shared.delegate = self
+        
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
     }
     
     @objc fileprivate func musicTimeInterval() {
@@ -120,6 +120,7 @@ class WHPlayerBottomView: UIControl {
                 self.autoNext()
                 self.progress = 0.0
             }
+            
         }
         //存储歌曲总时间, 第一次进入才存
         if let t = totalTime, (Int(t) ?? 0) > 0{
@@ -206,13 +207,11 @@ class WHPlayerBottomView: UIControl {
             tapPlayButton(isPlay: true)
         }
     }
-    
     //继续播放
     func playActive() {
         PlayerManager.shared.playerPlay()
         startAnimation()
     }
-    
     //暂停播放
     func pauseActive() {
         PlayerManager.shared.playerPause()
@@ -223,6 +222,7 @@ class WHPlayerBottomView: UIControl {
     func loadMusic(model: MusicModel) {
         self.musicModel = model
         self.playAndPauseBtn.isSelected = true
+        self.startAnimation()
         PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
             self?.startAnimation()
         })
@@ -319,24 +319,6 @@ class WHPlayerBottomView: UIControl {
 
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
-    }
-}
-
-extension WHPlayerBottomView: PlayMusicDelegate {
-    func playMusicChange(_ mode: Int, object: Any?) {
-        
-    }
-    
-    func playMusicTimeChange(_ currentTime: Float64, totalTime: Float64) {
-        self.progress = CGFloat(currentTime/totalTime)
-        if CGFloat(currentTime/totalTime) >= 1.0 {
-            self.autoNext()
-            self.progress = 0.0
-        }
-        //存储歌曲总时间, 第一次进入才存,防止不停的调用存储
-        if isFirstTime {
-            isFirstTime = false
-            UserDefaultsManager.shared.userDefaultsSet(object: "\(totalTime)", key: TOTALTIME)
-        }
+        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
     }
 }
