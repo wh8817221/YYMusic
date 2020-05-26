@@ -8,6 +8,13 @@ PODS:
   - ObjectMapper (3.5.1)
   - PKHUD (5.3.0)
   - SnapKit (5.0.1)
+  - ZFPlayer (3.2.17):
+    - ZFPlayer/Core (= 3.2.17)
+  - ZFPlayer/AVPlayer (3.2.17):
+    - ZFPlayer/Core
+  - ZFPlayer/ControlView (3.2.17):
+    - ZFPlayer/Core
+  - ZFPlayer/Core (3.2.17)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0.0)
@@ -17,6 +24,9 @@ DEPENDENCIES:
   - ObjectMapper (~> 3.5.1)
   - PKHUD (~> 5.3.0)
   - SnapKit (~> 5.0.1)
+  - ZFPlayer (~> 3.2.17)
+  - ZFPlayer/AVPlayer (~> 3.2.17)
+  - ZFPlayer/ControlView (~> 3.2.17)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -27,6 +37,7 @@ SPEC REPOS:
     - ObjectMapper
     - PKHUD
     - SnapKit
+    - ZFPlayer
 
 SPEC CHECKSUMS:
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
@@ -36,7 +47,8 @@ SPEC CHECKSUMS:
   ObjectMapper: 70187b8941977c62ccfb423caf6b50be405cabf0
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  ZFPlayer: ac9cb879291eec259e7fe77e840c884e2b80a499
 
-PODFILE CHECKSUM: be6ac60894bf0c5136cfbea8d0024d86b26859f4
+PODFILE CHECKSUM: 83708e4699b50eb672ae7a942cf5f3b291523978
 
 COCOAPODS: 1.9.1

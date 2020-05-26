@@ -12,6 +12,9 @@ target 'YYMusic' do
   pod 'SnapKit', '~> 5.0.1'
   pod 'MJRefresh', '~> 3.3.1'
   pod 'HWPanModal', '~> 0.6.7'
+  pod 'ZFPlayer', '~> 3.2.17'
+  pod 'ZFPlayer/AVPlayer', '~> 3.2.17'
+  pod 'ZFPlayer/ControlView', '~> 3.2.17'
   
   target 'YYMusicTests' do
     inherit! :search_paths

@@ -17,12 +17,20 @@ import HWPanModal
 //}
 
 enum PlayMode: Int {
+    //默认
     case none = 0
+    //下一首
     case next = 1
+    //前一首
     case previous = 2
+    //播放
     case play = 3
+    //暂停
     case pause = 4
+    //自动下一首/循环/随机
     case auto = 5
+    //继续播放
+    case goOn = 6
 }
 
 //播放状态
@@ -37,7 +45,8 @@ enum PlayerCycle: Int {
 
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
-//    weak var delegate: PlayMusicDelegate?
+    //播放模式
+    var playMode: PlayMode = .none
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
     /*播放下标*/
@@ -101,7 +110,7 @@ class PlayerManager: NSObject {
 //        print("播放完毕========>\(currentModel?.title ?? "")歌曲")
 //    }
     
-    //MARK:-播放完毕通知
+    //MARK:-耳机操作通知
     @objc fileprivate func audioRouteChangeListener(_ notification: Notification) {
         let info = notification.userInfo
         if let routeChangeReason = info?[AVAudioSessionRouteChangeReasonKey] as? AVAudioSession.RouteChangeReason {
@@ -176,7 +185,10 @@ class PlayerManager: NSObject {
         player.pause()
         isPlaying = false
     }
-
+    //播放歌曲
+    func playMusic() {
+        isPlaying = true
+    }
     //前一首
     func playPrevious(callback: ObjectCallback?) {
         if self.index == 0 {
@@ -184,7 +196,6 @@ class PlayerManager: NSObject {
         } else {
             self.index -= 1
         }
-        
         self.playReplaceItem(with: self.currentModel, callback: callback)
     }
     
@@ -220,14 +231,18 @@ class PlayerManager: NSObject {
     
     //自动/切换播放
     func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
+        
+        //这个固定不变
         let url = URL(string: model?.playUrl32 ?? "")
         currentPlayerItem = AVPlayerItem(url: url!)
         self.player.replaceCurrentItem(with: currentPlayerItem)
         self.playerPlay()
+        
         if let callback = callback {
             callback(model!)
         }
         addMusicTimeMake()
+        
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
     }

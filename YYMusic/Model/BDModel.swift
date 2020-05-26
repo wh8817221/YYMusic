@@ -13,7 +13,6 @@ class BaseResult: Mappable {
     var error_message: String? = "网络错误"
     var error_code: Int?
     var error: AnyObject?
-    
     required init?(map: Map){
         
     }
@@ -161,5 +160,88 @@ class Lrclink: Mappable {
     func mapping(map: Map) {
         time <- map["time"]
         lrc <- map["lrc"]
+    }
+}
+
+
+class MVBase: BaseResult {
+    var result: MVResult?
+    required init?(map: Map){
+        super.init(map: map)
+    }
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        result <- map["result"]
+    }
+}
+
+class MVResult: Mappable {
+    var has_more: Bool?
+    var total: Int?
+    var mvList: [MVList]?
+    var files: MVFilesBase?
+    required init?(map: Map){
+    }
+    
+    func mapping(map: Map) {
+        total <- map["total"]
+        mvList <- map["mvList"]
+        files <- map["files"]
+    }
+}
+
+class MVList: Mappable {
+    var mv_id: String?
+    var thumbnail: String?
+    var title: String?
+    var artist: String?
+    var artist_id: String?
+    var thumbnail2: String?
+    required init?(map: Map){
+    }
+    
+    func mapping(map: Map) {
+        mv_id <- map["mv_id"]
+        thumbnail <- map["thumbnail"]
+        thumbnail2 <- map["thumbnail2"]
+        title <- map["title"]
+        artist <- map["artist"]
+        artist_id <- map["artist_id"]
+    }
+}
+
+class MVFilesBase: Mappable {
+    //清晰度
+    var liuchang: MVFiles?
+    var biaoqing: MVFiles?
+    var gaoqing: MVFiles?
+    var chaoqing: MVFiles?
+    
+    required init?(map: Map){
+    }
+    
+    func mapping(map: Map) {
+        liuchang <- map["31"]
+        biaoqing <- map["41"]
+        gaoqing <- map["61"]
+        chaoqing <- map["71"]
+    }
+}
+
+class MVFiles: Mappable {
+    //清晰度
+    var definition_name: String?
+    var aspect_ratio: String?
+    var file_link: String?
+    var source_path: String?
+    
+    required init?(map: Map){
+    }
+    
+    func mapping(map: Map) {
+        definition_name <- map["definition_name"]
+        aspect_ratio <- map["aspect_ratio"]
+        file_link <- map["file_link"]
+        source_path <- map["source_path"]
     }
 }
