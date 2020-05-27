@@ -11,6 +11,7 @@ import AVFoundation
 
 class PlayDetailViewController: UIViewController {
     
+    @IBOutlet weak var lrcLbl: LrcLabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     var model: MusicModel?
     var callback: ObjectCallback?
@@ -27,9 +28,9 @@ class PlayDetailViewController: UIViewController {
     @IBOutlet weak var playAndPauseBtn: UIButton!
     @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var moreBtn: UIButton!
-    fileprivate var timer: Timer!
     fileprivate var isSlider: Bool = false
-    
+    /// 歌词的定时器
+    private var lrcTimer:CADisplayLink?
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -43,6 +44,7 @@ class PlayDetailViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        removeLrcTimer()
     }
     
     func updateModel() {
@@ -82,6 +84,10 @@ class PlayDetailViewController: UIViewController {
         
         totalTimeLbl.font = kFont12
         totalTimeLbl.textColor = .white
+        
+        lrcLbl.text = ""
+        lrcLbl.textColor = .white
+        lrcLbl.font = kFont15
         
         //设置播放模式
         switch PlayerManager.shared.cycle {
@@ -130,13 +136,53 @@ class PlayDetailViewController: UIViewController {
         //值改变事件
         sliderView.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
         self.addObserverToPlayer()
+//        if PlayerManager.shared.isPlaying {
+//            self.addLrcTimer()
+//        }
     }
     
     func addObserverToPlayer() {
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
     }
     
-    @objc fileprivate func musicTimeInterval() {
+    //MARK:歌词的定时器设置
+    //添加歌词的定时器
+    private func addLrcTimer() {
+        lrcTimer = CADisplayLink(target: self, selector: #selector(updateLrcTimer))
+        lrcTimer?.add(to: .main, forMode: .common)
+    }
+    
+    //更新歌词的时间
+    @objc private func updateLrcTimer() {
+        let currentTime = PlayerManager.shared.player.currentTime()
+        let cs = CMTimeGetSeconds(currentTime)
+        let lrcArray = model!.lrcArray
+        for (index,lrc) in lrcArray.enumerated() {
+                let currrentLrc = lrc
+                //获取下一句歌词
+                let nextIndex = index+1
+                var nextLrc: Lrclink?
+                if nextIndex < lrcArray.count {
+                    nextLrc = lrcArray[nextIndex]
+                }
+                if lrc.time! < Double(cs) {
+                    //根据进度,显示label画多少
+                    let progress = (cs-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!)
+                    lrcLbl.text = lrc.lrc ?? ""
+                    lrcLbl?.progress = CGFloat(progress)
+                }
+        }
+    }
+    
+    //删除歌词的定时器
+    private func removeLrcTimer() {
+        if lrcTimer != nil {
+            lrcTimer?.invalidate()
+            lrcTimer = nil
+        }
+    }
+    
+    @objc fileprivate func musicTimeInterval(_ sender: Notification) {
         let currentTime = PlayerManager.shared.getCurrentTime()
         let totalTime = PlayerManager.shared.getTotalTime()
         //滑动状态不更新
@@ -144,6 +190,7 @@ class PlayDetailViewController: UIViewController {
            self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
         }
     }
+
     
     //暂停播放
     @objc func playAndPause(_ sender: UIButton) {

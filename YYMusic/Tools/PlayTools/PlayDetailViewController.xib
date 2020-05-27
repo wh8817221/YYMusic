@@ -12,6 +12,7 @@
             <connections>
                 <outlet property="bottomConstraint" destination="0Tm-Rm-kac" id="DCG-Uj-4Z1"/>
                 <outlet property="likeBtn" destination="HNM-9N-dS9" id="DG4-An-7sJ"/>
+                <outlet property="lrcLbl" destination="ymn-M8-ZE3" id="oXD-vJ-u5o"/>
                 <outlet property="moreBtn" destination="KF3-2T-cpg" id="34d-En-jne"/>
                 <outlet property="nextBtn" destination="Ttq-y2-oHy" id="dx7-8U-pWp"/>
                 <outlet property="playAndPauseBtn" destination="2Bk-Yy-q2X" id="2XA-al-wae"/>
@@ -46,6 +47,25 @@
                         <constraint firstItem="cpG-K2-NG1" firstAttribute="leading" secondItem="GOU-pn-RL8" secondAttribute="leading" constant="35" id="5gR-fP-Rzr"/>
                         <constraint firstItem="cpG-K2-NG1" firstAttribute="centerY" secondItem="GOU-pn-RL8" secondAttribute="centerY" id="BrY-y9-asi"/>
                         <constraint firstAttribute="trailing" secondItem="cpG-K2-NG1" secondAttribute="trailing" constant="35" id="IA3-tF-qCc"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QYm-yr-9Wd">
+                    <rect key="frame" x="0.0" y="658" width="414" height="20"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="歌词" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ymn-M8-ZE3" customClass="LrcLabel" customModule="YYMusic" customModuleProvider="target">
+                            <rect key="frame" x="10" y="0.0" width="394" height="20"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="ymn-M8-ZE3" secondAttribute="trailing" constant="10" id="78f-ZO-cTh"/>
+                        <constraint firstAttribute="bottom" secondItem="ymn-M8-ZE3" secondAttribute="bottom" id="F43-5c-Ebp"/>
+                        <constraint firstAttribute="height" constant="20" id="Wzu-N5-FCM"/>
+                        <constraint firstItem="ymn-M8-ZE3" firstAttribute="leading" secondItem="QYm-yr-9Wd" secondAttribute="leading" constant="10" id="X3x-Js-Wbb"/>
+                        <constraint firstItem="ymn-M8-ZE3" firstAttribute="top" secondItem="QYm-yr-9Wd" secondAttribute="top" id="hWB-kb-rA8"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iHU-rW-c9h">
@@ -200,12 +220,15 @@
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="qGD-zc-JXj" secondAttribute="bottom" id="0Tm-Rm-kac"/>
                 <constraint firstItem="qGD-zc-JXj" firstAttribute="top" secondItem="iHU-rW-c9h" secondAttribute="bottom" id="16U-GJ-rCW"/>
+                <constraint firstItem="QYm-yr-9Wd" firstAttribute="trailing" secondItem="BO0-yM-IYV" secondAttribute="trailing" id="1vd-pf-n7o"/>
                 <constraint firstItem="iHU-rW-c9h" firstAttribute="top" secondItem="GOU-pn-RL8" secondAttribute="bottom" id="Mqq-We-jFd"/>
                 <constraint firstItem="qGD-zc-JXj" firstAttribute="leading" secondItem="BO0-yM-IYV" secondAttribute="leading" id="QgD-EA-ukm"/>
                 <constraint firstItem="iHU-rW-c9h" firstAttribute="leading" secondItem="BO0-yM-IYV" secondAttribute="leading" id="RTq-PX-8VZ"/>
+                <constraint firstItem="QYm-yr-9Wd" firstAttribute="leading" secondItem="BO0-yM-IYV" secondAttribute="leading" id="YNp-Pj-Xhl"/>
                 <constraint firstAttribute="trailing" secondItem="GOU-pn-RL8" secondAttribute="trailing" id="a5Z-SE-yVF"/>
                 <constraint firstItem="GOU-pn-RL8" firstAttribute="leading" secondItem="BO0-yM-IYV" secondAttribute="leading" id="dvd-k1-NRs"/>
                 <constraint firstItem="qGD-zc-JXj" firstAttribute="trailing" secondItem="BO0-yM-IYV" secondAttribute="trailing" id="obs-kR-gJP"/>
+                <constraint firstItem="iHU-rW-c9h" firstAttribute="top" secondItem="QYm-yr-9Wd" secondAttribute="bottom" constant="10" id="oeb-J9-YFx"/>
                 <constraint firstItem="iHU-rW-c9h" firstAttribute="trailing" secondItem="BO0-yM-IYV" secondAttribute="trailing" id="qbO-aj-eiG"/>
                 <constraint firstItem="GOU-pn-RL8" firstAttribute="top" secondItem="B78-KX-AlJ" secondAttribute="top" id="rh7-c4-qTF"/>
             </constraints>

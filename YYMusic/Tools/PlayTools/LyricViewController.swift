@@ -10,13 +10,13 @@ import UIKit
 import AVFoundation
 
 class LyricViewController: UIViewController {
-    var tableView: UITableView!
+    var lrcLbl: LrcLabel?
     var model: MusicModel?
     //当前歌词所在的位置
     fileprivate var currentRow: Int?
     fileprivate var lrcArray: [Lrclink] = []
     fileprivate var isDragging: Bool = false
-    
+    fileprivate var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -49,12 +49,23 @@ class LyricViewController: UIViewController {
             if !isDragging {
                 //歌词滚动显示
                 for (index,lrc) in self.lrcArray.enumerated() {
+//                    let currrentLrc = lrc
+//                    //获取下一句歌词
+//                    let nextIndex = index+1
+//                    var nextLrc: Lrclink?
+//                    if nextIndex < self.lrcArray.count {
+//                        nextLrc = self.lrcArray[nextIndex]
+//                    }
                     if lrc.time! < Double(cs) {
                         self.currentRow = index
                         let currentIndexPath = IndexPath(row: index, section: 0)
                         self.tableView.scrollToRow(at: currentIndexPath, at: .middle, animated: true)
+                        lrcLbl?.text = lrc.lrc
                         self.tableView.reloadData()
                     }
+                    //根据进度,显示label画多少
+//                    let progress = (cs-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!)
+//                    lrcLbl?.progress = CGFloat(progress)
                 }
             }
         }

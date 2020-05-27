@@ -23,17 +23,21 @@ class MVPlayViewController: UIViewController {
         cv.autoFadeTimeInterval = 0.5
         cv.prepareShowLoading = true
         cv.prepareShowControlView = true
+        cv.showTitle(self.fileTitle ?? "", coverURLString: kVideoCover, fullScreenMode: .automatic)
         return cv
     }()
+    
     fileprivate lazy var containerView: UIImageView = {
         let iv = UIImageView()
         let image = ZFUtilities.image(with: UIColor(red: 220/255.0, green: 220/255.0, blue: 220/255.0, alpha: 1), size: CGSize(width: 1, height: 1))
         iv.setImageWithURLString(kVideoCover, placeholder: image)
         return iv
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = fileTitle ?? ""
         self.view.backgroundColor = UIColor.white
         self.loadZFPlayer()
         
@@ -49,24 +53,24 @@ class MVPlayViewController: UIViewController {
         zfPlayer.orientationWillChange = { (player, isFullScreen) in
         }
         //播放完成
-        zfPlayer.playerDidToEnd = { (asset) in
-            
+        zfPlayer.playerDidToEnd = { [weak self](asset) in
+            self?.zfPlayer.currentPlayerManager.replay?()
         }
         if let file = self.mvFileBase {
            zfPlayer.assetURL = URL(string: (file.chaoqing?.file_link)!)!
         }
-        
+        PlayerManager.shared.playerPause()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.isNavigationBarHidden = true
+//        self.navigationController?.isNavigationBarHidden = true
         zfPlayer.isViewControllerDisappear = false
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.isNavigationBarHidden = false
+//        self.navigationController?.isNavigationBarHidden = false
         zfPlayer.isViewControllerDisappear = true
     }
     

@@ -13,15 +13,7 @@ class TrackListViewController: UIViewController {
     
     var type: BillListType?
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [BDSongModel] = [] {
-        didSet {
-            //获取上次播放存储的歌曲
-            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
-                self.currentMusic = music
-                playerBottomView.reloadUI(music: music)
-            }
-        }
-    }
+    fileprivate var songs: [BDSongModel] = []
     
     fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
     fileprivate var currentMusic: MusicModel?
@@ -33,8 +25,14 @@ class TrackListViewController: UIViewController {
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        
         //加载底部播放器
         playerBottomView.show(tableView: tableView, superVc: self)
+        //获取上次播放存储的歌曲
+        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+            self.currentMusic = music
+            playerBottomView.reloadUI(music: music)
+        }
         self.getMusicList()
     }
 

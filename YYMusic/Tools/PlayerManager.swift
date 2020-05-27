@@ -93,22 +93,23 @@ class PlayerManager: NSObject {
         
         if player == nil {
             player = AVPlayer()
+//            let p = AVAudioPlayer()
             let session = AVAudioSession.sharedInstance()
             try? session.setCategory(.playback)
             try? session.setActive(true, options: [])
         }
         
         //播放完毕的通知
-//        NotificationCenter.addObserver(observer: self, selector: #selector(playerItemDidPlayToEndTime(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.addObserver(observer: self, selector: #selector(playerItemDidPlayToEndTime(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
         //耳机插入和拔掉通知
         NotificationCenter.addObserver(observer: self, selector: #selector(audioRouteChangeListener(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
         
     }
 
-//    //MARK:-播放完毕通知
-//    @objc fileprivate func playerItemDidPlayToEndTime(_ notification: Notification) {
-//        print("播放完毕========>\(currentModel?.title ?? "")歌曲")
-//    }
+    //MARK:-播放完毕通知
+    @objc fileprivate func playerItemDidPlayToEndTime(_ notification: Notification) {
+        print("播放完毕========>\(currentModel?.title ?? "")歌曲")
+    }
     
     //MARK:-耳机操作通知
     @objc fileprivate func audioRouteChangeListener(_ notification: Notification) {
@@ -255,36 +256,7 @@ class PlayerManager: NSObject {
         playVC.modalPresentationStyle = .fullScreen
         vc?.present(playVC, animated: true, completion: nil)
     }
-    
-    //MARK:-锁屏时候的设置，效果需要在真机上才可以看到
-    func updateLockedScreenMusic() {
-        //开辟子线程监控锁屏
-        if PlayerManager.shared.musicArray.count > 0 {
-            let model = PlayerManager.shared.musicArray[PlayerManager.shared.index]
-            var info = [String: Any]()
-            // 设置持续时间（歌曲的总时间）
-            info[MPMediaItemPropertyPlaybackDuration] = self.player.currentItem?.duration.value
-            // 设置当前播放进度
-            info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.player.currentItem?.currentTime().value
-            //设置歌曲名
-            info[MPMediaItemPropertyTitle] = model.title ?? ""
-            //设置演唱者
-            info[MPMediaItemPropertyArtist] = model.nickname ?? ""
-            //歌手头像
-            if let url = (model.coverLarge ?? "").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                if let data = try? Data(contentsOf: URL(string: url)!) {
-                    let artwork = MPMediaItemArtwork.init(boundsSize: CGSize(width: 400, height: 400)) { (size) -> UIImage in
-                        return UIImage(data: data)!
-                    }
-                    info[MPMediaItemPropertyArtwork] = artwork
-                }
-            }
-            //进度光标的速度（这个随 自己的播放速率调整，我默认是原速播放）
-            info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = info
-        }
-    }
-    
+
     func addMusicTimeMake() {
         var tempTime: Float64?
         let cmt = CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(1.0))
@@ -317,6 +289,35 @@ class PlayerManager: NSObject {
             if keyPath == "status" {
                 print("当前播放状态=====>\(item.status.rawValue)")
             }
+        }
+    }
+    
+    //MARK:-锁屏时候的设置，效果需要在真机上才可以看到
+    func updateLockedScreenMusic() {
+        //开辟子线程监控锁屏
+        if PlayerManager.shared.musicArray.count > 0 {
+            let model = PlayerManager.shared.musicArray[PlayerManager.shared.index]
+            var info = [String: Any]()
+            // 设置持续时间（歌曲的总时间）
+            info[MPMediaItemPropertyPlaybackDuration] = self.player.currentItem?.duration.value
+            // 设置当前播放进度
+            info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.player.currentItem?.currentTime().value
+            //设置歌曲名
+            info[MPMediaItemPropertyTitle] = model.title ?? ""
+            //设置演唱者
+            info[MPMediaItemPropertyArtist] = model.nickname ?? ""
+            //歌手头像
+            if let url = (model.coverLarge ?? "").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
+                if let data = try? Data(contentsOf: URL(string: url)!) {
+                    let artwork = MPMediaItemArtwork.init(boundsSize: CGSize(width: 400, height: 400)) { (size) -> UIImage in
+                        return UIImage(data: data)!
+                    }
+                    info[MPMediaItemPropertyArtwork] = artwork
+                }
+            }
+            //进度光标的速度（这个随 自己的播放速率调整，我默认是原速播放）
+            info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = info
         }
     }
 }
