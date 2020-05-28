@@ -9,7 +9,7 @@
 import UIKit
 import HWPanModal
 
-class MainPlayViewController: BaseViewController {
+class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
     var model: MusicModel?
     @IBOutlet weak var backgroudView: UIView!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
@@ -18,7 +18,7 @@ class MainPlayViewController: BaseViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     fileprivate var visualEffectView: UIVisualEffectView!
-    fileprivate var selectView: SelectScrollview!
+    fileprivate var pageScrollView: PageScrollView!
     //默认选中的位置
     fileprivate var selectIndex: Int = 0
     override func viewDidLoad() {
@@ -46,18 +46,14 @@ class MainPlayViewController: BaseViewController {
         let lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
         lyricVC.model = model
 
-        selectView = SelectScrollview(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
-        selectView.callback = { [weak self] (value) in
-            if let index = value as? Int {
-                self?.segmentedControl.selectedSegmentIndex = index
-            }
-        }
-        contentView.addSubview(selectView)
-        selectView.snp.makeConstraints { (make) in
+        pageScrollView = PageScrollView(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
+        pageScrollView.delegate = self
+        contentView.addSubview(pageScrollView)
+        pageScrollView.snp.makeConstraints { (make) in
             make.right.top.left.bottom.equalTo(contentView)
         }
         //初始化选中的位置
-        selectView.selectIndex(index: selectIndex)
+        pageScrollView.selectIndex(index: selectIndex)
     }
 
     func updateBackgroudImage() {
@@ -89,7 +85,7 @@ class MainPlayViewController: BaseViewController {
     }
 
     @objc fileprivate func segmentClick(_ sender: UISegmentedControl) {
-        selectView.selectIndex(index: sender.selectedSegmentIndex)
+        pageScrollView.selectIndex(index: sender.selectedSegmentIndex)
     }
     
     func setupBackgroudImage() {
@@ -135,5 +131,8 @@ class MainPlayViewController: BaseViewController {
     override func allowScreenEdgeInteractive() -> Bool {
         return false
     }
+    //MARK:-PageScrollViewDelegate
+    func pageDidScroll(to index: Int) {
+        self.segmentedControl.selectedSegmentIndex = index
+    }
 }
-

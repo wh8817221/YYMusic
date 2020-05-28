@@ -26,14 +26,14 @@ class TrackListViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
-        //加载底部播放器
-        playerBottomView.show(tableView: tableView, superVc: self)
-        //获取上次播放存储的歌曲
-        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
-            self.currentMusic = music
-            playerBottomView.reloadUI(music: music)
-        }
-        self.getMusicList()
+//        //加载底部播放器
+//        playerBottomView.show(tableView: tableView, superVc: self)
+//        //获取上次播放存储的歌曲
+//        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+//            self.currentMusic = music
+//            playerBottomView.reloadUI(music: music)
+//        }
+//        self.getMusicList()
     }
 
     func getMusicList() {

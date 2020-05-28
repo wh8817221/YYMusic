@@ -13,14 +13,14 @@ enum BillListType: Int {
     case random = 0
     case new = 1
     case hot = 2
-    case rock = 3
-    case jazz = 4
-    case popular = 5
-    case west = 6
-    case classic = 7
-    case love = 8
-    case film = 9
-    case net = 10
+    case rock = 11
+    case jazz = 12
+    case popular = 16
+    case west = 21
+    case classic = 22
+    case love = 23
+    case film = 24
+    case net = 25
     
     func getName() -> String {
         switch self {
@@ -52,57 +52,81 @@ enum BillListType: Int {
 }
 
 class BillListViewController: UIViewController {
-    @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [BDSongModel] = []
-    fileprivate var types = [BillListType]()
+    
+    fileprivate var selectIndex: Int = 0
+    fileprivate var pageScrollView: PageScrollView!
+    fileprivate var titleScrollView: TitleScrollView! //滚动Title
+    
+    @IBOutlet weak var contentView: UIView!
+    fileprivate var types: [BillListType] = [.random, .new, .hot, .rock, .jazz, .popular, .west, .classic, .love, .film, .net]
+    fileprivate var titles: [String] = []
+    fileprivate var controllers: [UIViewController] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let lbl = UILabel()
         lbl.text = "全部榜单"
         self.navigationItem.titleView = lbl
-        
-        self.tableView.estimatedRowHeight = 70
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+
         initData()
+    
+        self.selectViewUI()
     }
 
-    func initData() {
-        for i in 0...10 {
-            let type = BillListType(rawValue: i)
-            self.types.append(type!)
+    //MARK:-首页卡片布局
+    func selectViewUI() {
+        var configue = SelectConfigue()
+        configue.scrollViewColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
+        configue.defaultButtonColor = .white
+        configue.selectButtonColor = kThemeColor
+        configue.lineColor = kThemeColor
+
+        
+        let frame = CGRect(x: 0, y: contentView.frame.minX, width: screenWidth, height: 44)
+        titleScrollView = TitleScrollView(frame: frame, arrTitle: titles, configue: configue)
+        titleScrollView.delegate = self
+        contentView.addSubview(titleScrollView)
+        
+        //添加pageView
+        pageScrollView = PageScrollView(frame: CGRect.zero, viewControllers: self.controllers, parentVc: self)
+        //设置代理可以联动titleScrollView
+        pageScrollView.delegate = self
+        contentView.addSubview(pageScrollView)
+        pageScrollView.snp.makeConstraints { (make) in
+            make.top.equalTo(self.titleScrollView.snp.bottom)
+            make.left.right.equalTo(self.view)
+            make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
-        self.tableView.reloadData()
+        //初始化选中的位置
+        pageScrollView.selectIndex(index: selectIndex)
     }
+    
+    func initData() {
+        for type in types {
+            self.titles.append(type.getName())
+            if type == .random {
+                let vc = getStoryboardInstantiateViewController(identifier: "MusicListViewController") as? MusicListViewController
+                self.controllers.append(vc!)
+            } else {
+                let vc = getStoryboardInstantiateViewController(identifier: "TrackListViewController") as? TrackListViewController
+                vc?.type = type
+                self.controllers.append(vc!)
+            }
+        }
+    }
+    
 }
 
-extension BillListViewController: UITableViewDelegate, UITableViewDataSource {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.types.count
+extension BillListViewController: PageScrollViewDelegate, TitleScrollViewDelegate {
+    
+     //MARK:-TitleScrollViewDelegate
+    func titleButtonDidSelectedAtIndex(index: Int) {
+        pageScrollView.selectIndex(index: index)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let type = types[indexPath.row]
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.font = kFont15
-        cell.textLabel?.text = type.getName()
-        return cell
+    //MARK:-PageScrollViewDelegate
+    func pageDidScroll(scrollView: UIScrollView) {
+        titleScrollView.scrollViewDidScroll(scrollView)
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let type = types[indexPath.row]
-        if type == .random {
-            let vc = getStoryboardInstantiateViewController(identifier: "MusicListViewController") as? MusicListViewController
-            self.navigationController?.pushViewController(vc!, animated: true)
-        } else {
-            let vc = getStoryboardInstantiateViewController(identifier: "TrackListViewController") as? TrackListViewController
-            vc?.type = type
-            self.navigationController?.pushViewController(vc!, animated: true)
-        }
-    }
-    
 }

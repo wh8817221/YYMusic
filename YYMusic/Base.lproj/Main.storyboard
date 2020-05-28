@@ -208,76 +208,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="r2f-pL-i7C">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zlz-I0-4tx">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="musicCell" rowHeight="91" id="pNx-IL-StA">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="91"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="pNx-IL-StA" id="MeH-c6-VHa">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="91"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6jc-T8-NJg">
-                                                    <rect key="frame" x="15" y="15.5" width="60" height="60"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="60" id="QBh-Bq-D2o"/>
-                                                        <constraint firstAttribute="height" constant="60" id="RNO-BS-CHJ"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="43q-mA-QE9">
-                                                    <rect key="frame" x="85" y="24" width="314" height="43"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVg-hJ-UC1">
-                                                            <rect key="frame" x="0.0" y="0.0" width="314" height="20.5"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kqV-Bi-MrE">
-                                                            <rect key="frame" x="0.0" y="26.5" width="314" height="16.5"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="16.5" id="iDe-8r-IKe"/>
-                                                            </constraints>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                </stackView>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="43q-mA-QE9" secondAttribute="bottom" constant="24" id="0Q3-w6-YoK"/>
-                                                <constraint firstItem="6jc-T8-NJg" firstAttribute="leading" secondItem="MeH-c6-VHa" secondAttribute="leading" constant="15" id="HjF-Gg-jTb"/>
-                                                <constraint firstItem="43q-mA-QE9" firstAttribute="leading" secondItem="6jc-T8-NJg" secondAttribute="trailing" constant="10" id="Prw-NM-bMD"/>
-                                                <constraint firstItem="43q-mA-QE9" firstAttribute="centerY" secondItem="6jc-T8-NJg" secondAttribute="centerY" id="gTi-Tz-dPw"/>
-                                                <constraint firstAttribute="trailing" secondItem="43q-mA-QE9" secondAttribute="trailing" constant="15" id="jJT-hP-kkA"/>
-                                                <constraint firstItem="43q-mA-QE9" firstAttribute="top" secondItem="MeH-c6-VHa" secondAttribute="top" constant="24" id="zLf-Ja-Uea"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="r2f-pL-i7C" firstAttribute="leading" secondItem="Ocb-6D-yZm" secondAttribute="leading" id="FgS-mr-CPU"/>
-                            <constraint firstAttribute="bottom" secondItem="r2f-pL-i7C" secondAttribute="bottom" id="LgW-1z-p2F"/>
-                            <constraint firstItem="r2f-pL-i7C" firstAttribute="top" secondItem="0yy-4q-vOD" secondAttribute="top" id="YWQ-If-yiV"/>
-                            <constraint firstItem="Ocb-6D-yZm" firstAttribute="trailing" secondItem="r2f-pL-i7C" secondAttribute="trailing" id="zop-kc-3Ol"/>
+                            <constraint firstItem="Zlz-I0-4tx" firstAttribute="bottom" secondItem="Ocb-6D-yZm" secondAttribute="bottom" id="7dL-dq-9AR"/>
+                            <constraint firstItem="Zlz-I0-4tx" firstAttribute="leading" secondItem="Ocb-6D-yZm" secondAttribute="leading" id="Hp4-PN-0Ju"/>
+                            <constraint firstItem="Zlz-I0-4tx" firstAttribute="trailing" secondItem="Ocb-6D-yZm" secondAttribute="trailing" id="XWT-aW-zIQ"/>
+                            <constraint firstItem="Zlz-I0-4tx" firstAttribute="top" secondItem="Ocb-6D-yZm" secondAttribute="top" id="klU-J0-Jfy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ocb-6D-yZm"/>
                     </view>
                     <navigationItem key="navigationItem" id="3iM-bn-R4B"/>
                     <connections>
-                        <outlet property="tableView" destination="r2f-pL-i7C" id="pMQ-sq-CZy"/>
+                        <outlet property="contentView" destination="Zlz-I0-4tx" id="4wq-Wh-Lip"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="MusicListViewController" id="GcT-dz-8T8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="u6N-MZ-ml3" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-301" y="51"/>
+            <point key="canvasLocation" x="-301.44927536231887" y="50.892857142857139"/>
         </scene>
         <!--我的-->
         <scene sceneID="AfP-HX-CjD">

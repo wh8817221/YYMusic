@@ -39,7 +39,8 @@ class LrcAnalyzer: NSObject {
                 lrcConnectArray.remove(at: index)
             }
         }
-        self.analyzerEachLrc(lrcConnectArray: lrcConnectArray)
+//        self.analyzerEachLrc(lrcConnectArray: lrcConnectArray)
+        self.lyricParase(with: lrcConnectArray)
     }
     
     //解析每一行歌词字符，获得时间点和对应的歌词
@@ -70,5 +71,49 @@ class LrcAnalyzer: NSObject {
             self.lrcArray.append(eachLrc)
             
         }
+    }
+    
+    func lyricParase(with linesArray: [String]) {
+        let pattern = "\\[[0-9][0-9]:[0-9][0-9].[0-9]{1,}\\]"
+        guard let regular = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return
+        }
+        for line in linesArray {
+            let matchesArray = regular.matches(in: line, options: .reportProgress, range: NSRange(location: 0, length: line.count))
+            let lrc = line.components(separatedBy: "]").last
+            
+            for match in matchesArray {
+                var timeStr = NSString(string: line).substring(with: match.range)
+                // 去掉开头和结尾的[],得到时间00:00.00
+                timeStr = timeStr.textSubstring(startIndex: 1, length: timeStr.count-2)
+                
+                let df = DateFormatter()
+                df.dateFormat = "mm:ss.SS"
+                let date1 = df.date(from: timeStr)
+                let date2 = df.date(from: "00:00.00")
+                var interval1 = date1!.timeIntervalSince1970
+                let interval2 = date2!.timeIntervalSince1970
+                
+                interval1 -= interval2
+                if (interval1 < 0) {
+                    interval1 *= -1
+                }
+
+                let eachLrc = Lrclink()
+                eachLrc.lrc = lrc
+                eachLrc.time = interval1
+                self.lrcArray.append(eachLrc)
+            }
+        }
+    }
+}
+
+extension String {
+    //字符串截取
+    func textSubstring(startIndex: Int, length: Int) -> String {
+        let startIndex = self.index(self.startIndex, offsetBy: startIndex)
+        let endIndex = self.index(startIndex, offsetBy: length)
+        let subvalues = self[startIndex..<endIndex]
+        return String(subvalues)
     }
 }
