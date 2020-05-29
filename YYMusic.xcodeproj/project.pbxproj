@@ -26,6 +26,8 @@
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
 		D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D502E247FB5520024EBA6 /* PlayButton.swift */; };
+		D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50302480E0820024EBA6 /* UIColorExtention.swift */; };
+		D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */; };
 		D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */; };
 		D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */; };
 		D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDF247F881F00D1A4AB /* PageScrollView.swift */; };
@@ -46,7 +48,6 @@
 		D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */; };
 		D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB22473B1C20051E3E2 /* BDModel.swift */; };
 		D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */; };
-		D2D10CBA2473C6F70051E3E2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CB82473C6F70051E3E2 /* MainViewController.swift */; };
 		D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */; };
 		D2D10CD02474C8200051E3E2 /* MainPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CCD2474C8200051E3E2 /* MainPlayViewController.swift */; };
 		D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CD32474DA4D0051E3E2 /* PlayDetailViewController.swift */; };
@@ -106,6 +107,8 @@
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		D26D502E247FB5520024EBA6 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		D26D50302480E0820024EBA6 /* UIColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtention.swift; sourceTree = "<group>"; };
+		D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectConfigue.swift; sourceTree = "<group>"; };
 		D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScrollView.swift; sourceTree = "<group>"; };
 		D28DACDF247F881F00D1A4AB /* PageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageScrollView.swift; sourceTree = "<group>"; };
@@ -126,7 +129,6 @@
 		D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHPlayerBottomView.swift; sourceTree = "<group>"; };
 		D2D10CB22473B1C20051E3E2 /* BDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDModel.swift; sourceTree = "<group>"; };
 		D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNavigationViewController.swift; sourceTree = "<group>"; };
-		D2D10CB82473C6F70051E3E2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D2D10CCB2474C8200051E3E2 /* MainPlayViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainPlayViewController.xib; sourceTree = "<group>"; };
 		D2D10CCD2474C8200051E3E2 /* MainPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPlayViewController.swift; sourceTree = "<group>"; };
 		D2D10CD32474DA4D0051E3E2 /* PlayDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayDetailViewController.swift; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */,
 				D2D10CD92474FB620051E3E2 /* UIViewExtention.swift */,
 				D2D10CDB247500850051E3E2 /* StringExtention.swift */,
+				D26D50302480E0820024EBA6 /* UIColorExtention.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -355,7 +358,7 @@
 			children = (
 				D2B2F49124767BDA007FECBF /* BaseViewController.swift */,
 				D2D10CB72473C6F70051E3E2 /* BaseNavigationViewController.swift */,
-				D2D10CB82473C6F70051E3E2 /* MainViewController.swift */,
+				D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -655,7 +658,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */,
-				D2D10CBA2473C6F70051E3E2 /* MainViewController.swift in Sources */,
 				D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */,
 				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,
 				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,
@@ -665,6 +667,7 @@
 				D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */,
 				D2B2F4B3247CABE6007FECBF /* TrackListViewController.swift in Sources */,
 				D24C883C246CF719002F7CD0 /* Common.swift in Sources */,
+				D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */,
 				D2B2F4A9247CAAF2007FECBF /* BillListViewController.swift in Sources */,
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
 				D2B2F4B5247CACA1007FECBF /* MVPlayViewController.swift in Sources */,
@@ -681,6 +684,7 @@
 				D2B2F4D9247E017D007FECBF /* LrcLabel.swift in Sources */,
 				D2B2F49424768CB8007FECBF /* LrcAnalyzer.swift in Sources */,
 				D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */,
+				D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */,
 				D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */,
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
 				D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */,

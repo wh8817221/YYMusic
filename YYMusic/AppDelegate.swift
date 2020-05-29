@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func initRootViewController() {
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = getStoryboardInstantiateViewController(identifier: "MainViewController")
+        self.window?.rootViewController = getStoryboardInstantiateViewController(identifier: "MainTabBarViewController")
         self.window?.backgroundColor = .white
         self.window?.makeKeyAndVisible()
     }
@@ -31,17 +31,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if event?.type == UIEvent.EventType.remoteControl {
             switch event?.subtype {
             case .remoteControlPause:
-                //暂停
-                WHPlayerBottomView.shared.tapPlayButton(isPlay: false)
+                PlayerManager.shared.playerPause()
             case .remoteControlPlay:
                 //播放
-                WHPlayerBottomView.shared.tapPlayButton(isPlay: true)
+                PlayerManager.shared.playerPlay()
             case .remoteControlPreviousTrack:
                 //前一首
-                WHPlayerBottomView.shared.previousMusic()
+                PlayerManager.shared.playPrevious()
             case .remoteControlNextTrack:
                 //下一首
-                WHPlayerBottomView.shared.nextMusic()
+                PlayerManager.shared.playNext()
             default:
                 break
             }

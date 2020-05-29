@@ -14,25 +14,18 @@ class TrackListViewController: UIViewController {
     var type: BillListType?
     @IBOutlet weak var tableView: UITableView!
     fileprivate var songs: [BDSongModel] = []
-    
-    fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
-    fileprivate var currentMusic: MusicModel?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = self.type?.getName()
+        self.view.backgroundColor = kBackgroundColor
         self.tableView.estimatedRowHeight = 70
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.backgroundColor = .clear
+        self.tableView.separatorColor = kLineColor
+        // tableview  给音乐播放留距离
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 65))
         
-//        //加载底部播放器
-//        playerBottomView.show(tableView: tableView, superVc: self)
-//        //获取上次播放存储的歌曲
-//        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
-//            self.currentMusic = music
-//            playerBottomView.reloadUI(music: music)
-//        }
         self.getMusicList()
     }
 
@@ -76,6 +69,7 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
         lbl3.font = UIFont.systemFont(ofSize: 13)
         lbl3.textColor = UIColor.gray
         
+        cell.backgroundColor = .clear
         return cell
     }
     
@@ -91,7 +85,7 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
         param["songid"] = songid
         param["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
         let d = RequestHelper.getCommonList(param).generate()
-        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongInfo?) in
+        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { (data: SongInfo?) in
             if let s = data {
                 let song = MusicModel()
                 song.playUrl32 = s.bitrate?.file_link
@@ -101,7 +95,7 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
                 song.coverLarge = s.songinfo?.pic_big
                 song.coverMiddle = s.songinfo?.pic_premium
                 song.lrclink = s.songinfo?.lrclink
-                self?.playerBottomView.reloadData(with: indexPath.row, model: song)
+                PlayerManager.shared.playMusic(model: song)
             }
         })
     }

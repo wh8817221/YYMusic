@@ -42,7 +42,7 @@ class PlayButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setImage(UIImage(named: "musicicon"), for: .normal)
-        startAnimation()
+//        startAnimation()
     }
         
     //绘制进度圆环

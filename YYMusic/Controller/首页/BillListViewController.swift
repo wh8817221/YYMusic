@@ -14,7 +14,6 @@ enum BillListType: Int {
     case new = 1
     case hot = 2
     case rock = 11
-    case jazz = 12
     case popular = 16
     case west = 21
     case classic = 22
@@ -32,8 +31,6 @@ enum BillListType: Int {
             return "热歌榜"
         case .rock:
             return "摇滚榜"
-        case .jazz:
-            return "爵士榜"
         case .popular:
             return "流行榜"
         case .west:
@@ -58,7 +55,7 @@ class BillListViewController: UIViewController {
     fileprivate var titleScrollView: TitleScrollView! //滚动Title
     
     @IBOutlet weak var contentView: UIView!
-    fileprivate var types: [BillListType] = [.random, .new, .hot, .rock, .jazz, .popular, .west, .classic, .love, .film, .net]
+    fileprivate var types: [BillListType] = [.random, .new, .hot, .rock, .popular, .west, .classic, .love, .film, .net]
     fileprivate var titles: [String] = []
     fileprivate var controllers: [UIViewController] = []
     
@@ -74,14 +71,13 @@ class BillListViewController: UIViewController {
         self.selectViewUI()
     }
 
-    //MARK:-首页卡片布局
+    //MARK:-首页布局
     func selectViewUI() {
         var configue = SelectConfigue()
-        configue.scrollViewColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
+        configue.scrollViewColor = kPlayerBacgroundColor
         configue.defaultButtonColor = .white
         configue.selectButtonColor = kThemeColor
         configue.lineColor = kThemeColor
-
         
         let frame = CGRect(x: 0, y: contentView.frame.minX, width: screenWidth, height: 44)
         titleScrollView = TitleScrollView(frame: frame, arrTitle: titles, configue: configue)

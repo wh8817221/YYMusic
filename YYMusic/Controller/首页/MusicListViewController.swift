@@ -17,29 +17,26 @@ class MusicListViewController: UIViewController {
     fileprivate var songs: [MusicModel] = [] {
         didSet {
             PlayerManager.shared.musicArray = songs
-            //获取上次播放存储的歌曲
-            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
-                self.currentMusic = music
-                //从新更新角标
-                PlayerManager.shared.resetIndex(model: music)
-                playerBottomView.reloadUI(music: music)
-            }
         }
     }
     fileprivate var pageSize = 20
     fileprivate var currPage = 1
     fileprivate var totalPage = 0
     
-    fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
+//    fileprivate lazy var playerBottomView = WHPlayerBottomView.shared
     fileprivate var currentMusic: MusicModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "音乐列表"
+        self.view.backgroundColor = kBackgroundColor
         self.tableView.estimatedRowHeight = 70
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.backgroundColor = .clear
+        self.tableView.separatorColor = kLineColor
+        // tableview  给音乐播放留距离
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 65))
         
         tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
             self.getMusicList(true)
@@ -49,9 +46,6 @@ class MusicListViewController: UIViewController {
         })
         self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
         self.tableView.mj_header?.beginRefreshing()
- 
-        //加载底部播放器
-//        playerBottomView.show(tableView: tableView, superVc: self)
     }
 
     func getMusicList(_ first: Bool) {
@@ -122,7 +116,7 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
             lbl3.textColor = UIColor.gray
             lbl2.textColor = UIColor.black
 //        }
-        
+        cell.backgroundColor = .clear
         return cell
     }
     
@@ -132,7 +126,7 @@ extension MusicListViewController: UITableViewDelegate, UITableViewDataSource {
         if PlayerManager.shared.isPlaying && song.trackId == PlayerManager.shared.currentModel?.trackId {
             return
         }
-        playerBottomView.reloadData(with: indexPath.row, model: song)
+        PlayerManager.shared.playMusic(model: song)
     }
     
 }

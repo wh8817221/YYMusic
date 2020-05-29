@@ -15,6 +15,8 @@ target 'YYMusic' do
   pod 'ZFPlayer', '~> 3.2.17'
   pod 'ZFPlayer/AVPlayer', '~> 3.2.17'
   pod 'ZFPlayer/ControlView', '~> 3.2.17'
+  pod 'MarqueeLabel/Swift', '~> 3.2.1'
+  
   
   target 'YYMusicTests' do
     inherit! :search_paths

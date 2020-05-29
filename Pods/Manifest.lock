@@ -4,6 +4,7 @@ PODS:
   - Kingfisher (5.13.1):
     - Kingfisher/Core (= 5.13.1)
   - Kingfisher/Core (5.13.1)
+  - MarqueeLabel/Swift (3.2.1)
   - MJRefresh (3.3.1)
   - ObjectMapper (3.5.1)
   - PKHUD (5.3.0)
@@ -20,6 +21,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.0.0)
   - HWPanModal (~> 0.6.7)
   - Kingfisher (~> 5.13.1)
+  - MarqueeLabel/Swift (~> 3.2.1)
   - MJRefresh (~> 3.3.1)
   - ObjectMapper (~> 3.5.1)
   - PKHUD (~> 5.3.0)
@@ -33,6 +35,7 @@ SPEC REPOS:
     - Alamofire
     - HWPanModal
     - Kingfisher
+    - MarqueeLabel
     - MJRefresh
     - ObjectMapper
     - PKHUD
@@ -43,12 +46,13 @@ SPEC CHECKSUMS:
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
   HWPanModal: 8ce3489c30e2268dafc50acdcde50d34f75f35aa
   Kingfisher: f33a848445e33c543620812158dc5d47f6bf90df
+  MarqueeLabel: 2daf039bf916937c8a4c9adfc13577cc5e51b4ce
   MJRefresh: eeda70fbf0ad277f3178cef1cd0c3532591d6237
   ObjectMapper: 70187b8941977c62ccfb423caf6b50be405cabf0
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   ZFPlayer: ac9cb879291eec259e7fe77e840c884e2b80a499
 
-PODFILE CHECKSUM: 83708e4699b50eb672ae7a942cf5f3b291523978
+PODFILE CHECKSUM: b7025a663e7ad282146bfcf0258ac8c0c1cdb913
 
 COCOAPODS: 1.9.1

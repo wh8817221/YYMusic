@@ -130,7 +130,7 @@ class PlayerManager: NSObject {
         }
     }
     
-    //存储歌曲时缺少Index,重新设置index
+    //MARK:- 存储歌曲时缺少Index,重新设置index
     func resetIndex(model: MusicModel?) {
         for (index,m) in self.musicArray.enumerated() {
             if m.trackId == model?.trackId {
@@ -139,7 +139,7 @@ class PlayerManager: NSObject {
         }
     }
     
-    //当前时间
+    //MARK:- 当前时间
     func getCurrentTime() -> String? {
         //获取当前时间
         let value = self.player.currentTime().value
@@ -151,7 +151,7 @@ class PlayerManager: NSObject {
         return nil
     }
     
-    //总时长
+    //MARK:- 总时长
     func getTotalTime() -> String? {
         //获取音乐总时长
         let d = self.player.currentItem?.duration.value
@@ -164,7 +164,7 @@ class PlayerManager: NSObject {
         return nil
     }
     
-    //播放状态
+    //MARK:- 播放状态
     func playerStatus() -> Int {
         if currentPlayerItem.status == .readyToPlay {
             return 1
@@ -173,24 +173,26 @@ class PlayerManager: NSObject {
         }
     }
 
-    //播放
+    //MARK:- 播放
     func playerPlay() {
         player.play()
         isPlaying = true
+        NotificationCenter.post(name: .kReloadPlayStatus, object: isPlaying)
     }
     
-    //暂停
+    //MARK:- 暂停
     func playerPause() {
         player.pause()
         isPlaying = false
+        NotificationCenter.post(name: .kReloadPlayStatus, object: isPlaying)
     }
     
-    //播放歌曲
+    //MARK:- 播放歌曲
     func playMusic(model: MusicModel?) {
         self.playReplaceItem(with: model)
     }
     
-    //自动下一首/循环/随机
+    //MARK:- 自动下一首/循环/随机
     func autoPlay() {
         if PlayerManager.shared.cycle == .single {
             //单曲循环播放
@@ -201,7 +203,7 @@ class PlayerManager: NSObject {
         }
     }
     
-    //前一首
+    //MARK:- 前一首
     func playPrevious() {
         if self.index == 0 {
             self.index = self.musicArray.count - 1
@@ -211,7 +213,7 @@ class PlayerManager: NSObject {
         self.playReplaceItem(with: self.currentModel)
     }
     
-    //下一首
+    //MARK:- 下一首
     func playNext() {
         if self.index == self.musicArray.count - 1 {
             self.index = 0
@@ -221,10 +223,17 @@ class PlayerManager: NSObject {
         self.playReplaceItem(with: self.currentModel)
     }
   
+    //MARK:-喜欢
+    func hasBeenFavoriteMusic() -> Bool {
+        return true
+    }
+    
+    //MARK:-音量控制
     func playerVolume(with volumeFloat: CGFloat) {
         self.player.volume = Float(volumeFloat)
     }
 
+    //MARK:- 播放进度
     func playerProgress(with progress: Double, completionHandler: ((CMTime) -> Void)? = nil) {
         var progress = progress
         if self.isPlaying {
@@ -241,7 +250,7 @@ class PlayerManager: NSObject {
         }
     }
     
-    //自动/切换播放
+    //MARK:- 自动/切换播放
     fileprivate func playReplaceItem(with model: MusicModel?) {
         //每次播放重置index
         resetIndex(model: model)
@@ -261,7 +270,7 @@ class PlayerManager: NSObject {
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
     }
     
-    //展示音乐播放界面
+    //MARK:- 展示音乐播放界面
     func presentPlayController(vc: UIViewController?, model: MusicModel?) {
         let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
         playVC.model = model
@@ -270,6 +279,7 @@ class PlayerManager: NSObject {
         vc?.present(playVC, animated: true, completion: nil)
     }
 
+    //MARK:- 监听音乐时间变化
     func addMusicTimeMake() {
         var tempTime: Float64?
         let cmt = CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(1.0))
@@ -292,14 +302,14 @@ class PlayerManager: NSObject {
         }
     }
 
-    //清空播放器监听属性
+    //MARK:- 清空播放器监听属性
     func releasePlayer() {
         self.removeObserver(self, forKeyPath: "status")
         NotificationCenter.default.removeObserver(self)
         self.currentPlayerItem = nil
         self.player = nil
     }
-    
+    //MARK:- KVO监听播放状态
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let item = object as? AVPlayerItem {
             if keyPath == "status" {

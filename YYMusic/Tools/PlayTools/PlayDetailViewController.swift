@@ -131,14 +131,11 @@ class PlayDetailViewController: UIViewController {
         sliderView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         //值改变事件
         sliderView.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-        self.addObserverToPlayer()
+        
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
 //        if PlayerManager.shared.isPlaying {
 //            self.addLrcTimer()
 //        }
-    }
-    
-    func addObserverToPlayer() {
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
     }
     
     //MARK:歌词的定时器设置
@@ -259,12 +256,16 @@ class PlayDetailViewController: UIViewController {
     //MARK:-前一首
     @objc func previusAction(_ sender: UIButton) {
         playAndPauseBtn.isSelected = true
+        //清空滑块
+        sliderView.value = 0
         PlayerManager.shared.playPrevious()
     }
     
     //MARK:下一首
     @objc func nextAction(_ sender: UIButton) {
         playAndPauseBtn.isSelected = true
+        //清空滑块
+        sliderView.value = 0
         PlayerManager.shared.playNext()
     }
     

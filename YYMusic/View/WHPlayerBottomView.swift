@@ -8,18 +8,17 @@
 
 import UIKit
 import Kingfisher
+import MarqueeLabel
 
-class WHPlayerBottomView: UIControl {
+class WHPlayerBottomView: UIView {
     static let shared = WHPlayerBottomView()
-  
     var musicModel: MusicModel? {
         didSet {
             if let m = musicModel {
                 let url = URL(string: m.coverSmall!)
                 headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
                 })
-                songNameLbl.text = m.title ?? ""
-                songerLbl.text = m.nickname ?? ""
+                songNameLbl.text = "\(m.title ?? "") - \(m.nickname ?? "")"
             }
         }
     }
@@ -35,17 +34,27 @@ class WHPlayerBottomView: UIControl {
     
     /*歌手头像*/
     var headerImageView: UIImageView!
-    /*歌名*/
-    var songNameLbl: UILabel!
-    /*歌手名*/
-    var songerLbl: UILabel!
+    /*歌名-歌手名*/
+    var songNameLbl: MarqueeLabel = {
+        let lbl = MarqueeLabel()
+        lbl.text = "歌曲-歌手"
+        lbl.textColor = .black
+        lbl.font = kFont15
+        lbl.textAlignment = .left
+        lbl.speed = .duration(10)
+        lbl.trailingBuffer = 30
+        lbl.fadeLength = 10
+        lbl.animationCurve = .easeInOut
+        return lbl
+    }()
+    
     /*播放暂停按钮*/
     var playAndPauseBtn: UIButton!
-    fileprivate var isFirstTime: Bool = true
+    /**播放的背景*/
+    var contentView: UIControl!
     fileprivate lazy var arcLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = UIColor.clear.cgColor
-        
         layer.strokeColor = kThemeColor.cgColor
         layer.lineWidth = 2.5
         layer.lineCap = CAShapeLayerLineCap(rawValue: "round")
@@ -53,58 +62,61 @@ class WHPlayerBottomView: UIControl {
     }()
     
     fileprivate var playerBarH: CGFloat = 65.0
-    fileprivate var parentVC: UIViewController?
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
+        self.backgroundColor = .clear
+        
+        contentView = UIControl()
+        contentView.backgroundColor = .white
+        self.addSubview(contentView)
+        contentView.addTarget(self, action: #selector(tapBottomView(_:)), for: .touchUpInside)
+        contentView.snp.makeConstraints { (make) in
+            make.left.right.equalTo(self)
+            make.bottom.equalTo(self.snp.bottom)
+            make.height.equalTo(48)
+        }
+        
         
         headerImageView = UIImageView()
         headerImageView.image = UIImage(named: "musicicon")
         headerImageView.layer.cornerRadius = 25
         headerImageView.layer.masksToBounds = true
-        self.addSubview(headerImageView)
+        contentView.addSubview(headerImageView)
         headerImageView.snp.makeConstraints { (make) in
             make.height.width.equalTo(50)
-            make.left.equalTo(self.snp.left).offset(10)
-            make.centerY.equalTo(self.snp.centerY)
+            make.left.equalTo(contentView.snp.left).offset(10)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-6)
         }
         
         playAndPauseBtn = UIButton(type: .custom)
         playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .normal)
         playAndPauseBtn.setImage(UIImage(named: "icons_stop_music1"), for: .selected)
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
-        self.addSubview(playAndPauseBtn)
+        contentView.addSubview(playAndPauseBtn)
         playAndPauseBtn.snp.makeConstraints { (make) in
             make.height.width.equalTo(35)
-            make.right.equalTo(self.snp.right).offset(-10)
-            make.centerY.equalTo(self.snp.centerY)
+            make.right.equalTo(contentView.snp.right).offset(-10)
+            make.centerY.equalTo(contentView.snp.centerY)
         }
-        
-        songNameLbl = UILabel()
-        songNameLbl.textColor = kThemeColor
-        songNameLbl.font = kFont17
-        songNameLbl.text = "歌曲名"
-        self.addSubview(songNameLbl)
+
+        contentView.addSubview(songNameLbl)
         songNameLbl.snp.makeConstraints { (make) in
-            make.top.equalTo(self.snp.top).offset(15)
+            make.centerY.equalTo(contentView.snp.centerY)
             make.left.equalTo(headerImageView.snp.right).offset(10)
             make.right.equalTo(playAndPauseBtn.snp.left).offset(-10)
         }
         
-        songerLbl = UILabel()
-        songerLbl.textColor = .white
-        songerLbl.font = kFont12
-        songerLbl.text = "歌手"
-        self.addSubview(songerLbl)
-        songerLbl.snp.makeConstraints { (make) in
-            make.left.right.equalTo(self.songNameLbl)
-            make.top.equalTo(self.songNameLbl.snp.bottom).offset(8)
-            make.bottom.equalTo(self.snp.bottom).offset(-15)
-        }
-        
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
         
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
+        NotificationCenter.addObserver(observer: self, selector: #selector(playStatusChange(_:)), name: .kReloadPlayStatus)
+        
+        //获取上次播放存储的歌曲
+        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+            self.musicModel = music
+        }
+        self.updateMusic(model: self.musicModel)
     }
     
     @objc fileprivate func musicTimeInterval() {
@@ -116,56 +128,44 @@ class WHPlayerBottomView: UIControl {
         if let ct = cT, let dt = dT, dt > 0.0 {
             self.progress = CGFloat(ct/dt)
             if CGFloat(ct/dt) >= 1.0 {
-                self.autoNext()
                 self.progress = 0.0
-            }
-            
-        }
-        //存储歌曲总时间, 第一次进入才存
-        if let t = totalTime, (Int(t) ?? 0) > 0{
-            //只记录一次总时间,防止不停的调用存储
-            if isFirstTime {
-                isFirstTime = false
-                UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
             }
         }
     }
 
+    @objc fileprivate func musicChange(_ notification: Notification) {
+        if let model = notification.object as? MusicModel {
+            self.musicModel = model
+            playAndPauseBtn.isSelected = true
+            startAnimation()
+        }
+    }
+    
+    @objc fileprivate func playStatusChange(_ notification: Notification) {
+        if let isPlay = notification.object as? Bool {
+            playAndPauseBtn.isSelected = isPlay
+            if isPlay {
+                startAnimation()
+            } else {
+                stopAnimation()
+            }
+        }
+    }
+    
+    func updateMusic(model: MusicModel?) {
+        self.musicModel = model
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func show(tableView: UITableView, superVc: UIViewController) {
-        self.parentVC = superVc
-        // tableview  给底部留距离
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: playerBarH))
-        superVc.view.addSubview(self)
-        self.snp.makeConstraints { (make) in
-            make.left.right.equalTo(superVc.view)
-            make.bottom.equalTo(superVc.view.snp.bottom)
-            make.height.equalTo(playerBarH)
-        }
-        self.addTarget(self, action: #selector(tapBottomView(_:)), for: .touchUpInside)
-    }
-    
-    @objc fileprivate func tapBottomView(_ sender: UIButton) {
-        PlayerManager.shared.presentPlayController(vc: self.parentVC, model: self.musicModel)
-    }
-    
-    //刷新界面
-    func reloadUI(music: MusicModel) {
-        self.musicModel = music
-    }
-    
-    func reloadData(with index: Int, model: MusicModel) {
-        //记录播放状态和播放歌曲角标
-        PlayerManager.shared.isPlaying = true
-        PlayerManager.shared.index = index
-        //每次切换都要清空一下进度
-        self.progress = 0.0
-        loadMusic(model: model)
-    }
 
+    @objc fileprivate func tapBottomView(_ sender: UIButton) {
+        let vc = UIApplication.shared.keyWindow?.rootViewController
+        PlayerManager.shared.presentPlayController(vc: vc, model: self.musicModel)
+    }
+    
+    
     //绘制进度圆环
     fileprivate func drawCircle(rect: CGRect, progress: CGFloat) {
         let xCenter = rect.size.width * 0.5
@@ -189,26 +189,23 @@ class WHPlayerBottomView: UIControl {
             tapPlayButton(isPlay: true)
         }
     }
+    
     //继续播放
     func playActive() {
         PlayerManager.shared.playerPlay()
-        startAnimation()
     }
+    
     //暂停播放
     func pauseActive() {
         PlayerManager.shared.playerPause()
-        stopAnimation()
     }
     
     //加载播放
     func loadMusic(model: MusicModel) {
+        //每次切换都要清空一下进度
+        self.progress = 0.0
         self.musicModel = model
-        self.playAndPauseBtn.isSelected = true
-        self.startAnimation()
         PlayerManager.shared.playMusic(model: model)
-//        PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
-//            self?.startAnimation()
-//        })
     }
     
     //MARK:-播放按钮
@@ -232,43 +229,6 @@ class WHPlayerBottomView: UIControl {
             } else {
                 pauseActive()
             }
-        }
-    }
-    
-    //前一首
-    func previousMusic() {
-        stopAnimation()
-        PlayerManager.shared.playPrevious()
-//        PlayerManager.shared.playPrevious(callback: {[weak self] (value) in
-//             if let m = value as? MusicModel {
-//                self?.musicModel = m
-//                self?.startAnimation()
-//             }
-//        })
-    }
-    
-    //下一首
-    func nextMusic() {
-        stopAnimation()
-        PlayerManager.shared.playNext()
-//        PlayerManager.shared.playNext(callback: {[weak self] (value) in
-//             if let m = value as? MusicModel {
-//                self?.musicModel = m
-//                self?.startAnimation()
-//             }
-//        })
-    }
-    
-    //MARK:-自动下一首或者是单曲循环
-    func autoNext() {
-        if PlayerManager.shared.cycle == .single {
-            //单曲循环播放
-            if let model = self.musicModel {
-                loadMusic(model: model)
-            }
-        } else {
-            //下一首
-            nextMusic()
         }
     }
     
@@ -303,6 +263,9 @@ class WHPlayerBottomView: UIControl {
     }
 
     deinit {
+        NotificationCenter.removeObserver(observer: self, name: .kMusicChange)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
+        
     }
 }

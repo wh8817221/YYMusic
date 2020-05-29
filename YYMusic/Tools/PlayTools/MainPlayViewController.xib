@@ -12,9 +12,10 @@
             <connections>
                 <outlet property="backgroudView" destination="i3m-2h-GEX" id="voj-bO-0TC"/>
                 <outlet property="backgroundImageView" destination="J9i-eh-JsX" id="PvB-Tu-BXX"/>
-                <outlet property="closedBtn" destination="jKz-aH-Ohe" id="GX2-WZ-nCG"/>
+                <outlet property="closedBtn" destination="xdv-UU-qEM" id="IVm-4L-0lZ"/>
                 <outlet property="contentView" destination="OgK-hv-LrF" id="QqF-ct-CDL"/>
                 <outlet property="segmentedControl" destination="vrF-re-t3i" id="VPe-DQ-lCT"/>
+                <outlet property="shareBtn" destination="jKz-aH-Ohe" id="Rfm-GX-Ifz"/>
                 <outlet property="topConstraint" destination="bci-Kv-Jed" id="oZT-RV-FdS"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -56,7 +57,7 @@
                                 <constraint firstAttribute="width" constant="46" id="CAf-9l-5ka"/>
                                 <constraint firstAttribute="height" constant="30" id="DDx-ju-Jkh"/>
                             </constraints>
-                            <state key="normal" image="menu"/>
+                            <state key="normal" image="arrow"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jKz-aH-Ohe">
                             <rect key="frame" x="358" y="7.5" width="46" height="30"/>
@@ -64,7 +65,7 @@
                                 <constraint firstAttribute="width" constant="46" id="atO-Ao-4IG"/>
                                 <constraint firstAttribute="height" constant="30" id="f5F-GM-bBU"/>
                             </constraints>
-                            <state key="normal" image="arrow_down"/>
+                            <state key="normal" image="icon_share"/>
                         </button>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="vrF-re-t3i">
                             <rect key="frame" x="107" y="5" width="200" height="36"/>
@@ -113,7 +114,7 @@
         </view>
     </objects>
     <resources>
-        <image name="arrow_down" width="22.5" height="13.5"/>
-        <image name="menu" width="25" height="17.5"/>
+        <image name="arrow" width="25" height="25"/>
+        <image name="icon_share" width="32" height="32"/>
     </resources>
 </document>

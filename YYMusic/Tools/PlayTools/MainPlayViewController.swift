@@ -12,6 +12,7 @@ import HWPanModal
 class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
     var model: MusicModel?
     @IBOutlet weak var backgroudView: UIView!
+    @IBOutlet weak var shareBtn: UIButton!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var closedBtn: UIButton!
