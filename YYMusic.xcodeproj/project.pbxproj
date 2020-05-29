@@ -25,7 +25,6 @@
 		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
-		D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D502E247FB5520024EBA6 /* PlayButton.swift */; };
 		D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50302480E0820024EBA6 /* UIColorExtention.swift */; };
 		D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */; };
 		D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */; };
@@ -106,7 +105,6 @@
 		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
-		D26D502E247FB5520024EBA6 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		D26D50302480E0820024EBA6 /* UIColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtention.swift; sourceTree = "<group>"; };
 		D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectConfigue.swift; sourceTree = "<group>"; };
@@ -299,7 +297,6 @@
 				D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */,
 				D2B2F4D6247D1929007FECBF /* ZFTableViewCell.swift */,
 				D2B2F4D8247E017D007FECBF /* LrcLabel.swift */,
-				D26D502E247FB5520024EBA6 /* PlayButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -687,7 +684,6 @@
 				D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */,
 				D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */,
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
-				D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */,
 				D2B2F4D5247D17A9007FECBF /* TestListViewController.swift in Sources */,

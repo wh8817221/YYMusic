@@ -22,10 +22,9 @@ let navHeight:CGFloat = DeviceInfo.isiPhoneXOrLater() ? 24 : 0
 let tabHeight:CGFloat = DeviceInfo.isiPhoneXOrLater() ? 34 : 0
 
 let kThemeColor = UIColor(red: 249/255, green: 191/255, blue: 0/255, alpha: 1.0)
-let kGreyColor = UIColor(red: 99/255, green: 97/255, blue: 97/255, alpha: 1.0)
-let kPlayerBacgroundColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
+let kBlackColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
 let kBackgroundColor = UIColor.hexStringToColor(stringToConvert: "#F7F8FC")
-let kLineColor = UIColor.hexStringToColor(stringToConvert: "#efeff4")
+let kLineColor = UIColor.hexStringToColor(stringToConvert: "#E5E7ED")
 
 
 //MARK:- font (不用动态字体)

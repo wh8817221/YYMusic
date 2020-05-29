@@ -16,23 +16,6 @@ import HWPanModal
 //    @objc func playMusicChange(_ mode: Int, object: Any?)
 //}
 
-enum PlayMode: Int {
-    //默认
-    case none = 0
-    //下一首
-    case next = 1
-    //前一首
-    case previous = 2
-    //播放
-    case play = 3
-    //暂停
-    case pause = 4
-    //自动下一首/循环/随机
-    case auto = 5
-    //继续播放
-    case goOn = 6
-}
-
 //播放状态
 enum PlayerCycle: Int {
     /**单曲循环*/
@@ -45,8 +28,6 @@ enum PlayerCycle: Int {
 
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
-    //播放模式
-    var playMode: PlayMode = .none
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
     /*播放下标, 默认从第一首开始*/
@@ -75,7 +56,12 @@ class PlayerManager: NSObject {
     {
         get {
             if musicArray.count > 0 {
-                return musicArray[index]
+                if self.cycle == .random {
+                    let random = Int(arc4random())%musicArray.count
+                    return musicArray[random]
+                } else {
+                    return musicArray[index]
+                }
             }
             return nil
         }
@@ -160,7 +146,6 @@ class PlayerManager: NSObject {
             let totalTime = d!/Int64(t!)
             return "\(totalTime)"
         }
-        
         return nil
     }
     

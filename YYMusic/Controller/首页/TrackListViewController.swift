@@ -14,6 +14,8 @@ class TrackListViewController: UIViewController {
     var type: BillListType?
     @IBOutlet weak var tableView: UITableView!
     fileprivate var songs: [BDSongModel] = []
+    
+    fileprivate var changeModels: [MusicModel] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = kBackgroundColor

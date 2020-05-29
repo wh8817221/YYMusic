@@ -74,7 +74,7 @@ class BillListViewController: UIViewController {
     //MARK:-首页布局
     func selectViewUI() {
         var configue = SelectConfigue()
-        configue.scrollViewColor = kPlayerBacgroundColor
+        configue.scrollViewColor = kBlackColor
         configue.defaultButtonColor = .white
         configue.selectButtonColor = kThemeColor
         configue.lineColor = kThemeColor

@@ -25,7 +25,7 @@ class MainTabBarViewController: UITabBarController {
         playerBottomView.snp.makeConstraints { (make) in
             make.left.right.equalTo(self.view)
             make.height.equalTo(65)
-            make.bottom.equalTo(self.tabBar.snp.top)
+            make.bottom.equalTo(self.tabBar.snp.top).offset(-0.5)
         }
     }
  

@@ -107,7 +107,7 @@ class WHPlayerBottomView: UIView {
         }
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
-        
+        //注册监听
         NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
         NotificationCenter.addObserver(observer: self, selector: #selector(playStatusChange(_:)), name: .kReloadPlayStatus)
