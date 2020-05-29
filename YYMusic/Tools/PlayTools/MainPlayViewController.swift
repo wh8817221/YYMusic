@@ -21,6 +21,11 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
     fileprivate var pageScrollView: PageScrollView!
     //默认选中的位置
     fileprivate var selectIndex: Int = 0
+    //播放页面
+    fileprivate var playVC: PlayDetailViewController!
+    //歌词页面
+    fileprivate var lyricVC: LyricViewController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //适配iPhoneX以后机型
@@ -33,17 +38,11 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
         self.setUI()
 
         //音乐控制器
-        let playVC = PlayDetailViewController(nibName: "PlayDetailViewController", bundle: nil)
+        playVC = PlayDetailViewController(nibName: "PlayDetailViewController", bundle: nil)
         playVC.model = model
-        playVC.callback = { [weak self](value) in
-            if let m = value as? MusicModel {
-                self?.model = m
-                self?.updateBackgroudImage()
-            }
-        }
 
         //歌词控制器
-        let lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
+        lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
         lyricVC.model = model
 
         pageScrollView = PageScrollView(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
@@ -54,8 +53,20 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
         }
         //初始化选中的位置
         pageScrollView.selectIndex(index: selectIndex)
+        
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
     }
 
+    @objc fileprivate func musicChange(_ notification: Notification) {
+        if let model = notification.object as? MusicModel {
+            self.model = model
+            self.updateBackgroudImage()
+            self.playVC.updateModel(model: model)
+//            self.lyricVC.model = model
+        }
+    }
+    
+    
     func updateBackgroudImage() {
         //获取背景图
         if let str = model?.coverLarge, let url = URL(string: str) {
@@ -109,6 +120,7 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
     
     deinit {
         print("\(self)释放了")
+        NotificationCenter.removeObserver(observer: self, name: .kMusicChange)
     }
     
     //MARK:- HWPanModalPresentable

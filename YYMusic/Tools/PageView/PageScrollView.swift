@@ -98,6 +98,7 @@ class PageScrollView: UIView{
     
     //MARK:-选中的位置
     func selectIndex(index: Int) {
+        self.layoutIfNeeded()
         self.currentPage = index
         UIView.animate(withDuration: 0.3) {
             self.viewConrtollerScroll.contentOffset.x = CGFloat(index)*screenWidth

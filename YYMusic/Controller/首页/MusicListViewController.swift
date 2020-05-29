@@ -51,7 +51,7 @@ class MusicListViewController: UIViewController {
         self.tableView.mj_header?.beginRefreshing()
  
         //加载底部播放器
-        playerBottomView.show(tableView: tableView, superVc: self)
+//        playerBottomView.show(tableView: tableView, superVc: self)
     }
 
     func getMusicList(_ first: Bool) {

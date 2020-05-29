@@ -25,12 +25,12 @@
 		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
+		D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D502E247FB5520024EBA6 /* PlayButton.swift */; };
 		D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */; };
 		D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */; };
 		D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDF247F881F00D1A4AB /* PageScrollView.swift */; };
 		D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48124753202007FECBF /* LyricViewController.swift */; };
 		D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F48224753202007FECBF /* LyricViewController.xib */; };
-		D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48F2476575C007FECBF /* SelectScrollview.swift */; };
 		D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49124767BDA007FECBF /* BaseViewController.swift */; };
 		D2B2F49424768CB8007FECBF /* LrcAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */; };
 		D2B2F49724776B31007FECBF /* shaonian.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F49624776B31007FECBF /* shaonian.txt */; };
@@ -105,12 +105,12 @@
 		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		D26D502E247FB5520024EBA6 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectConfigue.swift; sourceTree = "<group>"; };
 		D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScrollView.swift; sourceTree = "<group>"; };
 		D28DACDF247F881F00D1A4AB /* PageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageScrollView.swift; sourceTree = "<group>"; };
 		D2B2F48124753202007FECBF /* LyricViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricViewController.swift; sourceTree = "<group>"; };
 		D2B2F48224753202007FECBF /* LyricViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LyricViewController.xib; sourceTree = "<group>"; };
-		D2B2F48F2476575C007FECBF /* SelectScrollview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectScrollview.swift; sourceTree = "<group>"; };
 		D2B2F49124767BDA007FECBF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LrcAnalyzer.swift; sourceTree = "<group>"; };
 		D2B2F49624776B31007FECBF /* shaonian.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shaonian.txt; sourceTree = "<group>"; };
@@ -297,6 +297,7 @@
 				D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */,
 				D2B2F4D6247D1929007FECBF /* ZFTableViewCell.swift */,
 				D2B2F4D8247E017D007FECBF /* LrcLabel.swift */,
+				D26D502E247FB5520024EBA6 /* PlayButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -369,7 +370,6 @@
 				D2B2F48124753202007FECBF /* LyricViewController.swift */,
 				D2B2F48224753202007FECBF /* LyricViewController.xib */,
 				D2D10CD72474E23D0051E3E2 /* MusicSlider.swift */,
-				D2B2F48F2476575C007FECBF /* SelectScrollview.swift */,
 				D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */,
 			);
 			path = PlayTools;
@@ -669,7 +669,6 @@
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
 				D2B2F4B5247CACA1007FECBF /* MVPlayViewController.swift in Sources */,
 				D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */,
-				D2B2F4902476575C007FECBF /* SelectScrollview.swift in Sources */,
 				D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */,
 				D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */,
 				D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */,
@@ -684,6 +683,7 @@
 				D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */,
 				D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */,
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
+				D26D502F247FB5520024EBA6 /* PlayButton.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */,
 				D2B2F4D5247D17A9007FECBF /* TestListViewController.swift in Sources */,

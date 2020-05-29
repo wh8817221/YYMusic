@@ -103,7 +103,6 @@ class WHPlayerBottomView: UIControl {
         }
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
-        NotificationCenter.addObserver(observer: self, selector: #selector(reloadPlay(_ :)), name: .kReloadPlayStatus)
         
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
     }
@@ -131,26 +130,7 @@ class WHPlayerBottomView: UIControl {
             }
         }
     }
-    
-    //MARK:-刷新播放状态
-    @objc fileprivate func reloadPlay(_ sender: Notification) {
-        if let mode = sender.object as? PlayMode {
-            switch mode {
-            case .play, .pause:
-                self.tapPlayButton(isPlay: mode == .play)
-            case .next:
-                self.nextMusic()
-                self.playAndPauseBtn.isSelected = true
-            case .previous:
-                self.previousMusic()
-                self.playAndPauseBtn.isSelected = true
-            default:
-                self.autoNext()
-                self.playAndPauseBtn.isSelected = true
-            }
-        }
-    }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -225,9 +205,10 @@ class WHPlayerBottomView: UIControl {
         self.musicModel = model
         self.playAndPauseBtn.isSelected = true
         self.startAnimation()
-        PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
-            self?.startAnimation()
-        })
+        PlayerManager.shared.playMusic(model: model)
+//        PlayerManager.shared.playReplaceItem(with: model, callback: {[weak self] (value) in
+//            self?.startAnimation()
+//        })
     }
     
     //MARK:-播放按钮
@@ -257,23 +238,25 @@ class WHPlayerBottomView: UIControl {
     //前一首
     func previousMusic() {
         stopAnimation()
-        PlayerManager.shared.playPrevious(callback: {[weak self] (value) in
-             if let m = value as? MusicModel {
-                self?.musicModel = m
-                self?.startAnimation()
-             }
-        })
+        PlayerManager.shared.playPrevious()
+//        PlayerManager.shared.playPrevious(callback: {[weak self] (value) in
+//             if let m = value as? MusicModel {
+//                self?.musicModel = m
+//                self?.startAnimation()
+//             }
+//        })
     }
     
     //下一首
     func nextMusic() {
         stopAnimation()
-        PlayerManager.shared.playNext(callback: {[weak self] (value) in
-             if let m = value as? MusicModel {
-                self?.musicModel = m
-                self?.startAnimation()
-             }
-        })
+        PlayerManager.shared.playNext()
+//        PlayerManager.shared.playNext(callback: {[weak self] (value) in
+//             if let m = value as? MusicModel {
+//                self?.musicModel = m
+//                self?.startAnimation()
+//             }
+//        })
     }
     
     //MARK:-自动下一首或者是单曲循环
@@ -320,7 +303,6 @@ class WHPlayerBottomView: UIControl {
     }
 
     deinit {
-        NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
     }
 }

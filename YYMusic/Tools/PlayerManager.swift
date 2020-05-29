@@ -49,7 +49,7 @@ class PlayerManager: NSObject {
     var playMode: PlayMode = .none
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
-    /*播放下标*/
+    /*播放下标, 默认从第一首开始*/
     var index: Int = 0
     /*标记是不是没点列表直接点了播放按钮如果是就默认播放按钮*/
     var isFristPlayerPauseBtn: Bool = true
@@ -64,14 +64,15 @@ class PlayerManager: NSObject {
             }
         }
     }
-    /*播放状态*/
+    /*播放模式*/
     var cycle: PlayerCycle = .order {
         didSet{
             UserDefaultsManager.shared.userDefaultsSet(object: cycle.rawValue, key: CYCLE)
         }
     }
     /**获取当前播放的歌曲*/
-    var currentModel: MusicModel? {
+    var currentModel: MusicModel?
+    {
         get {
             if musicArray.count > 0 {
                 return musicArray[index]
@@ -79,6 +80,7 @@ class PlayerManager: NSObject {
             return nil
         }
     }
+    
     /**播放时间监听*/
     fileprivate var timeObserve: Any?
     fileprivate var isFirstTime: Bool = true
@@ -93,7 +95,6 @@ class PlayerManager: NSObject {
         
         if player == nil {
             player = AVPlayer()
-//            let p = AVAudioPlayer()
             let session = AVAudioSession.sharedInstance()
             try? session.setCategory(.playback)
             try? session.setActive(true, options: [])
@@ -109,6 +110,7 @@ class PlayerManager: NSObject {
     //MARK:-播放完毕通知
     @objc fileprivate func playerItemDidPlayToEndTime(_ notification: Notification) {
         print("播放完毕========>\(currentModel?.title ?? "")歌曲")
+        autoPlay()
     }
     
     //MARK:-耳机操作通知
@@ -126,10 +128,6 @@ class PlayerManager: NSObject {
                 break
             }
         }
-    }
-    
-    func hasBeenFavoriteMusic() -> Bool{
-        return false
     }
     
     //存储歌曲时缺少Index,重新设置index
@@ -186,28 +184,41 @@ class PlayerManager: NSObject {
         player.pause()
         isPlaying = false
     }
+    
     //播放歌曲
-    func playMusic() {
-        isPlaying = true
+    func playMusic(model: MusicModel?) {
+        self.playReplaceItem(with: model)
     }
+    
+    //自动下一首/循环/随机
+    func autoPlay() {
+        if PlayerManager.shared.cycle == .single {
+            //单曲循环播放
+            self.playReplaceItem(with: PlayerManager.shared.currentModel)
+        } else {
+            //下一首
+            self.playNext()
+        }
+    }
+    
     //前一首
-    func playPrevious(callback: ObjectCallback?) {
+    func playPrevious() {
         if self.index == 0 {
             self.index = self.musicArray.count - 1
         } else {
             self.index -= 1
         }
-        self.playReplaceItem(with: self.currentModel, callback: callback)
+        self.playReplaceItem(with: self.currentModel)
     }
     
     //下一首
-    func playNext(callback: ObjectCallback?) {
+    func playNext() {
         if self.index == self.musicArray.count - 1 {
             self.index = 0
         } else {
             self.index += 1
         }
-        self.playReplaceItem(with: self.currentModel, callback: callback)
+        self.playReplaceItem(with: self.currentModel)
     }
   
     func playerVolume(with volumeFloat: CGFloat) {
@@ -231,19 +242,21 @@ class PlayerManager: NSObject {
     }
     
     //自动/切换播放
-    func playReplaceItem(with model: MusicModel?, callback: ObjectCallback?) {
-        
-        //这个固定不变
+    fileprivate func playReplaceItem(with model: MusicModel?) {
+        //每次播放重置index
+        resetIndex(model: model)
+        //播放的url
         let url = URL(string: model?.playUrl32 ?? "")
         currentPlayerItem = AVPlayerItem(url: url!)
         self.player.replaceCurrentItem(with: currentPlayerItem)
+        //调用播放
         self.playerPlay()
-        
-        if let callback = callback {
-            callback(model!)
-        }
+
+        //监听音乐的时间变化
         addMusicTimeMake()
         
+        //通知页面模型改变
+        NotificationCenter.post(name: .kMusicChange, object: model)
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
     }
@@ -269,6 +282,9 @@ class PlayerManager: NSObject {
             tempTime = ct
             if let duration = self?.player.currentItem?.duration {
                 let tt = CMTimeGetSeconds(duration)
+                if ct == tt {
+                    self?.autoPlay()
+                }
                 NotificationCenter.post(name: .kMusicTimeInterval, object: [ct,tt])
             }
             //控制中心,锁屏时候展示(在这里会导致主线程卡顿)
@@ -288,6 +304,12 @@ class PlayerManager: NSObject {
         if let item = object as? AVPlayerItem {
             if keyPath == "status" {
                 print("当前播放状态=====>\(item.status.rawValue)")
+                if item.status == .readyToPlay {
+                    //存储歌曲总时间
+                    if let t = self.getTotalTime(), (Int(t) ?? 0) > 0{
+                        UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
+                    }
+                }
             }
         }
     }

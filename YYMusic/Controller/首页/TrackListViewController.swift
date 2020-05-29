@@ -33,7 +33,7 @@ class TrackListViewController: UIViewController {
 //            self.currentMusic = music
 //            playerBottomView.reloadUI(music: music)
 //        }
-//        self.getMusicList()
+        self.getMusicList()
     }
 
     func getMusicList() {

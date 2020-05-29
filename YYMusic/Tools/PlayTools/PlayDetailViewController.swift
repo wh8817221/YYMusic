@@ -11,11 +11,10 @@ import AVFoundation
 
 class PlayDetailViewController: UIViewController {
     
+    var model: MusicModel?
     @IBOutlet weak var lrcLbl: LrcLabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    var model: MusicModel?
-    var callback: ObjectCallback?
-    fileprivate var playMode: PlayMode = .none
+    
     @IBOutlet weak var singerImageView: UIImageView!
     @IBOutlet weak var songerName: UILabel!
     @IBOutlet weak var songName: UILabel!
@@ -34,7 +33,7 @@ class PlayDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        updateModel()
+        updateModel(model: model)
         //适配iPhoneX以后机型
         if screenHeight >= 812 {
             bottomConstraint.constant = 20
@@ -47,7 +46,8 @@ class PlayDetailViewController: UIViewController {
         removeLrcTimer()
     }
     
-    func updateModel() {
+    func updateModel(model: MusicModel?) {
+        self.model = model
         if let str = model?.coverMiddle, let url = URL(string: str) {
             singerImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
             }
@@ -57,10 +57,6 @@ class PlayDetailViewController: UIViewController {
         //歌名和歌手
         songName.text = model?.title ?? ""
         songerName.text = model?.nickname ?? ""
-        
-        if let callback = callback {
-            callback(model!)
-        }
     }
     
     func setUI() {
@@ -195,12 +191,26 @@ class PlayDetailViewController: UIViewController {
     //暂停播放
     @objc func playAndPause(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if !sender.isSelected {
-            playMode = .pause
+        //第一次点击底部播放按钮并且还是未在播放状态
+        if PlayerManager.shared.isFristPlayerPauseBtn && !PlayerManager.shared.isPlaying {
+            PlayerManager.shared.isFristPlayerPauseBtn = false
+            if let model = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+                PlayerManager.shared.playMusic(model: model)
+            } else {
+                //归档没找到默认播放第一个
+                if let model = PlayerManager.shared.currentModel {
+                    PlayerManager.shared.playMusic(model: model)
+                }
+            }
         } else {
-            playMode = .play
+            PlayerManager.shared.isFristPlayerPauseBtn = false
+            if !sender.isSelected {
+                PlayerManager.shared.playerPause()
+            } else {
+                PlayerManager.shared.playerPlay()
+            }
         }
-        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
+        
     }
     
     /** 设置时间数据 */
@@ -208,25 +218,15 @@ class PlayDetailViewController: UIViewController {
         if let c = currentTime, let t = totalTime {
             let ct = CMTime(value: CMTimeValue(c)!, timescale: CMTimeScale(1.0))
             let tt = CMTime(value: CMTimeValue(t)!, timescale: CMTimeScale(1.0))
-            
             let cs = CMTimeGetSeconds(ct)
             let ts = CMTimeGetSeconds(tt)
             startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
             totalTimeLbl.text = timeIntervalToMMSSFormat(interval: ts)
-            
             //当前播放进度
             sliderView.minimumValue = 0.0
             sliderView.maximumValue = Float(ts)
             if !isSlider {
                sliderView.value = Float(cs)
-            }
-
-            if cs == ts {
-                self.playMode = .auto
-                NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
-                delay(0.2, closure: { [weak self] in
-                    self?.upDateUI()
-                })
             }
         }
     }
@@ -236,7 +236,6 @@ class PlayDetailViewController: UIViewController {
     }
     
     @objc fileprivate func touchUpInside(_ slider: UISlider) {
-        
         //暂停情况--->滑动默认播放
         if !self.playAndPauseBtn.isSelected {
             self.playAndPause(self.playAndPauseBtn)
@@ -256,37 +255,17 @@ class PlayDetailViewController: UIViewController {
         let cs = CMTimeGetSeconds(ct)
         startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
     }
-    
-    func upDateUI() {
-        if let m = PlayerManager.shared.currentModel {
-            self.model = m
-            self.updateModel()
-            PlayerManager.shared.isPlaying = true
-        }
-    }
-    
+  
     //MARK:-前一首
     @objc func previusAction(_ sender: UIButton) {
-        playMode = .previous
-        //切换歌曲, 默认自动播放
         playAndPauseBtn.isSelected = true
-        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
-        
-        delay(0.25, closure: { [weak self] in
-            self?.upDateUI()
-        })
-
+        PlayerManager.shared.playPrevious()
     }
     
     //MARK:下一首
     @objc func nextAction(_ sender: UIButton) {
-        playMode = .next
-        //切换歌曲, 默认自动播放
         playAndPauseBtn.isSelected = true
-        NotificationCenter.post(name: .kReloadPlayStatus, object: playMode)
-        delay(0.25, closure: { [weak self] in
-            self?.upDateUI()
-        })
+        PlayerManager.shared.playNext()
     }
     
     //MARK:-顺序播放->单曲循环->随机播放->顺序播放
