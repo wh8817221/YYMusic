@@ -13,17 +13,6 @@ import MarqueeLabel
 class WHPlayerBottomView: UIView {
     static let shared = WHPlayerBottomView()
     var musicModel: MusicModel?
-//    {
-//        didSet {
-//            if let m = musicModel {
-//                let url = URL(string: m.coverSmall!)
-//                headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
-//                })
-//                songNameLbl.text = "\(m.title ?? "") - \(m.nickname ?? "")"
-//            }
-//        }
-//    }
-    
     /*圆环进度指示器*/
     var progress: CGFloat = 0.0 {
         didSet{
@@ -97,7 +86,6 @@ class WHPlayerBottomView: UIView {
     @objc fileprivate func musicTimeInterval() {
         let currentTime = PlayerManager.shared.getCurrentTime()
         let totalTime = PlayerManager.shared.getTotalTime()
-        //更新进度圆环 如果当前时间=总时长 就直接下一首(或者单曲循环)
         let cT = Double(currentTime ?? "0")
         let dT = Double(totalTime ?? "0")
         if let ct = cT, let dt = dT, dt > 0.0 {
@@ -215,14 +203,14 @@ extension WHPlayerBottomView: InfiniteCycleViewDelegate {
     func infiniteCycleView(_ scrollView: InfiniteCycleView) -> UIView {
         return MusicView()
     }
-    
+    //更新当前视图
     func infiniteCycleView(currentView: UIView?) {
         if let mv = currentView as? MusicView {
             self.currentMusicView = mv
             mv.model = self.musicModel
         }
     }
-    
+    //更新前一个视图
     func infiniteCycleView(previousView: UIView?, isEndDragging: Bool) {
         if let mv = previousView as? MusicView {
             if !PlayerManager.shared.musicArray.isEmpty {
@@ -235,7 +223,7 @@ extension WHPlayerBottomView: InfiniteCycleViewDelegate {
             }
         }
     }
-    
+    //更新下一个视图
     func infiniteCycleView(nextView: UIView?, isEndDragging: Bool) {
         if let mv = nextView as? MusicView {
             if !PlayerManager.shared.musicArray.isEmpty {
@@ -249,7 +237,7 @@ extension WHPlayerBottomView: InfiniteCycleViewDelegate {
         }
     }
     
-    func infiniteCycleView(_ scrollView: InfiniteCycleView, didSelectContentViewAt index: Int) {
+    func infiniteCycleViewDidSelect(_ currentView: UIView?) {
         let vc = UIApplication.shared.keyWindow?.rootViewController
         PlayerManager.shared.presentPlayController(vc: vc, model: self.musicModel)
     }

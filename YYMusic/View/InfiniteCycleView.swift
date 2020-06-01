@@ -9,29 +9,22 @@
 import UIKit
 
 @objc protocol InfiniteCycleViewDelegate: NSObjectProtocol {
-    
+    //初始化视图
     func infiniteCycleView(_ scrollView: InfiniteCycleView) -> UIView
-
+    //视图滚动处理模型变化
     @objc func infiniteCycleView(currentView: UIView?)
     @objc func infiniteCycleView(previousView: UIView?, isEndDragging: Bool)
     @objc func infiniteCycleView(nextView: UIView?, isEndDragging: Bool)
-    
-    
-    @objc func infiniteCycleView(_ scrollView: InfiniteCycleView, didSelectContentViewAt index: Int)
+    //当前视图选中
+    @objc func infiniteCycleViewDidSelect(_ currentView: UIView?)
     
 }
 
 class InfiniteCycleView: UIView, UIScrollViewDelegate {
     
-    weak var delegate: InfiniteCycleViewDelegate? {
-        didSet {
-            initData()
-        }
-    }
-    fileprivate var currentIndex: Int = 0
-    fileprivate var totalIndex: Int = 0
+    weak var delegate: InfiniteCycleViewDelegate?
+    fileprivate var totalIndex: Int = 3
     fileprivate var scrollView: UIScrollView!
-    fileprivate var offsetX: CGFloat = 0
     
     var previousView: UIView?
     var currentView: UIView?
@@ -54,24 +47,17 @@ class InfiniteCycleView: UIView, UIScrollViewDelegate {
         }
     }
     
-    func initData() {
-        currentIndex = 0
-        totalIndex = 3
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         scrollView.contentSize = CGSize(width: self.bounds.width*CGFloat(totalIndex), height: self.bounds.height)
-        self.resetContentViews()
+        self.setViews()
     }
     
-    func resetContentViews() {
-//        //移除scrollView上的所有子视图
-//        _ = scrollView.subviews.map({$0.removeFromSuperview()})
-//
-//        let previousIndex = self.getPreviousPageIndex(with: currentIndex)
-//        let nextIndex = self.getNextPageIndex(with: currentIndex)
-
+    func setViews() {
+        //保证永远只有三个视图滚动
+        if previousView != nil && currentView != nil && nextView != nil {
+            return
+        }
         if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(_:)))) {
             previousView =
                 delegate!.infiniteCycleView(self)
@@ -84,36 +70,22 @@ class InfiniteCycleView: UIView, UIScrollViewDelegate {
             for (i, v) in views.enumerated() {
                 v!.frame = CGRect(x: self.frame.width*CGFloat(i), y: 0, width: self.frame.width, height: self.frame.height)
                 v?.isUserInteractionEnabled = true
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapContentView))
-                v?.addGestureRecognizer(tapGesture)
+                //只给当前视图添加点击事件
+                if v == currentView {
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapContentView))
+                    v?.addGestureRecognizer(tapGesture)
+                }
                 scrollView.addSubview(v!)
             }
+            //滚动到中间视图
             scrollView.setContentOffset(CGPoint(x: self.bounds.width, y: 0), animated: false)
         }
         
     }
     
     @objc fileprivate func tapContentView() {
-        if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(_:didSelectContentViewAt:)))) {
-            delegate!.infiniteCycleView(self, didSelectContentViewAt: currentIndex)
-        }
-    }
-    
-    // 获取当前页上一页的序号
-    func getPreviousPageIndex(with currentIndex: Int) -> Int {
-        if currentIndex == 0 {
-            return totalIndex - 1
-        } else {
-            return currentIndex - 1
-        }
-    }
-    
-    // 获取当前页下一页的序号
-    func getNextPageIndex(with currentIndex: Int) -> Int {
-        if currentIndex == totalIndex - 1 {
-            return 0
-        } else {
-            return currentIndex + 1
+        if (delegate!.responds(to: #selector(delegate?.infiniteCycleViewDidSelect(_:)))) {
+            delegate!.infiniteCycleViewDidSelect(self.currentView)
         }
     }
     
@@ -123,32 +95,28 @@ class InfiniteCycleView: UIView, UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x-self.bounds.width
+        //向右滚动,获取下一个视图模型
         if offsetX > 0 {
             if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(nextView:isEndDragging:)))) {
                 delegate!.infiniteCycleView(nextView: nextView, isEndDragging: false)
             }
         }
-        
+        //向左滚动,获取前一个视图模型
         if offsetX < 0 {
             if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(previousView:isEndDragging:)))) {
                 delegate!.infiniteCycleView(previousView: previousView, isEndDragging: false)
             }
         }
-
+        //获取当前视图模型
         if offsetX == 0 {
             if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(currentView:)))) {
                 delegate!.infiniteCycleView(currentView: currentView)
             }
         }
     }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let offsetX = scrollView.contentOffset.x-self.bounds.width
-        self.offsetX = offsetX
-    }
-    
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //更新当前模型
+        let offsetX = scrollView.contentOffset.x-self.bounds.width
         //向右
         if offsetX >= self.bounds.width/2 {
             if (delegate!.responds(to: #selector(delegate?.infiniteCycleView(nextView:isEndDragging:)))) {
