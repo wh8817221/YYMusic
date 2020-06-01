@@ -27,6 +27,8 @@
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
 		D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50302480E0820024EBA6 /* UIColorExtention.swift */; };
 		D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */; };
+		D26D5037248110C90024EBA6 /* InfiniteCycleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */; };
+		D26D50392484B1670024EBA6 /* MusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50382484B1670024EBA6 /* MusicView.swift */; };
 		D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */; };
 		D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */; };
 		D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDF247F881F00D1A4AB /* PageScrollView.swift */; };
@@ -107,6 +109,8 @@
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		D26D50302480E0820024EBA6 /* UIColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtention.swift; sourceTree = "<group>"; };
 		D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
+		D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteCycleView.swift; sourceTree = "<group>"; };
+		D26D50382484B1670024EBA6 /* MusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicView.swift; sourceTree = "<group>"; };
 		D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectConfigue.swift; sourceTree = "<group>"; };
 		D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScrollView.swift; sourceTree = "<group>"; };
 		D28DACDF247F881F00D1A4AB /* PageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageScrollView.swift; sourceTree = "<group>"; };
@@ -297,6 +301,8 @@
 				D2D10CB0247274030051E3E2 /* WHPlayerBottomView.swift */,
 				D2B2F4D6247D1929007FECBF /* ZFTableViewCell.swift */,
 				D2B2F4D8247E017D007FECBF /* LrcLabel.swift */,
+				D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */,
+				D26D50382484B1670024EBA6 /* MusicView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -669,10 +675,12 @@
 				D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */,
 				D2B2F4B5247CACA1007FECBF /* MVPlayViewController.swift in Sources */,
 				D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */,
+				D26D5037248110C90024EBA6 /* InfiniteCycleView.swift in Sources */,
 				D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */,
 				D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */,
 				D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */,
 				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,
+				D26D50392484B1670024EBA6 /* MusicView.swift in Sources */,
 				D2D10CD02474C8200051E3E2 /* MainPlayViewController.swift in Sources */,
 				D2B2F4B1247CAB68007FECBF /* MVListViewController.swift in Sources */,
 				D2D10CDA2474FB620051E3E2 /* UIViewExtention.swift in Sources */,

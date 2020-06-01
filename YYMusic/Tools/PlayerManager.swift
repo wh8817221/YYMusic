@@ -30,6 +30,26 @@ class PlayerManager: NSObject {
     static let shared = PlayerManager()
     /*存放歌曲数组*/
     var musicArray: [MusicModel] = []
+    /*前一首下标*/
+    var previousIndex: Int! {
+        get {
+            if self.index == 0 {
+                return self.musicArray.count - 1
+            } else {
+                return self.index - 1
+            }
+        }
+    }
+    /*下一首下标*/
+    var nextIndex: Int! {
+        get {
+            if self.index == self.musicArray.count - 1 {
+                return 0
+            } else {
+                return self.index + 1
+            }
+        }
+    }
     /*播放下标, 默认从第一首开始*/
     var index: Int = 0
     /*标记是不是没点列表直接点了播放按钮如果是就默认播放按钮*/
@@ -187,7 +207,7 @@ class PlayerManager: NSObject {
             self.playNext()
         }
     }
-    
+
     //MARK:- 前一首
     func playPrevious() {
         if self.index == 0 {

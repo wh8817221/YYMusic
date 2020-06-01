@@ -12,16 +12,17 @@ import MarqueeLabel
 
 class WHPlayerBottomView: UIView {
     static let shared = WHPlayerBottomView()
-    var musicModel: MusicModel? {
-        didSet {
-            if let m = musicModel {
-                let url = URL(string: m.coverSmall!)
-                headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
-                })
-                songNameLbl.text = "\(m.title ?? "") - \(m.nickname ?? "")"
-            }
-        }
-    }
+    var musicModel: MusicModel?
+//    {
+//        didSet {
+//            if let m = musicModel {
+//                let url = URL(string: m.coverSmall!)
+//                headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
+//                })
+//                songNameLbl.text = "\(m.title ?? "") - \(m.nickname ?? "")"
+//            }
+//        }
+//    }
     
     /*圆环进度指示器*/
     var progress: CGFloat = 0.0 {
@@ -31,27 +32,12 @@ class WHPlayerBottomView: UIView {
             drawCircle(rect: playAndPauseBtn.frame, progress: progress)
         }
     }
-    
-    /*歌手头像*/
-    var headerImageView: UIImageView!
-    /*歌名-歌手名*/
-    var songNameLbl: MarqueeLabel = {
-        let lbl = MarqueeLabel()
-        lbl.text = "歌曲-歌手"
-        lbl.textColor = .black
-        lbl.font = kFont15
-        lbl.textAlignment = .left
-        lbl.speed = .duration(10)
-        lbl.trailingBuffer = 30
-        lbl.fadeLength = 10
-        lbl.animationCurve = .easeInOut
-        return lbl
-    }()
-    
+
     /*播放暂停按钮*/
     var playAndPauseBtn: UIButton!
     /**播放的背景*/
     var contentView: UIControl!
+    var currentMusicView: MusicView?
     fileprivate lazy var arcLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = UIColor.clear.cgColor
@@ -69,24 +55,12 @@ class WHPlayerBottomView: UIView {
         contentView = UIControl()
         contentView.backgroundColor = .white
         self.addSubview(contentView)
-        contentView.addTarget(self, action: #selector(tapBottomView(_:)), for: .touchUpInside)
         contentView.snp.makeConstraints { (make) in
             make.left.right.equalTo(self)
             make.bottom.equalTo(self.snp.bottom)
             make.height.equalTo(48)
         }
-        
-        
-        headerImageView = UIImageView()
-        headerImageView.image = UIImage(named: "musicicon")
-        headerImageView.layer.cornerRadius = 25
-        headerImageView.layer.masksToBounds = true
-        contentView.addSubview(headerImageView)
-        headerImageView.snp.makeConstraints { (make) in
-            make.height.width.equalTo(50)
-            make.left.equalTo(contentView.snp.left).offset(10)
-            make.bottom.equalTo(contentView.snp.bottom).offset(-6)
-        }
+  
         
         playAndPauseBtn = UIButton(type: .custom)
         playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .normal)
@@ -97,13 +71,6 @@ class WHPlayerBottomView: UIView {
             make.height.width.equalTo(35)
             make.right.equalTo(contentView.snp.right).offset(-10)
             make.centerY.equalTo(contentView.snp.centerY)
-        }
-
-        contentView.addSubview(songNameLbl)
-        songNameLbl.snp.makeConstraints { (make) in
-            make.centerY.equalTo(contentView.snp.centerY)
-            make.left.equalTo(headerImageView.snp.right).offset(10)
-            make.right.equalTo(playAndPauseBtn.snp.left).offset(-10)
         }
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
@@ -117,6 +84,14 @@ class WHPlayerBottomView: UIView {
             self.musicModel = music
         }
         self.updateMusic(model: self.musicModel)
+        
+        let scrollView = InfiniteCycleView()
+        scrollView.delegate = self
+        self.addSubview(scrollView)
+        scrollView.snp.makeConstraints { (make) in
+            make.left.top.bottom.equalTo(self)
+            make.right.equalTo(self.snp.right).offset(-55)
+        }
     }
     
     @objc fileprivate func musicTimeInterval() {
@@ -137,7 +112,8 @@ class WHPlayerBottomView: UIView {
         if let model = notification.object as? MusicModel {
             self.musicModel = model
             playAndPauseBtn.isSelected = true
-            startAnimation()
+            self.currentMusicView?.model = model
+            self.currentMusicView?.startAnimation()
         }
     }
     
@@ -145,9 +121,9 @@ class WHPlayerBottomView: UIView {
         if let isPlay = notification.object as? Bool {
             playAndPauseBtn.isSelected = isPlay
             if isPlay {
-                startAnimation()
+                self.currentMusicView?.startAnimation()
             } else {
-                stopAnimation()
+                self.currentMusicView?.stopAnimation()
             }
         }
     }
@@ -159,12 +135,6 @@ class WHPlayerBottomView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    @objc fileprivate func tapBottomView(_ sender: UIButton) {
-        let vc = UIApplication.shared.keyWindow?.rootViewController
-        PlayerManager.shared.presentPlayController(vc: vc, model: self.musicModel)
-    }
-    
     
     //绘制进度圆环
     fileprivate func drawCircle(rect: CGRect, progress: CGFloat) {
@@ -231,41 +201,56 @@ class WHPlayerBottomView: UIView {
             }
         }
     }
-    
-    func startAnimation() {
-        if headerImageView.layer.animation(forKey: "rotationAnimationZ") == nil {
-            let rotationAnimationZ = CABasicAnimation(keyPath: "transform.rotation.z")
-            rotationAnimationZ.timingFunction = CAMediaTimingFunction(name: .linear)
-            rotationAnimationZ.fromValue = 0 // 开始角度
-            rotationAnimationZ.toValue = 2*CGFloat(Double.pi)
-            rotationAnimationZ.duration = 10
-            rotationAnimationZ.autoreverses = false
-            rotationAnimationZ.isRemovedOnCompletion = false
-            rotationAnimationZ.repeatCount = MAXFLOAT
-            rotationAnimationZ.fillMode = .forwards
-            headerImageView.layer.add(rotationAnimationZ, forKey: "rotationAnimationZ")
-        } else {
-            let layer = headerImageView.layer
-            let pausedTime = layer.timeOffset
-            layer.speed = 1.0
-            layer.timeOffset = 0.0
-            layer.beginTime = 0
-            let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-            layer.beginTime = timeSincePause
-        }
-    }
-    
-    func stopAnimation() {
-        let layer = headerImageView.layer
-        let pauseTime = layer.convertTime(CACurrentMediaTime(), from: nil)
-        layer.speed = 0.0
-        layer.timeOffset = pauseTime
-    }
 
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kMusicChange)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
         
+    }
+}
+
+extension WHPlayerBottomView: InfiniteCycleViewDelegate {
+    
+    func infiniteCycleView(_ scrollView: InfiniteCycleView) -> UIView {
+        return MusicView()
+    }
+    
+    func infiniteCycleView(currentView: UIView?) {
+        if let mv = currentView as? MusicView {
+            self.currentMusicView = mv
+            mv.model = self.musicModel
+        }
+    }
+    
+    func infiniteCycleView(previousView: UIView?, isEndDragging: Bool) {
+        if let mv = previousView as? MusicView {
+            if !PlayerManager.shared.musicArray.isEmpty {
+                let m = PlayerManager.shared.musicArray[PlayerManager.shared.previousIndex]
+                mv.model = m
+                if isEndDragging {
+                    self.musicModel = m
+                    PlayerManager.shared.playMusic(model: m)
+                }
+            }
+        }
+    }
+    
+    func infiniteCycleView(nextView: UIView?, isEndDragging: Bool) {
+        if let mv = nextView as? MusicView {
+            if !PlayerManager.shared.musicArray.isEmpty {
+                let m = PlayerManager.shared.musicArray[PlayerManager.shared.nextIndex]
+                mv.model = m
+                if isEndDragging {
+                    self.musicModel = m
+                    PlayerManager.shared.playMusic(model: m)
+                }
+            }
+        }
+    }
+    
+    func infiniteCycleView(_ scrollView: InfiniteCycleView, didSelectContentViewAt index: Int) {
+        let vc = UIApplication.shared.keyWindow?.rootViewController
+        PlayerManager.shared.presentPlayController(vc: vc, model: self.musicModel)
     }
 }
