@@ -10,7 +10,7 @@ import UIKit
 import HWPanModal
 
 class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
-    var model: MusicModel?
+    var model: BDSongModel?
     @IBOutlet weak var backgroudView: UIView!
     @IBOutlet weak var shareBtn: UIButton!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
@@ -59,18 +59,17 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
     }
 
     @objc fileprivate func musicChange(_ notification: Notification) {
-        if let model = notification.object as? MusicModel {
+        if let model = notification.object as? BDSongModel {
             self.model = model
             self.updateBackgroudImage()
             self.playVC.updateModel(model: model)
-//            self.lyricVC.model = model
         }
     }
     
     
     func updateBackgroudImage() {
         //获取背景图
-        if let str = model?.coverLarge, let url = URL(string: str) {
+        if let str = model?.pic_big, let url = URL(string: str) {
             backgroundImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
             }
         }

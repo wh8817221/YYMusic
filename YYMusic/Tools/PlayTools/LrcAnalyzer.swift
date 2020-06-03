@@ -30,15 +30,16 @@ class LrcAnalyzer: NSObject {
     
     //根据换行符\n分割字符串，获得包含每一句歌词的数组
     func analyzerLrc(lrcConnect: String) {
-        var lrcConnectArray = lrcConnect.components(separatedBy: "\n")
-        for (index,lrc) in lrcConnectArray.enumerated() {
+        let lrcConnectArray = lrcConnect.components(separatedBy: "\n")
+//        print(lrcConnectArray)
+//        for (index,lrc) in lrcConnectArray.enumerated() {
 //            if  lrc.hasPrefix("[ti:") || lrc.hasPrefix("[al:") || !lrc.hasPrefix("["){
 //                continue
 //            }
-            if lrc.isEmpty {
-                lrcConnectArray.remove(at: index)
-            }
-        }
+//            if lrc.isEmpty {
+//                lrcConnectArray.remove(at: index)
+//            }
+//        }
 //        self.analyzerEachLrc(lrcConnectArray: lrcConnectArray)
         self.lyricParase(with: lrcConnectArray)
     }

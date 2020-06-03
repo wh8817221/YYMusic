@@ -10,7 +10,6 @@ import Kingfisher
 
 enum BillListType: Int {
     //        type:榜单类型（1、新歌榜 2、热歌榜 3、摇滚榜 4、爵士榜 5、流行榜 6、欧美金曲榜 7、经典老歌榜 8、情歌对唱榜 9、影视金曲榜 10、网络金曲榜）
-    case random = 0
     case new = 1
     case hot = 2
     case rock = 11
@@ -23,8 +22,6 @@ enum BillListType: Int {
     
     func getName() -> String {
         switch self {
-        case .random:
-            return "随便听听"
         case .new:
             return "新歌榜"
         case .hot:
@@ -55,7 +52,7 @@ class BillListViewController: UIViewController {
     fileprivate var titleScrollView: TitleScrollView! //滚动Title
     
     @IBOutlet weak var contentView: UIView!
-    fileprivate var types: [BillListType] = [.random, .new, .hot, .rock, .popular, .west, .classic, .love, .film, .net]
+    fileprivate var types: [BillListType] = [.new, .hot, .rock, .popular, .west, .classic, .love, .film, .net]
     fileprivate var titles: [String] = []
     fileprivate var controllers: [UIViewController] = []
     
@@ -101,14 +98,10 @@ class BillListViewController: UIViewController {
     func initData() {
         for type in types {
             self.titles.append(type.getName())
-            if type == .random {
-                let vc = getStoryboardInstantiateViewController(identifier: "MusicListViewController") as? MusicListViewController
-                self.controllers.append(vc!)
-            } else {
-                let vc = getStoryboardInstantiateViewController(identifier: "TrackListViewController") as? TrackListViewController
-                vc?.type = type
-                self.controllers.append(vc!)
-            }
+            
+            let vc = getStoryboardInstantiateViewController(identifier: "TrackListViewController") as? TrackListViewController
+            vc?.type = type
+            self.controllers.append(vc!)
         }
     }
     

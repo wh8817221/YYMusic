@@ -10,11 +10,29 @@ import UIKit
 import AVFoundation
 
 class LyricViewController: UIViewController {
-    var lrcLbl: LrcLabel?
-    var model: MusicModel?
+    var model: BDSongModel?
     //当前歌词所在的位置
     fileprivate var currentRow: Int?
-    fileprivate var lrcArray: [Lrclink] = []
+    var lrcArray: [Lrclink] = [] {
+        didSet {
+            if lrcArray.isEmpty {
+                emptyLbl.isHidden = false
+                emptyLbl.text = "纯音乐，无歌词"
+                self.tableView.reloadData()
+            } else {
+                emptyLbl.isHidden = true
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    fileprivate lazy var emptyLbl: UILabel = {
+        let lbl = UILabel()
+        lbl.textColor = .white
+        lbl.font = kFont15
+        return lbl
+    }()
+    
     fileprivate var isDragging: Bool = false
     fileprivate var tableView: UITableView!
     override func viewDidLoad() {
@@ -34,15 +52,35 @@ class LyricViewController: UIViewController {
             make.top.left.right.bottom.equalTo(self.view)
         }
         
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcChange)
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
-        loadLrclink()
+        
+        self.tableView.addSubview(emptyLbl)
+        emptyLbl.snp.makeConstraints { (make) in
+            make.center.equalTo(tableView)
+        }
+
+        self.lrcArray = PlayerManager.shared.lrcArray ?? []
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
     }
     
+    //监听歌词状态
+    @objc fileprivate func musicLrcChange(_ sender: Notification) {
+        if let lrcs = sender.object as? [Lrclink] {
+            self.lrcArray = lrcs
+        } else {
+            emptyLbl.isHidden = false
+            emptyLbl.text = "歌词加载中..."
+            self.tableView.reloadData()
+        }
+    }
+    
+    //监听时间变化
     @objc fileprivate func musicTimeInterval(_ sender: Notification) {
         if let timeArr = sender.object as? [Float64] {
             let cs = timeArr[0]
@@ -56,39 +94,31 @@ class LyricViewController: UIViewController {
 //                    if nextIndex < self.lrcArray.count {
 //                        nextLrc = self.lrcArray[nextIndex]
 //                    }
+                    
                     if lrc.time! < Double(cs) {
                         self.currentRow = index
-                        let currentIndexPath = IndexPath(row: index, section: 0)
-                        self.tableView.scrollToRow(at: currentIndexPath, at: .middle, animated: true)
-                        lrcLbl?.text = lrc.lrc
+                        let indexPath = IndexPath(row: index, section: 0)
+                        self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                         self.tableView.reloadData()
                     }
-                    //根据进度,显示label画多少
-//                    let progress = (cs-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!)
-//                    lrcLbl?.progress = CGFloat(progress)
+                    
+//                    if let ct = currrentLrc.time, let nt = nextLrc?.time {
+//                        drawProgress(cs: cs, ct: ct, nt: nt)
+//                    }
                 }
             }
         }
     }
- 
-    func loadLrclink() {
-        //本地文件
-        if let path = Bundle.main.path(forResource: "shaonian", ofType: "txt") {
-            if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: path) {
-                self.lrcArray = lrcs
-                self.tableView.reloadData()
-            }
-        }
-        //网络文件
-//        if let lrclink = model?.lrclink {
-//            NetWorkingTool.shared.downloadFile(fileURL: URL(string: lrclink)!, successCallback: { (fileUrl) in
-//                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!) {
-//                    print(lrcs)
-//                }
-//            })
-//        }
+    
+    func drawProgress(cs: Float64, ct: Double, nt: Double) {
+        let progress = (nt-ct)/60
+        print(progress)
     }
     
+    deinit {
+        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
+    }
 }
 extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -123,4 +153,6 @@ extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         isDragging = false
     }
+    
+    
 }

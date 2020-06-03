@@ -44,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             default:
                 break
             }
+            PlayerManager.shared.updateLockedScreenMusic()
         }
     }
     
@@ -52,6 +53,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return .allButUpsideDown
         }
         return .portrait
+    }
+    
+    func applicationProtectedDataDidBecomeAvailable(_ application: UIApplication) {
+        print("解锁")
+        PlayerManager.shared.isLockedScreen = false
+    }
+    
+    func applicationProtectedDataWillBecomeUnavailable(_ application: UIApplication) {
+        PlayerManager.shared.isLockedScreen = true
+        PlayerManager.shared.updateLockedScreenMusic()
     }
 }
 

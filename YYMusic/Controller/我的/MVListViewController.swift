@@ -26,6 +26,11 @@ class MVListViewController: UIViewController {
         self.getMvList()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        WHPlayerBottomView.shared.hidden()
+    }
+    
     func getMvList() {
         var param = [String: Any]()
         param["method"] = "baidu.ting.artist.getArtistMVList"

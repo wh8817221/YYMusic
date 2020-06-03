@@ -12,7 +12,7 @@ import MarqueeLabel
 
 class WHPlayerBottomView: UIView {
     static let shared = WHPlayerBottomView()
-    var musicModel: MusicModel?
+    var musicModel: BDSongModel?
     /*圆环进度指示器*/
     var progress: CGFloat = 0.0 {
         didSet{
@@ -69,7 +69,7 @@ class WHPlayerBottomView: UIView {
         NotificationCenter.addObserver(observer: self, selector: #selector(playStatusChange(_:)), name: .kReloadPlayStatus)
         
         //获取上次播放存储的歌曲
-        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? BDSongModel {
             self.musicModel = music
         }
         self.updateMusic(model: self.musicModel)
@@ -81,6 +81,21 @@ class WHPlayerBottomView: UIView {
             make.left.top.bottom.equalTo(self)
             make.right.equalTo(self.snp.right).offset(-55)
         }
+    }
+    //MARK:-show
+    func show() {
+        self.frame = CGRect(x: 0, y: screenHeight, width: screenWidth, height: playerBarH)
+        UIView.animate(withDuration: 0.25, animations: {
+            self.frame = CGRect(x: 0, y: screenHeight-49-self.playerBarH, width: screenWidth, height: self.playerBarH)
+        })
+        
+    }
+    //MARK:-hidden
+    func hidden() {
+        self.frame = CGRect(x: 0, y: screenHeight-49-self.playerBarH, width: screenWidth, height: playerBarH)
+        UIView.animate(withDuration: 0.25, animations: {
+            self.frame = CGRect(x: 0, y: screenHeight, width: screenWidth, height: self.playerBarH)
+        })
     }
     
     @objc fileprivate func musicTimeInterval() {
@@ -97,7 +112,7 @@ class WHPlayerBottomView: UIView {
     }
 
     @objc fileprivate func musicChange(_ notification: Notification) {
-        if let model = notification.object as? MusicModel {
+        if let model = notification.object as? BDSongModel {
             self.musicModel = model
             playAndPauseBtn.isSelected = true
             self.currentMusicView?.model = model
@@ -116,7 +131,7 @@ class WHPlayerBottomView: UIView {
         }
     }
     
-    func updateMusic(model: MusicModel?) {
+    func updateMusic(model: BDSongModel?) {
         self.musicModel = model
     }
     
@@ -159,7 +174,7 @@ class WHPlayerBottomView: UIView {
     }
     
     //加载播放
-    func loadMusic(model: MusicModel) {
+    func loadMusic(model: BDSongModel) {
         //每次切换都要清空一下进度
         self.progress = 0.0
         self.musicModel = model
@@ -172,7 +187,7 @@ class WHPlayerBottomView: UIView {
         //第一次点击底部播放按钮并且还是未在播放状态
         if PlayerManager.shared.isFristPlayerPauseBtn && !PlayerManager.shared.isPlaying {
             PlayerManager.shared.isFristPlayerPauseBtn = false
-            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+            if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? BDSongModel {
                 loadMusic(model: music)
             } else {
                 //归档没找到默认播放第一个

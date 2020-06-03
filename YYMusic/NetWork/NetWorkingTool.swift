@@ -129,8 +129,13 @@ class NetWorkingTool: NSObject {
     /**
         下载文件
         */
-   func downloadFile(fileURL: URL, method: HTTPMethod = .get, parameters: [String: Any]? = nil, headers: HTTPHeaders? = nil, progressCallback: ((_ progress: Double) -> Void)? = nil, successCallback: @escaping (_ url: URL?) -> Void) {
-       CustomHUD.showProgress()
+    
+   func downloadFile(fileURL: URL, method: HTTPMethod = .get, parameters: [String: Any]? = nil, isShowHUD: Bool = false, headers: HTTPHeaders? = nil, progressCallback: ((_ progress: Double) -> Void)? = nil, successCallback: @escaping (_ url: URL?) -> Void) {
+    
+       if isShowHUD {
+          CustomHUD.showProgress()
+       }
+       
   
        let destination: DownloadRequest.Destination = { (url, response) in
            
@@ -150,8 +155,10 @@ class NetWorkingTool: NSObject {
            }
            .response{ (defaultResponse) in
                if defaultResponse.error == nil {
-                   CustomHUD.hideProgress()
-                   successCallback(defaultResponse.fileURL)
+                    if isShowHUD {
+                       CustomHUD.hideProgress()
+                    }
+                    successCallback(defaultResponse.fileURL)
                } else {
                    CustomHUD.showHideErrorHUD()
                }

@@ -36,13 +36,10 @@
 		D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F48224753202007FECBF /* LyricViewController.xib */; };
 		D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49124767BDA007FECBF /* BaseViewController.swift */; };
 		D2B2F49424768CB8007FECBF /* LrcAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */; };
-		D2B2F49724776B31007FECBF /* shaonian.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F49624776B31007FECBF /* shaonian.txt */; };
 		D2B2F4A9247CAAF2007FECBF /* BillListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4A3247CAAF2007FECBF /* BillListViewController.swift */; };
-		D2B2F4AB247CAAF2007FECBF /* MusicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4A5247CAAF2007FECBF /* MusicListViewController.swift */; };
 		D2B2F4B1247CAB68007FECBF /* MVListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4B0247CAB68007FECBF /* MVListViewController.swift */; };
 		D2B2F4B3247CABE6007FECBF /* TrackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4B2247CABE6007FECBF /* TrackListViewController.swift */; };
 		D2B2F4B5247CACA1007FECBF /* MVPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4B4247CACA1007FECBF /* MVPlayViewController.swift */; };
-		D2B2F4D5247D17A9007FECBF /* TestListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4D4247D17A9007FECBF /* TestListViewController.swift */; };
 		D2B2F4D7247D1929007FECBF /* ZFTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4D6247D1929007FECBF /* ZFTableViewCell.swift */; };
 		D2B2F4D9247E017D007FECBF /* LrcLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F4D8247E017D007FECBF /* LrcLabel.swift */; };
 		D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */; };
@@ -118,13 +115,10 @@
 		D2B2F48224753202007FECBF /* LyricViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LyricViewController.xib; sourceTree = "<group>"; };
 		D2B2F49124767BDA007FECBF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		D2B2F49324768CB8007FECBF /* LrcAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LrcAnalyzer.swift; sourceTree = "<group>"; };
-		D2B2F49624776B31007FECBF /* shaonian.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shaonian.txt; sourceTree = "<group>"; };
 		D2B2F4A3247CAAF2007FECBF /* BillListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillListViewController.swift; sourceTree = "<group>"; };
-		D2B2F4A5247CAAF2007FECBF /* MusicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicListViewController.swift; sourceTree = "<group>"; };
 		D2B2F4B0247CAB68007FECBF /* MVListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVListViewController.swift; sourceTree = "<group>"; };
 		D2B2F4B2247CABE6007FECBF /* TrackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListViewController.swift; sourceTree = "<group>"; };
 		D2B2F4B4247CACA1007FECBF /* MVPlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVPlayViewController.swift; sourceTree = "<group>"; };
-		D2B2F4D4247D17A9007FECBF /* TestListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestListViewController.swift; sourceTree = "<group>"; };
 		D2B2F4D6247D1929007FECBF /* ZFTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZFTableViewCell.swift; sourceTree = "<group>"; };
 		D2B2F4D8247E017D007FECBF /* LrcLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LrcLabel.swift; sourceTree = "<group>"; };
 		D2D10CAE2472354A0051E3E2 /* NotificationCenterExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterExtension.swift; sourceTree = "<group>"; };
@@ -222,7 +216,6 @@
 				D24C87FB246BFC55002F7CD0 /* Assets.xcassets */,
 				D24C87FD246BFC55002F7CD0 /* LaunchScreen.storyboard */,
 				D24C8800246BFC55002F7CD0 /* Info.plist */,
-				D2B2F49524776B2B007FECBF /* Source */,
 				D2D10CB62473C6F70051E3E2 /* Main */,
 				D24C8838246CF237002F7CD0 /* View */,
 				D24C8825246C0203002F7CD0 /* Controller */,
@@ -317,19 +310,10 @@
 			path = PageView;
 			sourceTree = "<group>";
 		};
-		D2B2F49524776B2B007FECBF /* Source */ = {
-			isa = PBXGroup;
-			children = (
-				D2B2F49624776B31007FECBF /* shaonian.txt */,
-			);
-			path = Source;
-			sourceTree = "<group>";
-		};
 		D2B2F4A2247CAAF2007FECBF /* 首页 */ = {
 			isa = PBXGroup;
 			children = (
 				D2B2F4A3247CAAF2007FECBF /* BillListViewController.swift */,
-				D2B2F4A5247CAAF2007FECBF /* MusicListViewController.swift */,
 				D2B2F4B2247CABE6007FECBF /* TrackListViewController.swift */,
 			);
 			path = "首页";
@@ -340,7 +324,6 @@
 			children = (
 				D2B2F4B0247CAB68007FECBF /* MVListViewController.swift */,
 				D2B2F4B4247CACA1007FECBF /* MVPlayViewController.swift */,
-				D2B2F4D4247D17A9007FECBF /* TestListViewController.swift */,
 			);
 			path = "我的";
 			sourceTree = "<group>";
@@ -495,7 +478,6 @@
 				D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */,
 				D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */,
 				D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */,
-				D2B2F49724776B31007FECBF /* shaonian.txt in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
 				D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */,
 				D2D10CD62474DA4D0051E3E2 /* PlayDetailViewController.xib in Resources */,
@@ -665,7 +647,6 @@
 				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,
 				D24C8833246C06D4002F7CD0 /* CommonResult.swift in Sources */,
 				D2D10CDC247500850051E3E2 /* StringExtention.swift in Sources */,
-				D2B2F4AB247CAAF2007FECBF /* MusicListViewController.swift in Sources */,
 				D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */,
 				D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */,
 				D2B2F4B3247CABE6007FECBF /* TrackListViewController.swift in Sources */,
@@ -694,7 +675,6 @@
 				D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */,
 				D24C882F246C0620002F7CD0 /* CustomHUD.swift in Sources */,
 				D2D10CB1247274030051E3E2 /* WHPlayerBottomView.swift in Sources */,
-				D2B2F4D5247D17A9007FECBF /* TestListViewController.swift in Sources */,
 				D2D10CD82474E23D0051E3E2 /* MusicSlider.swift in Sources */,
 				D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */,
 				D24C8835246C07A2002F7CD0 /* RequestHelper.swift in Sources */,

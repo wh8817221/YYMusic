@@ -11,13 +11,13 @@ import MarqueeLabel
 
 class MusicView: UIView {
     
-    var model: MusicModel? {
+    var model: BDSongModel? {
         didSet {
             if let m = model {
-                let url = URL(string: m.coverSmall!)
+                let url = URL(string: m.pic_small!)
                 headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
                 })
-                songNameLbl.text = "\(m.title ?? "") - \(m.nickname ?? "")"
+                songNameLbl.text = "\(m.title ?? "") - \(m.author ?? "")"
             }
         }
     }

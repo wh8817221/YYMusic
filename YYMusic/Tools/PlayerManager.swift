@@ -29,7 +29,13 @@ enum PlayerCycle: Int {
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
     /*存放歌曲数组*/
-    var musicArray: [MusicModel] = []
+    var musicArray: [BDSongModel] = []
+    /*存放歌词数组*/
+    var lrcArray: [Lrclink]?{
+        didSet {
+            NotificationCenter.post(name: .kLrcChange, object: lrcArray)
+        }
+    }
     /*前一首下标*/
     var previousIndex: Int! {
         get {
@@ -56,6 +62,8 @@ class PlayerManager: NSObject {
     var isFristPlayerPauseBtn: Bool = true
     /*是不是正在播放*/
     var isPlaying: Bool = false
+    /**是否锁屏*/
+    var isLockedScreen: Bool = false
     /*播放器*/
     var player: AVPlayer!
     var currentPlayerItem: AVPlayerItem! {
@@ -72,7 +80,7 @@ class PlayerManager: NSObject {
         }
     }
     /**获取当前播放的歌曲*/
-    var currentModel: MusicModel?
+    var currentModel: BDSongModel?
     {
         get {
             if musicArray.count > 0 {
@@ -90,7 +98,7 @@ class PlayerManager: NSObject {
     /**播放时间监听*/
     fileprivate var timeObserve: Any?
     fileprivate var isFirstTime: Bool = true
-    
+    fileprivate var playModel: BDSongModel?
     override init() {
         super.init()
         
@@ -137,9 +145,9 @@ class PlayerManager: NSObject {
     }
     
     //MARK:- 存储歌曲时缺少Index,重新设置index
-    func resetIndex(model: MusicModel?) {
+    func resetIndex(model: BDSongModel?) {
         for (index,m) in self.musicArray.enumerated() {
-            if m.trackId == model?.trackId {
+            if m.song_id == model?.song_id {
                 PlayerManager.shared.index = index
             }
         }
@@ -193,7 +201,11 @@ class PlayerManager: NSObject {
     }
     
     //MARK:- 播放歌曲
-    func playMusic(model: MusicModel?) {
+    func playMusic(model: BDSongModel?) {
+        //当前播放的歌曲
+        if model?.song_id == currentModel?.song_id && isPlaying {
+            return
+        }
         self.playReplaceItem(with: model)
     }
     
@@ -255,12 +267,11 @@ class PlayerManager: NSObject {
         }
     }
     
-    //MARK:- 自动/切换播放
-    fileprivate func playReplaceItem(with model: MusicModel?) {
+    func getSongPlay(model: BDSongModel?) {
         //每次播放重置index
         resetIndex(model: model)
         //播放的url
-        let url = URL(string: model?.playUrl32 ?? "")
+        let url = URL(string: model?.file_link ?? "")
         currentPlayerItem = AVPlayerItem(url: url!)
         self.player.replaceCurrentItem(with: currentPlayerItem)
         //调用播放
@@ -275,8 +286,39 @@ class PlayerManager: NSObject {
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
     }
     
+    //MARK:- 自动/切换播放
+    fileprivate func playReplaceItem(with model: BDSongModel?) {
+        self.playModel = model
+        NotificationCenter.post(name: .kLrcChange, object: nil)
+        var param = [String: Any]()
+        param["method"] = "baidu.ting.song.play"
+        param["songid"] = model?.song_id
+        let d = RequestHelper.getCommonList(param).generate()
+        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongInfo?) in
+            if let s = data {
+                s.songinfo?.file_link = s.bitrate?.file_link
+                self?.loadLrclink(lrclink: s.songinfo?.lrclink)
+                self?.getSongPlay(model: s.songinfo)
+            }
+        })
+    }
+    //MARK:-获取歌词
+    func loadLrclink(lrclink: String?) {
+        if let lrclink = lrclink, !lrclink.isEmpty {
+            NetWorkingTool.shared.downloadFile(fileURL: URL(string: lrclink)!, successCallback: { (fileUrl) in
+                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!) {
+                    self.lrcArray = lrcs
+                } else {
+                    self.lrcArray = []
+                }
+            })
+        } else {
+            self.lrcArray = []
+        }
+    }
+    
     //MARK:- 展示音乐播放界面
-    func presentPlayController(vc: UIViewController?, model: MusicModel?) {
+    func presentPlayController(vc: UIViewController?, model: BDSongModel?) {
         let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
         playVC.model = model
 //        vc?.presentPanModal(playVC)
@@ -297,13 +339,8 @@ class PlayerManager: NSObject {
             tempTime = ct
             if let duration = self?.player.currentItem?.duration {
                 let tt = CMTimeGetSeconds(duration)
-                if ct == tt {
-                    self?.autoPlay()
-                }
                 NotificationCenter.post(name: .kMusicTimeInterval, object: [ct,tt])
             }
-            //控制中心,锁屏时候展示(在这里会导致主线程卡顿)
-//            self?.updateLockedScreenMusic()
         }
     }
 
@@ -331,30 +368,32 @@ class PlayerManager: NSObject {
     
     //MARK:-锁屏时候的设置，效果需要在真机上才可以看到
     func updateLockedScreenMusic() {
-        //开辟子线程监控锁屏
-        if PlayerManager.shared.musicArray.count > 0 {
-            let model = PlayerManager.shared.musicArray[PlayerManager.shared.index]
-            var info = [String: Any]()
-            // 设置持续时间（歌曲的总时间）
-            info[MPMediaItemPropertyPlaybackDuration] = self.player.currentItem?.duration.value
-            // 设置当前播放进度
-            info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.player.currentItem?.currentTime().value
-            //设置歌曲名
-            info[MPMediaItemPropertyTitle] = model.title ?? ""
-            //设置演唱者
-            info[MPMediaItemPropertyArtist] = model.nickname ?? ""
-            //歌手头像
-            if let url = (model.coverLarge ?? "").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                if let data = try? Data(contentsOf: URL(string: url)!) {
-                    let artwork = MPMediaItemArtwork.init(boundsSize: CGSize(width: 400, height: 400)) { (size) -> UIImage in
-                        return UIImage(data: data)!
-                    }
-                    info[MPMediaItemPropertyArtwork] = artwork
-                }
-            }
-            //进度光标的速度（这个随 自己的播放速率调整，我默认是原速播放）
-            info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+        guard let model = self.playModel else {
+            return
         }
+        let tt = self.getTotalTime()
+        let ct = self.getCurrentTime()
+        var info = [String: Any]()
+        // 设置持续时间（歌曲的总时间）
+        info[MPMediaItemPropertyPlaybackDuration] = tt
+        // 设置当前播放进度
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = ct
+        //设置歌曲名
+        info[MPMediaItemPropertyTitle] = model.title ?? ""
+        //设置演唱者
+        info[MPMediaItemPropertyArtist] = model.author ?? ""
+        //歌手头像
+        if let url = (model.pic_big ?? "").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
+            if let data = try? Data(contentsOf: URL(string: url)!) {
+                let artwork = MPMediaItemArtwork.init(boundsSize: CGSize(width: 400, height: 400)) { (size) -> UIImage in
+                    return UIImage(data: data)!
+                }
+                info[MPMediaItemPropertyArtwork] = artwork
+            }
+        }
+        info[MPNowPlayingInfoPropertyPlaybackProgress] = Int(ct!)!/Int(tt!)!
+        //进度光标的速度（这个随 自己的播放速率调整，我默认是原速播放）
+        info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
 }

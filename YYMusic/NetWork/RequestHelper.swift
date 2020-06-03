@@ -1,7 +1,6 @@
 import Alamofire
 
 enum RequestHelper {
-//    static let baseURL = "http://mobile.ximalaya.com"
     static let baseURL = "https://musicapi.qianqian.com"
     case getMusicList([String: Any])
     case getCommonList([String: Any])
@@ -11,6 +10,7 @@ enum RequestHelper {
         extendParams["format"] = "json"
         extendParams["channel"] = "appstore"
         extendParams["version"] = "6.2.0"
+        extendParams["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
         return extendParams
     }
     
@@ -22,6 +22,7 @@ enum RequestHelper {
             let param = tmp
             url += "/v1/restserver/ting"
             params = param
+            
         case .getMusicList(let tmp):
             let page = tmp["pageId"]
             let size = tmp["pageSize"]

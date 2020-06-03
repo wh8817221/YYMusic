@@ -11,7 +11,7 @@ import AVFoundation
 
 class PlayDetailViewController: UIViewController {
     
-    var model: MusicModel?
+    var model: BDSongModel?
     @IBOutlet weak var lrcLbl: LrcLabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
@@ -46,9 +46,9 @@ class PlayDetailViewController: UIViewController {
         removeLrcTimer()
     }
     
-    func updateModel(model: MusicModel?) {
+    func updateModel(model: BDSongModel?) {
         self.model = model
-        if let str = model?.coverMiddle, let url = URL(string: str) {
+        if let str = model?.pic_premium, let url = URL(string: str) {
             singerImageView.kf.setImage(with: url, placeholder: UIImage(named: "music_placeholder"), options: nil, progressBlock: nil) { (result) in
             }
         }
@@ -56,7 +56,7 @@ class PlayDetailViewController: UIViewController {
         
         //歌名和歌手
         songName.text = model?.title ?? ""
-        songerName.text = model?.nickname ?? ""
+        songerName.text = model?.author ?? ""
     }
     
     func setUI() {
@@ -147,24 +147,24 @@ class PlayDetailViewController: UIViewController {
     
     //更新歌词的时间
     @objc private func updateLrcTimer() {
-        let currentTime = PlayerManager.shared.player.currentTime()
-        let cs = CMTimeGetSeconds(currentTime)
-        let lrcArray = model!.lrcArray
-        for (index,lrc) in lrcArray.enumerated() {
-                let currrentLrc = lrc
-                //获取下一句歌词
-                let nextIndex = index+1
-                var nextLrc: Lrclink?
-                if nextIndex < lrcArray.count {
-                    nextLrc = lrcArray[nextIndex]
-                }
-                if lrc.time! < Double(cs) {
-                    //根据进度,显示label画多少
-                    let progress = (cs-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!)
-                    lrcLbl.text = lrc.lrc ?? ""
-                    lrcLbl?.progress = CGFloat(progress)
-                }
-        }
+//        let currentTime = PlayerManager.shared.player.currentTime()
+//        let cs = CMTimeGetSeconds(currentTime)
+//        let lrcArray = model!.lrcArray
+//        for (index,lrc) in lrcArray.enumerated() {
+//                let currrentLrc = lrc
+//                //获取下一句歌词
+//                let nextIndex = index+1
+//                var nextLrc: Lrclink?
+//                if nextIndex < lrcArray.count {
+//                    nextLrc = lrcArray[nextIndex]
+//                }
+//                if lrc.time! < Double(cs) {
+//                    //根据进度,显示label画多少
+//                    let progress = (cs-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!)
+//                    lrcLbl.text = lrc.lrc ?? ""
+//                    lrcLbl?.progress = CGFloat(progress)
+//                }
+//        }
     }
     
     //删除歌词的定时器
@@ -191,7 +191,7 @@ class PlayDetailViewController: UIViewController {
         //第一次点击底部播放按钮并且还是未在播放状态
         if PlayerManager.shared.isFristPlayerPauseBtn && !PlayerManager.shared.isPlaying {
             PlayerManager.shared.isFristPlayerPauseBtn = false
-            if let model = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? MusicModel {
+            if let model = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? BDSongModel {
                 PlayerManager.shared.playMusic(model: model)
             } else {
                 //归档没找到默认播放第一个

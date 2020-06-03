@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SnapKit
 //MARK:-代理
 @objc protocol PageScrollViewDelegate: NSObjectProtocol {
     //滑动cardView回调

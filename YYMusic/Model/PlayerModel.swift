@@ -48,6 +48,7 @@ class ObjectAlbum: Mappable {
     var shortIntro: String?
     var tags: String?
     var title: String?
+    var havemore: Bool?
     required init?(map: Map){
         
     }
@@ -71,6 +72,7 @@ class ObjectAlbum: Mappable {
         intro <- map["intro"]
         customTitle <- map["customTitle"]
         customSubTitle <- map["customSubTitle"]
+        havemore <- map["havemore"]
     }
 }
 

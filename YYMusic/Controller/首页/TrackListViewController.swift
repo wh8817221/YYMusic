@@ -8,14 +8,24 @@
 
 import UIKit
 import Kingfisher
+import MJRefresh
 
 class TrackListViewController: UIViewController {
     
     var type: BillListType?
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var songs: [BDSongModel] = []
-    
+    fileprivate var songs: [BDSongModel] = [] {
+        didSet {
+            if self.type == .new {
+                PlayerManager.shared.musicArray = songs
+            }
+        }
+    }
     fileprivate var changeModels: [MusicModel] = []
+    
+    fileprivate var size = 20
+    fileprivate var page = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = kBackgroundColor
@@ -27,21 +37,45 @@ class TrackListViewController: UIViewController {
         self.tableView.separatorColor = kLineColor
         // tableview  给音乐播放留距离
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 65))
+        // tableview  给音乐播放留距离
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 65))
         
-        self.getMusicList()
+        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
+            self.page = 0
+            self.getMusicList()
+        })
+        tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: {
+            self.page += self.size
+            self.getMusicList()
+        })
+        self.tableView.mj_footer?.isHidden = true
+        self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
+        self.tableView.mj_header?.beginRefreshing()
+        
     }
 
     func getMusicList() {
         var param = [String: Any]()
         param["method"] = "baidu.ting.billboard.billList"
         param["type"] = type?.rawValue
-        param["size"] = 100
-        param["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
+        param["size"] = size
+        param["offset"] = page
+        if self.page == 0 {
+            self.songs = []
+        }
         let d = RequestHelper.getCommonList(param).generate()
         NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongList?) in
-            if let list = data?.song_list {
-                self?.songs = list
+            // refresh
+            self?.tableView.mj_header?.endRefreshing()
+            self?.tableView.mj_footer?.endRefreshing()
+            if let d = data {
+                self?.songs.append(contentsOf: d.song_list!)
                 self?.tableView.reloadData()
+                if d.billboard?.havemore == true {
+                    self?.tableView.mj_footer?.isHidden = false
+                } else {
+                    self?.tableView.mj_footer?.isHidden = true
+                }
             }
         })
     }
@@ -76,30 +110,9 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        PlayerManager.shared.musicArray = songs
         tableView.deselectRow(at: indexPath, animated: true)
         let song = songs[indexPath.row]
-        getSongPlay(songid: song.song_id, indexPath: indexPath)
+        PlayerManager.shared.playMusic(model: song)
     }
-    
-    func getSongPlay(songid: String?, indexPath: IndexPath) {
-        var param = [String: Any]()
-        param["method"] = "baidu.ting.song.play"
-        param["songid"] = songid
-        param["cuid"] = "2c02f143b48e415e568cf806b7691a02e318beb6"
-        let d = RequestHelper.getCommonList(param).generate()
-        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { (data: SongInfo?) in
-            if let s = data {
-                let song = MusicModel()
-                song.playUrl32 = s.bitrate?.file_link
-                song.coverSmall = s.songinfo?.pic_small
-                song.nickname = s.songinfo?.author
-                song.title = s.songinfo?.title
-                song.coverLarge = s.songinfo?.pic_big
-                song.coverMiddle = s.songinfo?.pic_premium
-                song.lrclink = s.songinfo?.lrclink
-                PlayerManager.shared.playMusic(model: song)
-            }
-        })
-    }
-    
 }

@@ -81,50 +81,70 @@ class Billboard: Mappable {
     }
 }
 
-class BDSongModel: Mappable {
-    var album_1000_1000: String?
-    var album_500_500: String?
+class BDSongModel: NSObject, Mappable, NSCoding {
+    required init?(coder: NSCoder) {
+        self.name = coder.decodeObject(forKey: "name") as? String
+        self.pic_small = coder.decodeObject(forKey: "pic_small") as? String
+        self.pic_premium = coder.decodeObject(forKey: "pic_premium") as? String
+        self.pic_big = coder.decodeObject(forKey: "pic_big") as? String
+        
+        self.file_link = coder.decodeObject(forKey: "file_link") as? String
+        self.lrclink = coder.decodeObject(forKey: "lrclink") as? String
+        self.title = coder.decodeObject(forKey: "title") as? String
+        self.author = coder.decodeObject(forKey: "author") as? String
+        self.song_id = coder.decodeObject(forKey: "song_id") as? String
+    }
+
+    func encode(with coder: NSCoder) {
+        coder.encode(name, forKey:"name")
+        coder.encode(song_id, forKey:"song_id")
+        coder.encode(author, forKey:"author")
+        coder.encode(lrclink, forKey:"lrclink")
+        coder.encode(title, forKey:"title")
+        coder.encode(pic_big, forKey:"pic_big")
+        coder.encode(pic_premium, forKey:"pic_premium")
+        coder.encode(pic_small, forKey:"pic_small")
+        coder.encode(file_link, forKey:"file_link")
+    }
+
     var album_title: String?
     var name: String?
     var artist_name: String?
     var song_id: String?
     var author: String?
-    var country: String?
     var hot: Int?
     //歌词
     var lrclink: String?
     var pic_big: String?
-    var pic_huge: String?
     var pic_premium: String?
-    var pic_radio: String?
-    var pic_s500: String?
     var pic_small: String?
     var title: String?
+    //播放歌曲的链接
+    var file_link: String?
+    
+    override init() {
+        super.init()
+    }
     
     required init?(map: Map){
         
     }
     
     func mapping(map: Map) {
-        album_1000_1000 <- map["album_1000_1000"]
-        album_500_500 <- map["album_500_500"]
         album_title <- map["album_title"]
         name <- map["name"]
         artist_name <- map["artist_name"]
         song_id <- map["song_id"]
         author <- map["author"]
-        country <- map["country"]
         hot <- map["hot"]
         lrclink <- map["lrclink"]
         pic_big <- map["pic_big"]
-        pic_huge <- map["pic_huge"]
         pic_premium <- map["pic_premium"]
-        pic_radio <- map["pic_radio"]
-        pic_s500 <- map["pic_s500"]
         pic_small <- map["pic_small"]
         title <- map["title"]
     }
 }
+
 
 class Bitrate: Mappable {
     var file_link: String?
