@@ -121,11 +121,12 @@ class PlayerManager: NSObject {
             return nil
         }
     }
-    
+    var session = AVAudioSession.sharedInstance()
     /**播放时间监听*/
     fileprivate var timeObserve: Any?
     fileprivate var isFirstTime: Bool = true
     fileprivate var playModel: BDSongModel?
+    
     override init() {
         super.init()
         
@@ -136,7 +137,6 @@ class PlayerManager: NSObject {
         
         if player == nil {
             player = AVPlayer()
-            let session = AVAudioSession.sharedInstance()
             try? session.setCategory(.playback)
             try? session.setActive(true, options: [])
         }
@@ -415,6 +415,10 @@ class PlayerManager: NSObject {
                     if let t = self.getTotalTime(), (Int(t) ?? 0) > 0{
                         UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
                     }
+                    //歌曲切换更新锁屏歌曲
+                    if isLockedScreen {
+                        self.updateLockedScreenMusic()
+                    }
                 case .failed:
                     self.musicStatus = .failed
                 default:
@@ -440,6 +444,7 @@ class PlayerManager: NSObject {
         info[MPMediaItemPropertyTitle] = model.title ?? ""
         //设置演唱者
         info[MPMediaItemPropertyArtist] = model.author ?? ""
+        
         //歌手头像
         if let url = (model.pic_big ?? "").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
             if let data = try? Data(contentsOf: URL(string: url)!) {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,7 +18,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initRootViewController()
         //开启接收远程事件
         application.beginReceivingRemoteControlEvents()
+        //监听音乐被打断
+        NotificationCenter.default.addObserver(self, selector: #selector(audioSessionWasInterrupted(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         return true
+    }
+    
+    @objc fileprivate func audioSessionWasInterrupted(_ notification: Notification) {
+        if let type = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? Int{
+            let opetions = notification.userInfo?[AVAudioSessionInterruptionOptionKey]
+            switch UInt(type) {
+            case AVAudioSession.InterruptionType.began.rawValue:
+                PlayerManager.shared.playerPause()
+            case AVAudioSession.InterruptionType.ended.rawValue:
+                //是否可以继续播放
+                if let ot = opetions as? Int {
+                    if UInt(ot) == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
+                        PlayerManager.shared.playerPlay()
+                    }
+                }
+            default:
+                break
+            }
+        }
     }
     
     func initRootViewController() {
