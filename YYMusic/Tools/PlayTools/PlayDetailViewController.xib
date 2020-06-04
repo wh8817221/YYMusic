@@ -53,7 +53,7 @@
                     <rect key="frame" x="0.0" y="658" width="414" height="20"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="歌词" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ymn-M8-ZE3" customClass="LrcLabel" customModule="YYMusic" customModuleProvider="target">
-                            <rect key="frame" x="10" y="0.0" width="394" height="20"/>
+                            <rect key="frame" x="193.5" y="0.0" width="27" height="20"/>
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -61,10 +61,9 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="ymn-M8-ZE3" secondAttribute="trailing" constant="10" id="78f-ZO-cTh"/>
                         <constraint firstAttribute="bottom" secondItem="ymn-M8-ZE3" secondAttribute="bottom" id="F43-5c-Ebp"/>
+                        <constraint firstItem="ymn-M8-ZE3" firstAttribute="centerX" secondItem="QYm-yr-9Wd" secondAttribute="centerX" id="OFN-qU-105"/>
                         <constraint firstAttribute="height" constant="20" id="Wzu-N5-FCM"/>
-                        <constraint firstItem="ymn-M8-ZE3" firstAttribute="leading" secondItem="QYm-yr-9Wd" secondAttribute="leading" constant="10" id="X3x-Js-Wbb"/>
                         <constraint firstItem="ymn-M8-ZE3" firstAttribute="top" secondItem="QYm-yr-9Wd" secondAttribute="top" id="hWB-kb-rA8"/>
                     </constraints>
                 </view>

@@ -153,6 +153,20 @@ class PlayerManager: NSObject {
         }
     }
     
+    /// 返回当前时长
+    var currentTime: CMTime {
+        get{
+            return self.player.currentTime()
+        }
+    }
+    
+    /// 总时长
+    var duration: CMTime? {
+        get{
+            return self.player.currentItem?.duration
+        }
+    }
+    
     //MARK:- 当前时间
     func getCurrentTime() -> String? {
         //获取当前时间

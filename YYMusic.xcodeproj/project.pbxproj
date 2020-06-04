@@ -25,6 +25,7 @@
 		D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C883D246CF779002F7CD0 /* DeviceInfo.swift */; };
 		D24C8846246D1F2E002F7CD0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */; };
 		D24C8848246D53F2002F7CD0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */; };
+		D254A11724888DA4004E4F59 /* LrcCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D254A11624888DA4004E4F59 /* LrcCell.swift */; };
 		D26D50312480E0820024EBA6 /* UIColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50302480E0820024EBA6 /* UIColorExtention.swift */; };
 		D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */; };
 		D26D5037248110C90024EBA6 /* InfiniteCycleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */; };
@@ -104,6 +105,7 @@
 		D24C883D246CF779002F7CD0 /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		D254A11624888DA4004E4F59 /* LrcCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LrcCell.swift; sourceTree = "<group>"; };
 		D26D50302480E0820024EBA6 /* UIColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtention.swift; sourceTree = "<group>"; };
 		D26D50322480F1A00024EBA6 /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteCycleView.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				D2B2F4D8247E017D007FECBF /* LrcLabel.swift */,
 				D26D5036248110C90024EBA6 /* InfiniteCycleView.swift */,
 				D26D50382484B1670024EBA6 /* MusicView.swift */,
+				D254A11624888DA4004E4F59 /* LrcCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -642,6 +645,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D254A11724888DA4004E4F59 /* LrcCell.swift in Sources */,
 				D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */,
 				D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */,
 				D24C882B246C0233002F7CD0 /* PlayerModel.swift in Sources */,

@@ -10,6 +10,9 @@ import UIKit
 import AVFoundation
 
 class LyricViewController: UIViewController {
+    
+    var lrcLbl: LrcLabel?
+    
     var model: BDSongModel?
     //当前歌词所在的位置
     fileprivate var currentRow: Int?
@@ -35,6 +38,8 @@ class LyricViewController: UIViewController {
     
     fileprivate var isDragging: Bool = false
     fileprivate var tableView: UITableView!
+    fileprivate var timer: Timer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,7 +51,8 @@ class LyricViewController: UIViewController {
         tableView.estimatedSectionFooterHeight = 0
         tableView.estimatedSectionHeaderHeight = 0
         tableView.backgroundColor = UIColor.clear
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellID")
+        tableView.register(LrcCell.self, forCellReuseIdentifier: LrcCell.identifier)
+        
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.top.left.right.bottom.equalTo(self.view)
@@ -69,6 +75,39 @@ class LyricViewController: UIViewController {
         NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
     }
     
+    func createTimer() {
+        self.timer = Timer(timeInterval: 1.0/30.0, target: self, selector: #selector(upddatePerSecond), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer, forMode: .default)
+    }
+    
+    @objc func upddatePerSecond() {
+        if !isDragging {
+            let ct = PlayerManager.shared.currentTime
+            let cs = CMTimeGetSeconds(ct)
+            //歌词滚动显示
+            for (index,lrc) in self.lrcArray.enumerated() {
+                let currrentLrc = lrc
+                var nextLrc: Lrclink?
+                //获取下一句歌词
+                if index == self.lrcArray.count - 1 {
+                    nextLrc = lrcArray[index]
+                } else {
+                    nextLrc = lrcArray[index+1]
+                }
+                
+                if Double(cs) >= currrentLrc.time! && Double(cs) < (nextLrc?.time)! {
+                    self.lrcLbl?.text = currrentLrc.lrc
+                    self.lrcLbl?.progress = CGFloat((Double(cs)-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!))
+                }
+            }
+        }
+    }
+    
+    func removeTimer() {
+        self.timer.invalidate()
+        self.timer = nil
+    }
+    
     //监听歌词状态
     @objc fileprivate func musicLrcChange(_ sender: Notification) {
         if let lrcs = sender.object as? [Lrclink] {
@@ -87,32 +126,15 @@ class LyricViewController: UIViewController {
             if !isDragging {
                 //歌词滚动显示
                 for (index,lrc) in self.lrcArray.enumerated() {
-//                    let currrentLrc = lrc
-//                    //获取下一句歌词
-//                    let nextIndex = index+1
-//                    var nextLrc: Lrclink?
-//                    if nextIndex < self.lrcArray.count {
-//                        nextLrc = self.lrcArray[nextIndex]
-//                    }
-                    
                     if lrc.time! < Double(cs) {
                         self.currentRow = index
                         let indexPath = IndexPath(row: index, section: 0)
                         self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                         self.tableView.reloadData()
                     }
-                    
-//                    if let ct = currrentLrc.time, let nt = nextLrc?.time {
-//                        drawProgress(cs: cs, ct: ct, nt: nt)
-//                    }
                 }
             }
         }
-    }
-    
-    func drawProgress(cs: Float64, ct: Double, nt: Double) {
-        let progress = (nt-ct)/60
-        print(progress)
     }
     
     deinit {
@@ -126,17 +148,18 @@ extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let lrc = lrcArray[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellID", for: indexPath)
-        cell.textLabel?.text = lrc.lrc
-        cell.textLabel?.textAlignment = .center
-        cell.backgroundColor = UIColor.clear
-        cell.textLabel?.backgroundColor = .clear
-        if currentRow == indexPath.row {
-            cell.textLabel?.textColor = .green
-        } else {
-            cell.textLabel?.textColor = .white
-        }
-        cell.selectionStyle = .none
+        let cell = tableView.dequeueReusableCell(withIdentifier: LrcCell.identifier, for: indexPath) as! LrcCell
+        cell.lrcLbl?.text = lrc.lrc
+        cell.lrcLbl?.backgroundColor = .clear
+        
+//        cell.textLabel?.textColor = .white
+//
+//        if currentRow == indexPath.row {
+//            cell.textLabel?.textColor = .green
+//        } else {
+//            cell.textLabel?.textColor = .white
+//        }
+//        cell.selectionStyle = .none
         return cell
     }
     

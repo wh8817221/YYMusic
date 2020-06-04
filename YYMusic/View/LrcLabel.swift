@@ -10,6 +10,7 @@ import UIKit
 
 class LrcLabel: UILabel {
 
+    var currentIndex: Int?
     var progress: CGFloat = 0 {
         didSet{
             self.setNeedsDisplay()

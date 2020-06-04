@@ -69,7 +69,9 @@ class TrackListViewController: UIViewController {
             self?.tableView.mj_header?.endRefreshing()
             self?.tableView.mj_footer?.endRefreshing()
             if let d = data {
-                self?.songs.append(contentsOf: d.song_list!)
+                if let list = d.song_list {
+                   self?.songs.append(contentsOf: list)
+                }
                 self?.tableView.reloadData()
                 if d.billboard?.havemore == true {
                     self?.tableView.mj_footer?.isHidden = false
