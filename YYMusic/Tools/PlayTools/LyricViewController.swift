@@ -12,24 +12,22 @@ import AVFoundation
 class LyricViewController: UIViewController {
     
     var lrcLbl: LrcLabel?
-    
-    var model: BDSongModel?
     //当前歌词所在的位置
     fileprivate var currentRow: Int?
     var lrcArray: [Lrclink] = [] {
         didSet {
             if lrcArray.isEmpty {
-                emptyLbl.isHidden = false
-                emptyLbl.text = "纯音乐，无歌词"
+                tipLbl.isHidden = false
+                tipLbl.text = "纯音乐，无歌词"
                 self.tableView.reloadData()
             } else {
-                emptyLbl.isHidden = true
+                tipLbl.isHidden = true
                 self.tableView.reloadData()
             }
         }
     }
     
-    fileprivate lazy var emptyLbl: UILabel = {
+    fileprivate lazy var tipLbl: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .white
         lbl.font = kFont15
@@ -58,11 +56,11 @@ class LyricViewController: UIViewController {
             make.top.left.right.bottom.equalTo(self.view)
         }
         
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcChange)
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcLoadStatus)
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
         
-        self.tableView.addSubview(emptyLbl)
-        emptyLbl.snp.makeConstraints { (make) in
+        self.tableView.addSubview(tipLbl)
+        tipLbl.snp.makeConstraints { (make) in
             make.center.equalTo(tableView)
         }
 
@@ -72,7 +70,7 @@ class LyricViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
-        NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
     
     func createTimer() {
@@ -110,13 +108,20 @@ class LyricViewController: UIViewController {
     
     //监听歌词状态
     @objc fileprivate func musicLrcChange(_ sender: Notification) {
-        if let lrcs = sender.object as? [Lrclink] {
-            self.lrcArray = lrcs
-        } else {
-            self.lrcArray.removeAll()
-            self.tableView.reloadData()
-            emptyLbl.isHidden = false
-            emptyLbl.text = "歌词加载中..."
+        if let status = sender.object as? LrcLoadStatus {
+            switch status {
+            case .loadding:
+                self.lrcArray.removeAll()
+                self.tableView.reloadData()
+                tipLbl.isHidden = false
+                tipLbl.text = "歌词加载中..."
+            case .completed:
+                self.lrcArray = PlayerManager.shared.lrcArray ?? []
+            case .failed:
+                self.lrcArray = []
+            default:
+                break
+            }
         }
     }
     
@@ -140,7 +145,7 @@ class LyricViewController: UIViewController {
     
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
-        NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
 }
 extension LyricViewController: UITableViewDelegate, UITableViewDataSource {

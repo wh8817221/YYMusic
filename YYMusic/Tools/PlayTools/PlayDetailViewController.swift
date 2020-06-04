@@ -14,7 +14,6 @@ class PlayDetailViewController: UIViewController {
     var model: BDSongModel?
     @IBOutlet weak var lrcLbl: LrcLabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var singerImageView: UIImageView!
     @IBOutlet weak var songerName: UILabel!
     @IBOutlet weak var songName: UILabel!
@@ -30,6 +29,13 @@ class PlayDetailViewController: UIViewController {
     fileprivate var isSlider: Bool = false
     /// 歌词的定时器
     private var lrcTimer:Timer?
+    fileprivate lazy var indicatorView: UIActivityIndicatorView = {
+        let iv = UIActivityIndicatorView(style: .whiteLarge)
+        iv.frame = self.playAndPauseBtn.frame
+        iv.color = .white
+        iv.hidesWhenStopped = true
+        return iv
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -101,6 +107,7 @@ class PlayDetailViewController: UIViewController {
         previousBtn.setImage(UIImage(named: "prev_song"), for: .normal)
         nextBtn.setImage(UIImage(named: "next_song"), for: .normal)
         playAndPauseBtn.setImage(UIImage(named: "big_play_button"), for: .normal)
+        playAndPauseBtn.setImage(UIImage(named: "big_play_button"), for: .disabled)
         playAndPauseBtn.setImage(UIImage(named: "big_pause_button"), for: .selected)
         playAndPauseBtn.isSelected = PlayerManager.shared.isPlaying
         
@@ -131,12 +138,25 @@ class PlayDetailViewController: UIViewController {
         sliderView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         //值改变事件
         sliderView.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-        
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcChange)
+        //注册监听歌曲时间
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval(_:)), name: .kMusicTimeInterval)
+        //注册监听歌词加载状态
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange(_:)), name: .kLrcLoadStatus)
+        //注册监听歌曲加载状态
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLoadStatus(_:)), name: .kMusicLoadStatus)
         
         if PlayerManager.shared.isPlaying {
             self.addLrcTimer()
+        }
+        //歌曲加载中状态
+        if PlayerManager.shared.musicStatus == .loadding {
+            self.sliderView.value = 0
+            self.playAndPauseBtn.isEnabled = false
+            self.playAndPauseBtn.isSelected = false
+            self.playAndPauseBtn.addSubview(indicatorView)
+            self.playAndPauseBtn.bringSubviewToFront(indicatorView)
+            indicatorView.snp.makeConstraints({$0.center.equalTo(self.playAndPauseBtn)})
+            indicatorView.startAnimating()
         }
     }
     
@@ -183,18 +203,44 @@ class PlayDetailViewController: UIViewController {
         }
     }
     
+    //监听歌曲播放状态
+    @objc fileprivate func musicLoadStatus(_ sender: Notification) {
+        if let status = sender.object as? MusicLoadStatus {
+            switch status {
+            case .loadding:
+                self.sliderView.value = 0
+                self.playAndPauseBtn.isEnabled = false
+                self.playAndPauseBtn.isSelected = false
+                self.playAndPauseBtn.addSubview(indicatorView)
+                self.playAndPauseBtn.bringSubviewToFront(indicatorView)
+                indicatorView.snp.makeConstraints({$0.center.equalTo(self.playAndPauseBtn)})
+                indicatorView.startAnimating()
+            case .readyToPlay:
+                self.playAndPauseBtn.isEnabled = true
+                self.playAndPauseBtn.isSelected = true
+                indicatorView.removeFromSuperview()
+                indicatorView.stopAnimating()
+            default:
+                break
+            }
+        }
+    }
+    
     //监听歌词状态
     @objc fileprivate func musicLrcChange(_ sender: Notification) {
-        if let lrcs = sender.object as? [Lrclink] {
-            if !lrcs.isEmpty {
-                addLrcTimer()
-            } else {
+        if let status = sender.object as? LrcLoadStatus {
+            switch status {
+            case .loadding:
                 self.lrcLbl.isHidden = true
                 removeLrcTimer()
+            case .completed:
+                addLrcTimer()
+            case .failed:
+                self.lrcLbl.isHidden = true
+                removeLrcTimer()
+            default:
+                break
             }
-        } else {
-            self.lrcLbl.isHidden = true
-            removeLrcTimer()
         }
     }
     
@@ -312,6 +358,8 @@ class PlayDetailViewController: UIViewController {
     
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
-        NotificationCenter.removeObserver(observer: self, name: .kLrcChange)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)
+        
     }
 }

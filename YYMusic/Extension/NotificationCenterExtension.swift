@@ -69,7 +69,9 @@ enum NotificationName: String {
     case kMusicTimeInterval
     //监听歌曲模型改变
     case kMusicChange
-    //监听歌词模型改变
-    case kLrcChange
+    //监听歌词状态
+    case kLrcLoadStatus
+    //监听播放状态
+    case kMusicLoadStatus
 }
 

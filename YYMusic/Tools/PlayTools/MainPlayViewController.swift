@@ -44,8 +44,7 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
 
         //歌词控制器
         lyricVC = LyricViewController(nibName: "LyricViewController", bundle: nil)
-        lyricVC.model = model
-
+        
         pageScrollView = PageScrollView(frame: CGRect.zero, viewControllers: [playVC, lyricVC], parentVc: self)
         pageScrollView.delegate = self
         contentView.addSubview(pageScrollView)
@@ -63,10 +62,8 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
             self.model = model
             self.updateBackgroudImage()
             self.playVC.updateModel(model: model)
-            self.lyricVC.lrcLbl = self.playVC.lrcLbl
         }
     }
-    
     
     func updateBackgroudImage() {
         //获取背景图

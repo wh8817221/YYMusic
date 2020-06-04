@@ -16,7 +16,7 @@ import HWPanModal
 //    @objc func playMusicChange(_ mode: Int, object: Any?)
 //}
 
-//播放状态
+//歌曲播放模式
 enum PlayerCycle: Int {
     /**单曲循环*/
     case single = 0
@@ -26,16 +26,29 @@ enum PlayerCycle: Int {
     case random = 2
 }
 
+//歌词加载状态
+enum LrcLoadStatus {
+    case none      //默认
+    case loadding  //加载中
+    case completed   //完成
+    case failed    //失败
+}
+
+//歌曲加载状态
+enum MusicLoadStatus {
+    case none      //默认
+    case loadding  //加载中
+    case readyToPlay //准备播放
+    case completed   //播放完成
+    case failed    //播放失败
+}
+
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
     /*存放歌曲数组*/
     var musicArray: [BDSongModel] = []
     /*存放歌词数组*/
-    var lrcArray: [Lrclink]?{
-        didSet {
-            NotificationCenter.post(name: .kLrcChange, object: lrcArray)
-        }
-    }
+    var lrcArray: [Lrclink]?
     /*前一首下标*/
     var previousIndex: Int! {
         get {
@@ -79,9 +92,23 @@ class PlayerManager: NSObject {
             UserDefaultsManager.shared.userDefaultsSet(object: cycle.rawValue, key: CYCLE)
         }
     }
+    
+    /*歌曲加载状态*/
+    var musicStatus: MusicLoadStatus = .none {
+        didSet{
+            NotificationCenter.post(name: .kMusicLoadStatus, object: musicStatus)
+        }
+    }
+    
+    /*歌词加载状态*/
+    var lrcStatus: LrcLoadStatus = .none {
+        didSet{
+            NotificationCenter.post(name: .kLrcLoadStatus, object: lrcStatus)
+        }
+    }
+    
     /**获取当前播放的歌曲*/
-    var currentModel: BDSongModel?
-    {
+    var currentModel: BDSongModel?{
         get {
             if musicArray.count > 0 {
                 if self.cycle == .random {
@@ -123,6 +150,7 @@ class PlayerManager: NSObject {
 
     //MARK:-播放完毕通知
     @objc fileprivate func playerItemDidPlayToEndTime(_ notification: Notification) {
+        musicStatus = .completed
         print("播放完毕========>\(currentModel?.title ?? "")歌曲")
         autoPlay()
     }
@@ -299,6 +327,7 @@ class PlayerManager: NSObject {
         
         //通知页面模型改变
         NotificationCenter.post(name: .kMusicChange, object: model)
+        
         //存储当前播放的歌曲
         UserDefaultsManager.shared.archiver(object: (model)!, key: CURRENTMUSIC)
     }
@@ -306,7 +335,10 @@ class PlayerManager: NSObject {
     //MARK:- 自动/切换播放
     fileprivate func playReplaceItem(with model: BDSongModel?) {
         self.playModel = model
-        NotificationCenter.post(name: .kLrcChange, object: nil)
+        //记录歌曲和歌词状态
+        self.lrcStatus = .loadding
+        self.musicStatus = .loadding
+        
         var param = [String: Any]()
         param["method"] = "baidu.ting.song.play"
         param["songid"] = model?.song_id
@@ -319,18 +351,21 @@ class PlayerManager: NSObject {
             }
         })
     }
+    
     //MARK:-获取歌词
     func loadLrclink(lrclink: String?) {
         if let lrclink = lrclink, !lrclink.isEmpty {
             NetWorkingTool.shared.downloadFile(fileURL: URL(string: lrclink)!, successCallback: { (fileUrl) in
                 if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!) {
                     self.lrcArray = lrcs
+                    self.lrcStatus = .completed
                 } else {
                     self.lrcArray = []
+                    self.lrcStatus = .failed
                 }
             })
         } else {
-            self.lrcArray = []
+            self.lrcStatus = .failed
         }
     }
     
@@ -373,11 +408,17 @@ class PlayerManager: NSObject {
         if let item = object as? AVPlayerItem {
             if keyPath == "status" {
                 print("当前播放状态=====>\(item.status.rawValue)")
-                if item.status == .readyToPlay {
+                switch item.status {
+                case .readyToPlay:
+                    self.musicStatus = .readyToPlay
                     //存储歌曲总时间
                     if let t = self.getTotalTime(), (Int(t) ?? 0) > 0{
                         UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
                     }
+                case .failed:
+                    self.musicStatus = .failed
+                default:
+                    break
                 }
             }
         }

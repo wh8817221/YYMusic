@@ -35,8 +35,15 @@ class WHPlayerBottomView: UIView {
         layer.lineCap = CAShapeLayerLineCap(rawValue: "round")
         return layer
     }()
-    
     fileprivate var playerBarH: CGFloat = 65.0
+    //加载中转菊花
+    fileprivate lazy var indicatorView: UIActivityIndicatorView = {
+        let iv = UIActivityIndicatorView(style: .whiteLarge)
+        iv.frame = self.playAndPauseBtn.frame
+        iv.color = kThemeColor
+        iv.hidesWhenStopped = true
+        return iv
+    }()
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
@@ -53,6 +60,7 @@ class WHPlayerBottomView: UIView {
         
         playAndPauseBtn = UIButton(type: .custom)
         playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .normal)
+        playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .disabled)
         playAndPauseBtn.setImage(UIImage(named: "icons_stop_music1"), for: .selected)
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
         contentView.addSubview(playAndPauseBtn)
@@ -63,10 +71,14 @@ class WHPlayerBottomView: UIView {
         }
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
-        //注册监听
+        //注册监听音乐模型改变
         NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
+        //注册监听歌曲时间变化
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
+        //注册监听歌曲播放状态--暂停/播放
         NotificationCenter.addObserver(observer: self, selector: #selector(playStatusChange(_:)), name: .kReloadPlayStatus)
+        //注册监听歌曲加载状态
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLoadStatus(_:)), name: .kMusicLoadStatus)
         
         //获取上次播放存储的歌曲
         if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? BDSongModel {
@@ -82,6 +94,30 @@ class WHPlayerBottomView: UIView {
             make.right.equalTo(self.snp.right).offset(-55)
         }
     }
+    
+    //监听歌曲播放状态
+    @objc fileprivate func musicLoadStatus(_ sender: Notification) {
+        if let status = sender.object as? MusicLoadStatus {
+            switch status {
+            case .loadding:
+                self.progress = 0
+                self.playAndPauseBtn.isEnabled = false
+                self.playAndPauseBtn.isSelected = false
+                self.playAndPauseBtn.addSubview(indicatorView)
+                self.playAndPauseBtn.bringSubviewToFront(indicatorView)
+                indicatorView.snp.makeConstraints({$0.center.equalTo(self.playAndPauseBtn)})
+                indicatorView.startAnimating()
+            case .readyToPlay:
+                self.playAndPauseBtn.isEnabled = true
+                self.playAndPauseBtn.isSelected = true
+                indicatorView.removeFromSuperview()
+                indicatorView.stopAnimating()
+            default:
+                break
+            }
+        }
+    }
+    
     //MARK:-show
     func show() {
         self.frame = CGRect(x: 0, y: screenHeight, width: screenWidth, height: playerBarH)
@@ -209,6 +245,7 @@ class WHPlayerBottomView: UIView {
         NotificationCenter.removeObserver(observer: self, name: .kMusicChange)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kReloadPlayStatus)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)
         
     }
 }
