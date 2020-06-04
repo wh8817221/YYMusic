@@ -113,9 +113,10 @@ class LyricViewController: UIViewController {
         if let lrcs = sender.object as? [Lrclink] {
             self.lrcArray = lrcs
         } else {
+            self.lrcArray.removeAll()
+            self.tableView.reloadData()
             emptyLbl.isHidden = false
             emptyLbl.text = "歌词加载中..."
-            self.tableView.reloadData()
         }
     }
     
@@ -151,15 +152,11 @@ extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: LrcCell.identifier, for: indexPath) as! LrcCell
         cell.lrcLbl?.text = lrc.lrc
         cell.lrcLbl?.backgroundColor = .clear
-        
-//        cell.textLabel?.textColor = .white
-//
-//        if currentRow == indexPath.row {
-//            cell.textLabel?.textColor = .green
-//        } else {
-//            cell.textLabel?.textColor = .white
-//        }
-//        cell.selectionStyle = .none
+        if currentRow == indexPath.row {
+            cell.lrcLbl.textColor = .green
+        } else {
+            cell.lrcLbl.textColor = .white
+        }
         return cell
     }
     

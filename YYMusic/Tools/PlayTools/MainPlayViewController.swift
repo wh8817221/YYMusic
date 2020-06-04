@@ -63,6 +63,7 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
             self.model = model
             self.updateBackgroudImage()
             self.playVC.updateModel(model: model)
+            self.lyricVC.lrcLbl = self.playVC.lrcLbl
         }
     }
     

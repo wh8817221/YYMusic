@@ -142,6 +142,9 @@ class PlayDetailViewController: UIViewController {
     
     //MARK:歌词的定时器设置
     private func addLrcTimer() {
+        if PlayerManager.shared.lrcArray?.isEmpty ?? true {
+            return
+        }
         self.lrcTimer = Timer(timeInterval: 0.1, target: self, selector: #selector(upddatePerSecond), userInfo: nil, repeats: true)
         RunLoop.current.add(lrcTimer!, forMode: .default)
     }

@@ -284,9 +284,12 @@ class PlayerManager: NSObject {
     func getSongPlay(model: BDSongModel?) {
         //每次播放重置index
         resetIndex(model: model)
-        //播放的url
-        let url = URL(string: model?.file_link ?? "")
-        currentPlayerItem = AVPlayerItem(url: url!)
+        //播放的url,有可能取不到
+        guard let url = URL(string: model?.file_link ?? "") else {
+            self.autoPlay()
+            return
+        }
+        currentPlayerItem = AVPlayerItem(url: url)
         self.player.replaceCurrentItem(with: currentPlayerItem)
         //调用播放
         self.playerPlay()
@@ -308,7 +311,7 @@ class PlayerManager: NSObject {
         param["method"] = "baidu.ting.song.play"
         param["songid"] = model?.song_id
         let d = RequestHelper.getCommonList(param).generate()
-        NetWorkingTool.shared.requestDataBD(generate: d, method: .get, successCallback: { [weak self](data: SongInfo?) in
+        NetWorkingTool.shared.requestDataBD(generate: d, isShowHUD: false, method: .get, successCallback: { [weak self](data: SongInfo?) in
             if let s = data {
                 s.songinfo?.file_link = s.bitrate?.file_link
                 self?.loadLrclink(lrclink: s.songinfo?.lrclink)
