@@ -54,6 +54,9 @@
 		D2D10CD82474E23D0051E3E2 /* MusicSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CD72474E23D0051E3E2 /* MusicSlider.swift */; };
 		D2D10CDA2474FB620051E3E2 /* UIViewExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CD92474FB620051E3E2 /* UIViewExtention.swift */; };
 		D2D10CDC247500850051E3E2 /* StringExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D10CDB247500850051E3E2 /* StringExtention.swift */; };
+		D2D92D8E2488E90900734F28 /* MoreListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D92D8D2488E90900734F28 /* MoreListViewController.swift */; };
+		D2D92D902488EF7400734F28 /* OverlayPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D92D8F2488EF7400734F28 /* OverlayPresentationController.swift */; };
+		D2D92D922488EFD300734F28 /* OverlayAnimatedTransitioner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D92D912488EFD300734F28 /* OverlayAnimatedTransitioner.swift */; };
 		FDA441EDDD14766985AEC842 /* Pods_YYMusic_YYMusicUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C1BAE0E5551F8CC9F1A468 /* Pods_YYMusic_YYMusicUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -134,6 +137,9 @@
 		D2D10CD72474E23D0051E3E2 /* MusicSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSlider.swift; sourceTree = "<group>"; };
 		D2D10CD92474FB620051E3E2 /* UIViewExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtention.swift; sourceTree = "<group>"; };
 		D2D10CDB247500850051E3E2 /* StringExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtention.swift; sourceTree = "<group>"; };
+		D2D92D8D2488E90900734F28 /* MoreListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreListViewController.swift; sourceTree = "<group>"; };
+		D2D92D8F2488EF7400734F28 /* OverlayPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayPresentationController.swift; sourceTree = "<group>"; };
+		D2D92D912488EFD300734F28 /* OverlayAnimatedTransitioner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayAnimatedTransitioner.swift; sourceTree = "<group>"; };
 		EA6395E92ABFBAEB0ED8922F /* Pods-YYMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YYMusic.debug.xcconfig"; path = "Target Support Files/Pods-YYMusic/Pods-YYMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -285,6 +291,8 @@
 				D24C883B246CF719002F7CD0 /* Common.swift */,
 				D24C8845246D1F2E002F7CD0 /* PlayerManager.swift */,
 				D24C8847246D53F2002F7CD0 /* UserDefaultsManager.swift */,
+				D2D92D8F2488EF7400734F28 /* OverlayPresentationController.swift */,
+				D2D92D912488EFD300734F28 /* OverlayAnimatedTransitioner.swift */,
 				D28DACDC247F881F00D1A4AB /* PageView */,
 			);
 			path = Tools;
@@ -318,6 +326,7 @@
 			children = (
 				D2B2F4A3247CAAF2007FECBF /* BillListViewController.swift */,
 				D2B2F4B2247CABE6007FECBF /* TrackListViewController.swift */,
+				D2D92D8D2488E90900734F28 /* MoreListViewController.swift */,
 			);
 			path = "首页";
 			sourceTree = "<group>";
@@ -654,6 +663,7 @@
 				D24C882D246C0603002F7CD0 /* NetWorkingTool.swift in Sources */,
 				D2D10CAF2472354A0051E3E2 /* NotificationCenterExtension.swift in Sources */,
 				D2B2F4B3247CABE6007FECBF /* TrackListViewController.swift in Sources */,
+				D2D92D922488EFD300734F28 /* OverlayAnimatedTransitioner.swift in Sources */,
 				D24C883C246CF719002F7CD0 /* Common.swift in Sources */,
 				D26D50332480F1A00024EBA6 /* MainTabBarViewController.swift in Sources */,
 				D2B2F4A9247CAAF2007FECBF /* BillListViewController.swift in Sources */,
@@ -661,7 +671,9 @@
 				D2B2F4B5247CACA1007FECBF /* MVPlayViewController.swift in Sources */,
 				D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */,
 				D26D5037248110C90024EBA6 /* InfiniteCycleView.swift in Sources */,
+				D2D92D902488EF7400734F28 /* OverlayPresentationController.swift in Sources */,
 				D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */,
+				D2D92D8E2488E90900734F28 /* MoreListViewController.swift in Sources */,
 				D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */,
 				D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */,
 				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,

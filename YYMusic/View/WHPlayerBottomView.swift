@@ -44,6 +44,7 @@ class WHPlayerBottomView: UIView {
         iv.hidesWhenStopped = true
         return iv
     }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
@@ -56,7 +57,6 @@ class WHPlayerBottomView: UIView {
             make.bottom.equalTo(self.snp.bottom)
             make.height.equalTo(48)
         }
-  
         
         playAndPauseBtn = UIButton(type: .custom)
         playAndPauseBtn.setImage(UIImage(named: "icons_play_music1"), for: .normal)

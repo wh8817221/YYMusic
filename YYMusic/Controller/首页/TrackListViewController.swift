@@ -21,8 +21,8 @@ class TrackListViewController: UIViewController {
             }
         }
     }
-    fileprivate var changeModels: [MusicModel] = []
     
+    fileprivate var currentModel: BDSongModel?
     fileprivate var size = 20
     fileprivate var page = 0
     
@@ -40,6 +40,11 @@ class TrackListViewController: UIViewController {
         // tableview  给音乐播放留距离
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 65))
         
+        //获取上次播放存储的歌曲
+        if let music = UserDefaultsManager.shared.unarchive(key: CURRENTMUSIC) as? BDSongModel {
+            self.currentModel = music
+        }
+        
         tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
             self.page = 0
             self.getMusicList()
@@ -52,8 +57,18 @@ class TrackListViewController: UIViewController {
         self.tableView.mj_header?.isAutomaticallyChangeAlpha = true
         self.tableView.mj_header?.beginRefreshing()
         
+        //注册监听音乐模型改变
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
+        
     }
 
+    @objc fileprivate func musicChange(_ notification: Notification) {
+        if let model = notification.object as? BDSongModel {
+            self.currentModel = model
+            self.tableView.reloadData()
+        }
+    }
+    
     func getMusicList() {
         var param = [String: Any]()
         param["method"] = "baidu.ting.billboard.billList"
@@ -81,6 +96,10 @@ class TrackListViewController: UIViewController {
             }
         })
     }
+    
+    deinit {
+        NotificationCenter.removeObserver(observer: self, name: .kMusicChange)
+    }
 }
 
 extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -105,7 +124,15 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
         
         lbl3.text = song.author ?? ""
         lbl3.font = UIFont.systemFont(ofSize: 13)
-        lbl3.textColor = UIColor.gray
+        
+        if currentModel?.song_id == song.song_id {
+            lbl2.textColor = kThemeColor
+            lbl3.textColor = kThemeColor
+        } else {
+            lbl2.textColor = .black
+            lbl3.textColor = .gray
+        }
+        
         
         cell.backgroundColor = .clear
         return cell

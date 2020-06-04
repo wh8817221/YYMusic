@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class PlayDetailViewController: UIViewController {
+class PlayDetailViewController: UIViewController, UIViewControllerTransitioningDelegate {
     
     var model: BDSongModel?
     @IBOutlet weak var lrcLbl: LrcLabel!
@@ -102,6 +102,7 @@ class PlayDetailViewController: UIViewController {
         }
         
         moreBtn.setImage(UIImage(named: "icon_more"), for: .normal)
+        moreBtn.addTarget(self, action: #selector(moreList), for: .touchUpInside)
         
         //设置前一曲/后一曲/播放暂停
         previousBtn.setImage(UIImage(named: "prev_song"), for: .normal)
@@ -181,7 +182,7 @@ class PlayDetailViewController: UIViewController {
             let currrentLrc = lrc
             var nextLrc: Lrclink?
             //获取下一句歌词
-            if index == lrcArray.count - 1 {
+            if index == lrcArray.count-1 {
                 nextLrc = lrcArray[index]
             } else {
                 nextLrc = lrcArray[index+1]
@@ -254,6 +255,14 @@ class PlayDetailViewController: UIViewController {
         }
     }
 
+    //MARK:-更多列表
+    @objc fileprivate func moreList() {
+        let vc = MoreListViewController()
+        vc.musicModel = self.model
+        vc.transitioningDelegate = self
+        vc.modalPresentationStyle = .custom
+        self.present(vc, animated: true, completion: nil)
+    }
     
     //暂停播放
     @objc func playAndPause(_ sender: UIButton) {
@@ -361,5 +370,36 @@ class PlayDetailViewController: UIViewController {
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
         NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)
         
+    }
+    
+    // MARK: - UIViewControllerTransitioningDelegate
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        if presented is MoreListViewController {
+            let vc = OverlayPresentationController(presentedViewController:presented, presenting:presenting, offset: screenHeight - 100)
+            vc.isTapped = true
+            return vc
+        } else {
+            return nil
+        }
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented is MoreListViewController {
+            let controller = OverlayAnimatedTransitioning()
+            controller.isPresentation = true
+            return controller
+        } else {
+            return nil
+        }
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if dismissed is MoreListViewController {
+            let controller = OverlayAnimatedTransitioning()
+            controller.isPresentation = false
+            return controller
+        } else {
+            return nil
+        }
     }
 }
