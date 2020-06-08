@@ -73,5 +73,7 @@ enum NotificationName: String {
     case kLrcLoadStatus
     //监听播放状态
     case kMusicLoadStatus
+    //监听歌词时间变化,进行滚动
+    case kLrcTimeChange
 }
 

@@ -38,7 +38,7 @@ class WHPlayerBottomView: UIView {
     fileprivate var playerBarH: CGFloat = 65.0
     //加载中转菊花
     fileprivate lazy var indicatorView: UIActivityIndicatorView = {
-        let iv = UIActivityIndicatorView(style: .whiteLarge)
+        let iv = UIActivityIndicatorView(style: .white)
         iv.frame = self.playAndPauseBtn.frame
         iv.color = kThemeColor
         iv.hidesWhenStopped = true
@@ -71,6 +71,7 @@ class WHPlayerBottomView: UIView {
         }
         
         drawCircle(rect: playAndPauseBtn.frame, progress: 0.0)
+        
         //注册监听音乐模型改变
         NotificationCenter.addObserver(observer: self, selector: #selector(musicChange(_:)), name: .kMusicChange)
         //注册监听歌曲时间变化

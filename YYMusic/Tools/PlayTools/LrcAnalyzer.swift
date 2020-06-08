@@ -50,6 +50,11 @@ class LrcAnalyzer: NSObject {
             let eachLrcArray = lrcStr.components(separatedBy: "]")
             let lrc = eachLrcArray.last
             
+            //如果时间点对应的歌词为空就不加入歌词数组
+//            if lrc?.count == 0 || lrc == "\r" || lrc == "\n" {
+//                continue
+//            }
+            
             let df = DateFormatter()
             df.dateFormat = "[mm:ss.SS"
             let date1 = df.date(from: eachLrcArray.first!)
@@ -61,11 +66,7 @@ class LrcAnalyzer: NSObject {
             if (interval1 < 0) {
                 interval1 *= -1
             }
-            
-            //如果时间点对应的歌词为空就不加入歌词数组
-            //        if (lrc.length == 0 || [lrc isEqualToString:@"\r"] || [lrc isEqualToString:@"\n"]) {
-            //            continue;
-            //        }
+
             let eachLrc = Lrclink()
             eachLrc.lrc = lrc
             eachLrc.time = interval1
@@ -82,6 +83,11 @@ class LrcAnalyzer: NSObject {
         for line in linesArray {
             let matchesArray = regular.matches(in: line, options: .reportProgress, range: NSRange(location: 0, length: line.count))
             let lrc = line.components(separatedBy: "]").last
+            
+            //如果时间点对应的歌词为空就不加入歌词数组
+//            if lrc?.count == 0 || lrc == "\r" || lrc == "\n" {
+//                continue
+//            }
             
             for match in matchesArray {
                 var timeStr = NSString(string: line).substring(with: match.range)

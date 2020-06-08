@@ -11,19 +11,29 @@ import AVFoundation
 
 class LyricViewController: UIViewController {
     
-    var lrcLbl: LrcLabel?
+    var progress: CGFloat = 0 {
+        didSet {
+            let cell = tableView.cellForRow(at: IndexPath(row: scrollRow, section: 0)) as? LrcCell
+            cell?.progress = progress
+        }
+    }
     //当前歌词所在的位置
-    fileprivate var currentRow: Int?
+    var scrollRow: Int = -1 {
+        didSet {
+            if scrollRow == oldValue { return }
+            tableView.reloadRows(at: tableView.indexPathsForVisibleRows!, with: .none)
+            tableView.scrollToRow(at: IndexPath(row: scrollRow, section: 0), at: .middle, animated: true)
+        }
+    }
     var lrcArray: [Lrclink] = [] {
         didSet {
             if lrcArray.isEmpty {
                 tipLbl.isHidden = false
                 tipLbl.text = "纯音乐，无歌词"
-                self.tableView.reloadData()
             } else {
                 tipLbl.isHidden = true
-                self.tableView.reloadData()
             }
+            self.tableView.reloadData()
         }
     }
     
@@ -36,7 +46,6 @@ class LyricViewController: UIViewController {
     
     fileprivate var isDragging: Bool = false
     fileprivate var tableView: UITableView!
-    fileprivate var timer: Timer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +66,7 @@ class LyricViewController: UIViewController {
         }
         
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcLoadStatus)
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kMusicTimeInterval)
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kLrcTimeChange)
         
         self.tableView.addSubview(tipLbl)
         tipLbl.snp.makeConstraints { (make) in
@@ -69,43 +78,10 @@ class LyricViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcTimeChange)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
-    
-    func createTimer() {
-        self.timer = Timer(timeInterval: 1.0/30.0, target: self, selector: #selector(upddatePerSecond), userInfo: nil, repeats: true)
-        RunLoop.current.add(timer, forMode: .default)
-    }
-    
-    @objc func upddatePerSecond() {
-        if !isDragging {
-            let ct = PlayerManager.shared.currentTime
-            let cs = CMTimeGetSeconds(ct)
-            //歌词滚动显示
-            for (index,lrc) in self.lrcArray.enumerated() {
-                let currrentLrc = lrc
-                var nextLrc: Lrclink?
-                //获取下一句歌词
-                if index == self.lrcArray.count - 1 {
-                    nextLrc = lrcArray[index]
-                } else {
-                    nextLrc = lrcArray[index+1]
-                }
-                
-                if Double(cs) >= currrentLrc.time! && Double(cs) < (nextLrc?.time)! {
-                    self.lrcLbl?.text = currrentLrc.lrc
-                    self.lrcLbl?.progress = CGFloat((Double(cs)-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!))
-                }
-            }
-        }
-    }
-    
-    func removeTimer() {
-        self.timer.invalidate()
-        self.timer = nil
-    }
-    
+
     //监听歌词状态
     @objc fileprivate func musicLrcChange(_ sender: Notification) {
         if let status = sender.object as? LrcLoadStatus {
@@ -125,26 +101,16 @@ class LyricViewController: UIViewController {
         }
     }
     
-    //监听时间变化
+//    监听时间变化
     @objc fileprivate func musicTimeInterval(_ sender: Notification) {
-        if let timeArr = sender.object as? [Float64] {
-            let cs = timeArr[0]
-            if !isDragging {
-                //歌词滚动显示
-                for (index,lrc) in self.lrcArray.enumerated() {
-                    if lrc.time! < Double(cs) {
-                        self.currentRow = index
-                        let indexPath = IndexPath(row: index, section: 0)
-                        self.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
-                        self.tableView.reloadData()
-                    }
-                }
-            }
+        if let lrc = sender.object as? (index: Int, progress: CGFloat) {
+            self.scrollRow = lrc.index
+            self.progress = lrc.progress
         }
     }
     
     deinit {
-        NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
+        NotificationCenter.removeObserver(observer: self, name: .kLrcTimeChange)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
 }
@@ -157,10 +123,10 @@ extension LyricViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: LrcCell.identifier, for: indexPath) as! LrcCell
         cell.lrcLbl?.text = lrc.lrc
         cell.lrcLbl?.backgroundColor = .clear
-        if currentRow == indexPath.row {
-            cell.lrcLbl.textColor = .green
+        if scrollRow == indexPath.row {
+            cell.progress = progress
         } else {
-            cell.lrcLbl.textColor = .white
+            cell.progress = 0
         }
         return cell
     }

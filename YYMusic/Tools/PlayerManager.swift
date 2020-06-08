@@ -86,6 +86,8 @@ class PlayerManager: NSObject {
             }
         }
     }
+    /**缓存*/
+    var resourceLoader: AVAssetResourceLoader?
     /*播放模式*/
     var cycle: PlayerCycle = .order {
         didSet{
@@ -317,6 +319,9 @@ class PlayerManager: NSObject {
             self.autoPlay()
             return
         }
+//        resourceLoader = AVAssetResourceLoader()
+//        let asset = AVURLAsset(url: url, options: nil)
+//        asset.resourceLoader.setDelegate(<#T##delegate: AVAssetResourceLoaderDelegate?##AVAssetResourceLoaderDelegate?#>, queue: <#T##DispatchQueue?#>)
         currentPlayerItem = AVPlayerItem(url: url)
         self.player.replaceCurrentItem(with: currentPlayerItem)
         //调用播放
