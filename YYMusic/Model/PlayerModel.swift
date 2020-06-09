@@ -131,16 +131,8 @@ class MusicModel: NSObject, Mappable, NSCoding {
     var title: String?
     var nickname: String?
     var trackId: Int?
-    var lrclink: String? {
-        didSet{
-            //本地文件
-            if let path = Bundle.main.path(forResource: "shaonian", ofType: "txt") {
-                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: path) {
-                    self.lrcArray = lrcs
-                }
-            }
-        }
-    }
+    var lrclink: String?
+    
     var lrcArray: [Lrclink] = []
     
     override init() {

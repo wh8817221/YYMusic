@@ -47,8 +47,6 @@ class PlayerManager: NSObject {
     static let shared = PlayerManager()
     /*存放歌曲数组*/
     var musicArray: [BDSongModel] = []
-    /*存放歌词数组*/
-    var lrcArray: [Lrclink]?
     /*前一首下标*/
     var previousIndex: Int! {
         get {
@@ -184,16 +182,20 @@ class PlayerManager: NSObject {
     }
     
     /// 返回当前时长
-    var currentTime: CMTime {
+    var currentTime: Float64 {
         get{
-            return self.player.currentTime()
+            return CMTimeGetSeconds(self.player.currentTime())
         }
     }
     
     /// 总时长
-    var duration: CMTime? {
+    var duration: Float64? {
         get{
-            return self.player.currentItem?.duration
+            if let d = self.player.currentItem?.duration {
+                return CMTimeGetSeconds(d)
+            }
+            return nil
+            
         }
     }
     
@@ -361,11 +363,9 @@ class PlayerManager: NSObject {
     func loadLrclink(lrclink: String?) {
         if let lrclink = lrclink, !lrclink.isEmpty {
             NetWorkingTool.shared.downloadFile(fileURL: URL(string: lrclink)!, successCallback: { (fileUrl) in
-                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!) {
-                    self.lrcArray = lrcs
+                if let lrcs = LrcAnalyzer.shared.analyzerLrc(by: fileUrl!), !lrcs.isEmpty {
                     self.lrcStatus = .completed
                 } else {
-                    self.lrcArray = []
                     self.lrcStatus = .failed
                 }
             })

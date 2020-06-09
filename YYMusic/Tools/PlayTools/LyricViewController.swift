@@ -64,21 +64,22 @@ class LyricViewController: UIViewController {
         tableView.snp.makeConstraints { (make) in
             make.top.left.right.bottom.equalTo(self.view)
         }
-        
+        //切换歌曲歌词变化
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange), name: .kLrcLoadStatus)
-        NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval), name: .kLrcTimeChange)
+        //歌词进度
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcProgress), name: .kMusicLrcProgress)
         
         self.tableView.addSubview(tipLbl)
         tipLbl.snp.makeConstraints { (make) in
             make.center.equalTo(tableView)
         }
 
-        self.lrcArray = PlayerManager.shared.lrcArray ?? []
+        self.lrcArray = LrcAnalyzer.shared.lrcArray
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.removeObserver(observer: self, name: .kLrcTimeChange)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
 
@@ -92,7 +93,7 @@ class LyricViewController: UIViewController {
                 tipLbl.isHidden = false
                 tipLbl.text = "歌词加载中..."
             case .completed:
-                self.lrcArray = PlayerManager.shared.lrcArray ?? []
+                self.lrcArray = LrcAnalyzer.shared.lrcArray
             case .failed:
                 self.lrcArray = []
             default:
@@ -102,15 +103,15 @@ class LyricViewController: UIViewController {
     }
     
 //    监听时间变化
-    @objc fileprivate func musicTimeInterval(_ sender: Notification) {
-        if let lrc = sender.object as? (index: Int, progress: CGFloat) {
-            self.scrollRow = lrc.index
-            self.progress = lrc.progress
+    @objc fileprivate func musicLrcProgress(_ sender: Notification) {
+        if let lrc = sender.object as? (index: Int?, lrcText: String?, progress: CGFloat?)  {
+            self.scrollRow = lrc.index!
+            self.progress = lrc.progress!
         }
     }
     
     deinit {
-        NotificationCenter.removeObserver(observer: self, name: .kLrcTimeChange)
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
     }
 }

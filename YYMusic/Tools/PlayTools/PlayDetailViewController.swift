@@ -50,7 +50,8 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
-        removeLrcTimer()
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
+        LrcAnalyzer.shared.removeLrcTimer()
     }
     
     func updateModel(model: BDSongModel?) {
@@ -149,10 +150,13 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcChange(_:)), name: .kLrcLoadStatus)
         //注册监听歌曲加载状态
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLoadStatus(_:)), name: .kMusicLoadStatus)
+        //监听歌词播放进度
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcProgress(_:)), name: .kMusicLrcProgress)
         
         if PlayerManager.shared.isPlaying {
-            self.addLrcTimer()
+            LrcAnalyzer.shared.addLrcTimer()
         }
+        
         //歌曲加载中状态
         if PlayerManager.shared.musicStatus == .loadding {
             self.sliderView.value = 0
@@ -165,57 +169,8 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
             indicatorView.startAnimating()
         }
     }
-    
-    //MARK:歌词的定时器设置
-    private func addLrcTimer() {
-        if PlayerManager.shared.lrcArray?.isEmpty ?? true {
-            return
-        }
-        self.lrcProgress = CADisplayLink(target: self, selector: #selector(upddatePerSecond))
-        self.lrcProgress?.add(to: RunLoop.main, forMode: .common)
-    }
-    
-    //MARK:-更新歌词的时间
-    @objc func upddatePerSecond() {
-        guard let lrcArray = PlayerManager.shared.lrcArray else {
-            return
-        }
-        let ct = PlayerManager.shared.currentTime
-        let cs = CMTimeGetSeconds(ct)
-        var i: Int = 0
-        var progress: CGFloat = 0.0
-        //歌词滚动显示
-        for (index,lrc) in lrcArray.enumerated() {
-            let currrentLrc = lrc
-            var nextLrc: Lrclink?
-            //获取下一句歌词
-            if index == lrcArray.count-1 {
-                nextLrc = lrcArray[index]
-            } else {
-                nextLrc = lrcArray[index+1]
-            }
-            
-            if Double(cs) >= currrentLrc.time! && Double(cs) < (nextLrc?.time)! {
-                self.lrcLbl.isHidden = false
-                self.lrcLbl?.text = currrentLrc.lrc
-                progress = CGFloat((Double(cs)-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!))
-                self.lrcLbl?.progress = progress
-                i = index
-            }
-            
-        }
-        NotificationCenter.post(name: .kLrcTimeChange, object: (index: i, progress: progress), userInfo: nil)
-    }
-    
-    //删除歌词的定时器
-    private func removeLrcTimer() {
-        if lrcProgress != nil {
-            lrcProgress?.invalidate()
-            lrcProgress = nil
-        }
-    }
-    
-    //监听歌曲播放状态
+
+    //MARK:-监听歌曲播放状态
     @objc fileprivate func musicLoadStatus(_ sender: Notification) {
         if let status = sender.object as? MusicLoadStatus {
             switch status {
@@ -239,25 +194,34 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         }
     }
     
-    //监听歌词状态
+    //MARK:-监听歌词播放进度
+    @objc fileprivate func musicLrcProgress(_ sender: Notification) {
+        if let lrc = sender.object as? (index: Int?, lrcText: String?, progress: CGFloat?) {
+            self.lrcLbl.isHidden = false
+            self.lrcLbl?.text = lrc.lrcText ?? ""
+            self.lrcLbl?.progress = lrc.progress ?? 0
+        }
+    }
+    
+    //MARK:-监听歌词加载情况
     @objc fileprivate func musicLrcChange(_ sender: Notification) {
         if let status = sender.object as? LrcLoadStatus {
             switch status {
             case .loadding:
                 self.lrcLbl.isHidden = true
-                removeLrcTimer()
+                LrcAnalyzer.shared.removeLrcTimer()
             case .completed:
-                addLrcTimer()
+                LrcAnalyzer.shared.addLrcTimer()
             case .failed:
                 self.lrcLbl.isHidden = true
-                removeLrcTimer()
+                LrcAnalyzer.shared.removeLrcTimer()
             default:
                 break
             }
         }
     }
     
-    //监听音乐时间变化
+    //MARK:-监听音乐时间变化
     @objc fileprivate func musicTimeInterval(_ sender: Notification) {
         let currentTime = PlayerManager.shared.getCurrentTime()
         let totalTime = PlayerManager.shared.getTotalTime()
@@ -276,7 +240,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         self.present(vc, animated: true, completion: nil)
     }
     
-    //暂停播放
+    //MARK:-暂停播放
     @objc func playAndPause(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         //第一次点击底部播放按钮并且还是未在播放状态
@@ -293,17 +257,17 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         } else {
             PlayerManager.shared.isFristPlayerPauseBtn = false
             if !sender.isSelected {
-                removeLrcTimer()
+                LrcAnalyzer.shared.removeLrcTimer()
                 PlayerManager.shared.playerPause()
             } else {
-                addLrcTimer()
+                LrcAnalyzer.shared.addLrcTimer()
                 PlayerManager.shared.playerPlay()
             }
         }
         
     }
     
-    /** 设置时间数据 */
+    //MARK:-更新时间和滑块
     func updateProgressLabelCurrentTime(currentTime: String?, totalTime: String?) {
         if let c = currentTime, let t = totalTime {
             let ct = CMTime(value: CMTimeValue(c)!, timescale: CMTimeScale(1.0))
@@ -390,6 +354,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     }
     
     deinit {
+        NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
         NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)

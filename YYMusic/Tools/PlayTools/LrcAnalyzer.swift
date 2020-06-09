@@ -11,6 +11,8 @@ import UIKit
 class LrcAnalyzer: NSObject {
     static let shared = LrcAnalyzer()
     var lrcArray: [Lrclink] = []
+    /// 歌词的定时器
+    var lrcProgress: CADisplayLink?
     
     func analyzerLrc(by url: URL) -> [Lrclink]? {
         self.lrcArray = []
@@ -43,38 +45,7 @@ class LrcAnalyzer: NSObject {
 //        self.analyzerEachLrc(lrcConnectArray: lrcConnectArray)
         self.lyricParase(with: lrcConnectArray)
     }
-    
-    //解析每一行歌词字符，获得时间点和对应的歌词
-    func analyzerEachLrc(lrcConnectArray: [String]) {
-        for lrcStr in lrcConnectArray {
-            let eachLrcArray = lrcStr.components(separatedBy: "]")
-            let lrc = eachLrcArray.last
-            
-            //如果时间点对应的歌词为空就不加入歌词数组
-//            if lrc?.count == 0 || lrc == "\r" || lrc == "\n" {
-//                continue
-//            }
-            
-            let df = DateFormatter()
-            df.dateFormat = "[mm:ss.SS"
-            let date1 = df.date(from: eachLrcArray.first!)
-            let date2 = df.date(from: "[00:00.00")
-            var interval1 = date1!.timeIntervalSince1970
-            let interval2 = date2!.timeIntervalSince1970
-            
-            interval1 -= interval2
-            if (interval1 < 0) {
-                interval1 *= -1
-            }
 
-            let eachLrc = Lrclink()
-            eachLrc.lrc = lrc
-            eachLrc.time = interval1
-            self.lrcArray.append(eachLrc)
-            
-        }
-    }
-    
     func lyricParase(with linesArray: [String]) {
         let pattern = "\\[[0-9][0-9]:[0-9][0-9].[0-9]{1,}\\]"
         guard let regular = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
@@ -113,6 +84,57 @@ class LrcAnalyzer: NSObject {
             }
         }
     }
+    
+    //MARK:歌词的定时器设置
+    func addLrcTimer() {
+        if self.lrcArray.isEmpty {
+            return
+        }
+        self.lrcProgress = CADisplayLink(target: self, selector: #selector(upddatePerSecond))
+        self.lrcProgress?.add(to: RunLoop.main, forMode: .common)
+    }
+    
+    //删除歌词的定时器
+    func removeLrcTimer() {
+        if lrcProgress != nil {
+            lrcProgress?.invalidate()
+            lrcProgress = nil
+        }
+    }
+    
+    //MARK:-更新歌词的时间
+    @objc func upddatePerSecond() {
+        if let lrc = self.getLrc() {
+            NotificationCenter.post(name: .kMusicLrcProgress, object: (index: lrc.index, lrcText: lrc.lrcText, progress: lrc.progress), userInfo: nil)
+        }
+    }
+    
+    //MARK:-获取播放歌曲的信息
+    func getLrc() -> (index: Int?, lrcText: String?, progress: CGFloat?)? {
+        
+        let cs = PlayerManager.shared.currentTime
+        var i: Int = 0
+        var progress: CGFloat = 0.0
+        //歌词滚动显示
+        for (index,lrc) in lrcArray.enumerated() {
+            let currrentLrc = lrc
+            var nextLrc: Lrclink?
+            //获取下一句歌词
+            if index == lrcArray.count-1 {
+                nextLrc = lrcArray[index]
+            } else {
+                nextLrc = lrcArray[index+1]
+            }
+            
+            if Double(cs) >= currrentLrc.time! && Double(cs) < (nextLrc?.time)! {
+                i = index
+                progress = CGFloat((Double(cs)-currrentLrc.time!)/((nextLrc?.time)!-currrentLrc.time!))
+                return (i, currrentLrc.lrc, progress)
+            }
+        }
+        return nil
+    }
+    
 }
 
 extension String {

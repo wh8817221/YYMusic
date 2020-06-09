@@ -88,6 +88,7 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
         //关闭按钮
         closedBtn.setImage(UIImage(named: "arrow"), for: .normal)
         closedBtn.addTarget(self, action: #selector(closedAction(_:)), for: .touchUpInside)
+        segmentedControl.tintColor = .white
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], for: .normal)
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], for: .selected)
         segmentedControl.addTarget(self, action: #selector(segmentClick(_:)), for: .valueChanged)
