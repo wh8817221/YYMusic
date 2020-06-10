@@ -145,6 +145,12 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
             if let currentTime = PlayerManager.shared.getCurrentTime() {
                 let totalTime = PlayerManager.shared.getTotalTime()
                 self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
+                //更新歌词
+                if let lrc = LrcAnalyzer.shared.getLrc() {
+                    self.lrcLbl.isHidden = false
+                    self.lrcLbl?.text = lrc.lrcText ?? ""
+                    self.lrcLbl?.progress = lrc.progress ?? 0
+                }
             } else {
                 if let totalTime = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
                     self.updateProgressLabelCurrentTime(currentTime: "0", totalTime: totalTime)

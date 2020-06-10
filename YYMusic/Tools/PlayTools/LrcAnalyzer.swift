@@ -109,7 +109,9 @@ class LrcAnalyzer: NSObject {
     
     //MARK:-获取播放歌曲的信息
     func getLrc() -> (index: Int?, lrcText: String?, progress: CGFloat?)? {
-        
+        if self.lrcArray.isEmpty {
+            return nil
+        }
         let cs = PlayerManager.shared.currentTime
         var i: Int = 0
         var progress: CGFloat = 0.0

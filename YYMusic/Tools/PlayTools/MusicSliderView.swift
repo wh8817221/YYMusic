@@ -132,6 +132,7 @@ class MusicSliderView: UIView {
         self.bgProgressView.center.y = self.frame.size.height*0.5
         self.bufferProgressView.center.y = self.frame.size.height*0.5
         self.sliderProgressView.center.y = self.frame.size.height*0.5
+        
         self.sliderBtn.center.y = self.frame.size.height*0.5
     }
     

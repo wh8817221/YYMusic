@@ -73,8 +73,17 @@ class LyricViewController: UIViewController {
         tipLbl.snp.makeConstraints { (make) in
             make.center.equalTo(tableView)
         }
-
+        
         self.lrcArray = LrcAnalyzer.shared.lrcArray
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //更新歌词
+        if let lrc = LrcAnalyzer.shared.getLrc() {
+            self.scrollRow = lrc.index!
+            self.progress = lrc.progress!
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
