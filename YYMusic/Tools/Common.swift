@@ -26,7 +26,6 @@ let kBlackColor = UIColor(red: 57/255, green: 57/255, blue: 58/255, alpha: 1.0)
 let kBackgroundColor = UIColor.hexStringToColor(stringToConvert: "#F7F8FC")
 let kLineColor = UIColor.hexStringToColor(stringToConvert: "#E5E7ED")
 
-
 //MARK:- font (不用动态字体)
 let kFont30 = UIFont.systemFont(ofSize: 30)
 let kFont20 = UIFont.systemFont(ofSize: 20)
@@ -71,5 +70,26 @@ func timeIntervalToMMSSFormat(interval: Float64) -> String {
     let seconds: Int64 = ti%60
     let minutes: Int64 = (ti/60)%60
     return String(format: "%02ld:%02ld", arguments: [minutes, seconds])
+}
+
+func intersectSorted<T: NSObject>(_ nums1: [T], _ nums2: [T]) -> [T] {
+    var intersects = [T]()
+    var i = 0
+    var j = 0
+    var k = 0
+    while i < nums1.count {
+        while j < nums2.count && i < nums1.count {
+            if nums1[i] == nums2[j] {
+                intersects.append(nums1[i])
+                i += 1
+                j += 1
+                k = j
+            }
+            j += 1
+        }
+        i += 1
+        j = k
+    }
+    return intersects
 }
 

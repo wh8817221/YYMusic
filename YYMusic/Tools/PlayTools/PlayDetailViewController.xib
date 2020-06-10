@@ -14,12 +14,12 @@
                 <outlet property="likeBtn" destination="HNM-9N-dS9" id="DG4-An-7sJ"/>
                 <outlet property="lrcLbl" destination="ymn-M8-ZE3" id="oXD-vJ-u5o"/>
                 <outlet property="moreBtn" destination="KF3-2T-cpg" id="34d-En-jne"/>
+                <outlet property="musicSliderView" destination="1Tz-13-Efn" id="M9v-Z4-ehB"/>
                 <outlet property="nextBtn" destination="Ttq-y2-oHy" id="dx7-8U-pWp"/>
                 <outlet property="playAndPauseBtn" destination="2Bk-Yy-q2X" id="2XA-al-wae"/>
                 <outlet property="playModeBtn" destination="Iu7-2d-3lo" id="1eS-nP-RoW"/>
                 <outlet property="previousBtn" destination="kBF-PR-ptw" id="oqc-Np-P8p"/>
                 <outlet property="singerImageView" destination="cpG-K2-NG1" id="n04-sm-dtL"/>
-                <outlet property="sliderView" destination="0Xl-iP-4vE" id="3gZ-fw-07Z"/>
                 <outlet property="songName" destination="yIk-8S-dEl" id="J9V-2i-bdi"/>
                 <outlet property="songerName" destination="QPo-tZ-l6C" id="jId-v1-6oT"/>
                 <outlet property="startTimeLbl" destination="fSf-2S-DFP" id="0Pj-UJ-0gp"/>
@@ -110,7 +110,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KD8-ja-jW0">
                             <rect key="frame" x="10" y="0.0" width="394" height="36"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fSf-2S-DFP">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fSf-2S-DFP">
                                     <rect key="frame" x="0.0" y="7.5" width="40" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="40" id="gHX-u8-DfV"/>
@@ -120,16 +120,14 @@
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="0Xl-iP-4vE" customClass="MusicSlider" customModule="YYMusic" customModuleProvider="target">
-                                    <rect key="frame" x="48" y="3" width="298" height="31"/>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Tz-13-Efn" customClass="MusicSliderView" customModule="YYMusic" customModuleProvider="target">
+                                    <rect key="frame" x="42" y="3" width="310" height="30"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="30" id="p8h-2e-FeI"/>
+                                        <constraint firstAttribute="height" constant="30" id="D4P-bL-oGH"/>
                                     </constraints>
-                                    <color key="maximumTrackTintColor" red="1" green="1" blue="1" alpha="0.30176583899999998" colorSpace="custom" customColorSpace="sRGB"/>
-                                </slider>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fwE-5C-tDp">
+                                </view>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fwE-5C-tDp">
                                     <rect key="frame" x="354" y="7.5" width="40" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -139,10 +137,10 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="fwE-5C-tDp" secondAttribute="trailing" id="Ccq-Z2-uIT"/>
-                                <constraint firstItem="fwE-5C-tDp" firstAttribute="leading" secondItem="0Xl-iP-4vE" secondAttribute="trailing" constant="10" id="TzS-Zj-J33"/>
-                                <constraint firstItem="0Xl-iP-4vE" firstAttribute="leading" secondItem="fSf-2S-DFP" secondAttribute="trailing" constant="10" id="ccm-sS-fL6"/>
+                                <constraint firstItem="1Tz-13-Efn" firstAttribute="centerY" secondItem="fSf-2S-DFP" secondAttribute="centerY" id="cpK-p3-uXi"/>
+                                <constraint firstItem="1Tz-13-Efn" firstAttribute="leading" secondItem="fSf-2S-DFP" secondAttribute="trailing" constant="2" id="gJT-5Q-PeA"/>
                                 <constraint firstItem="fwE-5C-tDp" firstAttribute="centerY" secondItem="fSf-2S-DFP" secondAttribute="centerY" id="gx8-U4-7OI"/>
-                                <constraint firstItem="0Xl-iP-4vE" firstAttribute="centerY" secondItem="fSf-2S-DFP" secondAttribute="centerY" id="oLn-1f-xtH"/>
+                                <constraint firstItem="fwE-5C-tDp" firstAttribute="leading" secondItem="1Tz-13-Efn" secondAttribute="trailing" constant="2" id="hvj-KU-qqg"/>
                                 <constraint firstAttribute="height" constant="36" id="or5-GQ-2gb"/>
                                 <constraint firstItem="fwE-5C-tDp" firstAttribute="width" secondItem="fSf-2S-DFP" secondAttribute="width" id="qX2-Uc-owd"/>
                                 <constraint firstItem="fSf-2S-DFP" firstAttribute="leading" secondItem="KD8-ja-jW0" secondAttribute="leading" id="uXe-7Q-Jup"/>

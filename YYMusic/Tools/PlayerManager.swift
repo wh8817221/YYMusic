@@ -11,11 +11,6 @@ import AVFoundation
 import MediaPlayer
 import HWPanModal
 
-//@objc protocol PlayMusicDelegate {
-//    /**切换歌曲*/
-//    @objc func playMusicChange(_ mode: Int, object: Any?)
-//}
-
 //歌曲播放模式
 enum PlayerCycle: Int {
     /**单曲循环*/
@@ -80,12 +75,19 @@ class PlayerManager: NSObject {
     var currentPlayerItem: AVPlayerItem! {
         didSet{
             if currentPlayerItem != nil {
+                //播放状态
                 currentPlayerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+                //播放进度
+                currentPlayerItem.addObserver(self, forKeyPath: "loadedTimeRanges", options: .new, context: nil)
+                //监听播放器在缓冲数据的状态 playbackBufferEmpty
+                currentPlayerItem.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+                //缓冲达到可播放程度了 playbackLikelyToKeepUp
+                currentPlayerItem.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
             }
         }
     }
     /**缓存*/
-    var resourceLoader: AVAssetResourceLoader?
+    var resourceLoader: ResourceLoader?
     /*播放模式*/
     var cycle: PlayerCycle = .order {
         didSet{
@@ -121,6 +123,15 @@ class PlayerManager: NSObject {
             return nil
         }
     }
+    /**缓存进度*/
+    var bufferProgress: CGFloat? {
+        didSet {
+            if !bufferProgress!.isNaN {
+               NotificationCenter.post(name: .MusicBufferProgress, object: bufferProgress)
+            }
+        }
+    }
+    
     var session = AVAudioSession.sharedInstance()
     /**播放时间监听*/
     fileprivate var timeObserve: Any?
@@ -298,6 +309,7 @@ class PlayerManager: NSObject {
 
     //MARK:- 播放进度
     func playerProgress(with progress: Double, completionHandler: ((CMTime) -> Void)? = nil) {
+        self.resourceLoader?.seekRquired = true
         var progress = progress
         if self.isPlaying {
             // 将进度转换成播放时间（不能直接将进度条快进到播放结束）
@@ -321,9 +333,24 @@ class PlayerManager: NSObject {
             self.autoPlay()
             return
         }
-//        resourceLoader = AVAssetResourceLoader()
-//        let asset = AVURLAsset(url: url, options: nil)
-//        asset.resourceLoader.setDelegate(<#T##delegate: AVAssetResourceLoaderDelegate?##AVAssetResourceLoaderDelegate?#>, queue: <#T##DispatchQueue?#>)
+//        //有缓存播放缓存
+//        let cacheFilePath = CacheFileHandle.cacheFileExists(with: url)
+//        if cacheFilePath != nil {
+//            let url = URL(fileURLWithPath: cacheFilePath!)
+//            currentPlayerItem = AVPlayerItem(url: url)
+//            print("有缓存，播放缓存文件")
+//        } else {
+//            //没有缓存播放网络文件
+//            if self.resourceLoader == nil {
+//               self.resourceLoader = ResourceLoader()
+//            }
+//            self.resourceLoader?.delegate = self
+//            let asset = AVURLAsset(url: url.customSchemeURL()!, options: nil)
+//            asset.resourceLoader.setDelegate(self.resourceLoader!, queue: DispatchQueue.main)
+//            currentPlayerItem = AVPlayerItem(asset: asset)
+//            print("无缓存，播放网络文件")
+//        }
+
         currentPlayerItem = AVPlayerItem(url: url)
         self.player.replaceCurrentItem(with: currentPlayerItem)
         //调用播放
@@ -345,7 +372,7 @@ class PlayerManager: NSObject {
         //记录歌曲和歌词状态
         self.lrcStatus = .loadding
         self.musicStatus = .loadding
-        
+        self.isFristPlayerPauseBtn = false
         var param = [String: Any]()
         param["method"] = "baidu.ting.song.play"
         param["songid"] = model?.song_id
@@ -403,7 +430,10 @@ class PlayerManager: NSObject {
 
     //MARK:- 清空播放器监听属性
     func releasePlayer() {
+        self.removeObserver(self, forKeyPath: "loadedTimeRanges")
         self.removeObserver(self, forKeyPath: "status")
+        self.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+        self.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
         NotificationCenter.default.removeObserver(self)
         self.currentPlayerItem = nil
         self.player = nil
@@ -411,11 +441,10 @@ class PlayerManager: NSObject {
     //MARK:- KVO监听播放状态
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let item = object as? AVPlayerItem {
-            if keyPath == "status" {
-                print("当前播放状态=====>\(item.status.rawValue)")
+            switch keyPath! {
+            case "status":
                 switch item.status {
                 case .readyToPlay:
-                    self.musicStatus = .readyToPlay
                     //存储歌曲总时间
                     if let t = self.getTotalTime(), (Int(t) ?? 0) > 0{
                         UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
@@ -429,6 +458,29 @@ class PlayerManager: NSObject {
                 default:
                     break
                 }
+            case "loadedTimeRanges":
+                //监听播放器的缓冲进度
+                let loadedTimeRanges = item.loadedTimeRanges
+                // 获取缓冲区域
+                if let timeRange = loadedTimeRanges.first?.timeRangeValue {
+                    let startSeconds = CMTimeGetSeconds(timeRange.start)
+                    let durationSeconds = CMTimeGetSeconds(timeRange.duration)
+                    // 计算缓冲总进度
+                    let timeInterval = startSeconds + durationSeconds
+                    let duration = item.duration
+                    let totalDuration = CMTimeGetSeconds(duration)
+                    self.bufferProgress = CGFloat(timeInterval/totalDuration)
+                }
+            case "playbackBufferEmpty":
+                //监听播放器在缓冲数据的状态
+                self.musicStatus = .loadding
+            case "playbackLikelyToKeepUp":
+                //由于 AVPlayer 缓存不足就会自动暂停，所以缓存充足了需要手动播放，才能继续播放
+                if self.musicStatus != .readyToPlay {
+                    self.musicStatus = .readyToPlay
+                }
+            default:
+                break
             }
         }
     }
@@ -465,3 +517,15 @@ class PlayerManager: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
 }
+
+//extension PlayerManager: ResourceLoaderDelegate {
+//    
+//    func loader(_ loader: ResourceLoader, cache progress: CGFloat) {
+//        print(progress)
+//        self.bufferProgress = progress
+//    }
+//    
+//    func loader(_ loader: ResourceLoader, failLoading error: Error) {
+//        print("failLoading")
+//    }
+//}

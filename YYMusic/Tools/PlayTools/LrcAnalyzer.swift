@@ -136,13 +136,3 @@ class LrcAnalyzer: NSObject {
     }
     
 }
-
-extension String {
-    //字符串截取
-    func textSubstring(startIndex: Int, length: Int) -> String {
-        let startIndex = self.index(self.startIndex, offsetBy: startIndex)
-        let endIndex = self.index(startIndex, offsetBy: length)
-        let subvalues = self[startIndex..<endIndex]
-        return String(subvalues)
-    }
-}

@@ -12,6 +12,7 @@ import AVFoundation
 class PlayDetailViewController: UIViewController, UIViewControllerTransitioningDelegate {
     
     var model: BDSongModel?
+    @IBOutlet weak var musicSliderView: MusicSliderView!
     @IBOutlet weak var lrcLbl: LrcLabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var singerImageView: UIImageView!
@@ -20,7 +21,6 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     @IBOutlet weak var likeBtn: UIButton!
     @IBOutlet weak var startTimeLbl: UILabel!
     @IBOutlet weak var totalTimeLbl: UILabel!
-    @IBOutlet weak var sliderView: MusicSlider!
     @IBOutlet weak var playModeBtn: UIButton!
     @IBOutlet weak var previousBtn: UIButton!
     @IBOutlet weak var playAndPauseBtn: UIButton!
@@ -29,7 +29,24 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     fileprivate var isSlider: Bool = false
     /// 歌词的定时器
     private var lrcProgress: CADisplayLink?
-    
+    //歌曲总时间
+    private var totalTime: Float64? {
+        didSet {
+            totalTimeLbl.text = timeIntervalToMMSSFormat(interval: totalTime!)
+        }
+    }
+    //当前时间
+    private var currentTime: Float64? {
+        didSet{
+            startTimeLbl.text = timeIntervalToMMSSFormat(interval: currentTime!)
+            if !isSlider {
+                if let tt = self.totalTime, let ct = currentTime {
+                    musicSliderView.value = CGFloat(ct/tt)
+                }
+            }
+        }
+    }
+    fileprivate var isFirstTapped: Bool = false
     fileprivate lazy var indicatorView: UIActivityIndicatorView = {
         let iv = UIActivityIndicatorView(style: .whiteLarge)
         iv.frame = self.playAndPauseBtn.frame
@@ -51,6 +68,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         super.viewDidDisappear(animated)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
+        NotificationCenter.removeObserver(observer: self, name: .MusicBufferProgress)
         LrcAnalyzer.shared.removeLrcTimer()
     }
     
@@ -118,9 +136,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         previousBtn.addTarget(self, action: #selector(previusAction(_:)), for: .touchUpInside)
         nextBtn.addTarget(self, action: #selector(nextAction(_:)), for: .touchUpInside)
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
-        
-        sliderView.isContinuous = true
-        
+                
         if PlayerManager.shared.isPlaying {
             let currentTime = PlayerManager.shared.getCurrentTime()
             let totalTime = PlayerManager.shared.getTotalTime()
@@ -135,15 +151,9 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
                 }
             }
         }
-        //开始事件
-        sliderView.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        //结束事件
-        sliderView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        //值改变事件
-        sliderView.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-        //点击事件
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-        sliderView.addGestureRecognizer(gesture)
+        
+        musicSliderView.delegate = self
+        
         //注册监听歌曲时间
         NotificationCenter.addObserver(observer: self, selector: #selector(musicTimeInterval(_:)), name: .kMusicTimeInterval)
         //注册监听歌词加载状态
@@ -152,6 +162,8 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLoadStatus(_:)), name: .kMusicLoadStatus)
         //监听歌词播放进度
         NotificationCenter.addObserver(observer: self, selector: #selector(musicLrcProgress(_:)), name: .kMusicLrcProgress)
+        //监听缓冲进度
+        NotificationCenter.addObserver(observer: self, selector: #selector(musicBufferProgress(_:)), name: .MusicBufferProgress)
         
         if PlayerManager.shared.isPlaying {
             LrcAnalyzer.shared.addLrcTimer()
@@ -159,7 +171,8 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         
         //歌曲加载中状态
         if PlayerManager.shared.musicStatus == .loadding {
-            self.sliderView.value = 0
+            self.musicSliderView.value = 0
+            self.musicSliderView.bufferValue = 0
             self.startTimeLbl.text = "00:00"
             self.playAndPauseBtn.isEnabled = false
             self.playAndPauseBtn.isSelected = false
@@ -175,8 +188,12 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         if let status = sender.object as? MusicLoadStatus {
             switch status {
             case .loadding:
-                self.sliderView.value = 0
-                self.startTimeLbl.text = "00:00"
+                if !isFirstTapped {
+                    self.musicSliderView.value = 0
+                    self.musicSliderView.bufferValue = 0
+                    self.startTimeLbl.text = "00:00"
+                }
+                
                 self.playAndPauseBtn.isEnabled = false
                 self.playAndPauseBtn.isSelected = false
                 self.playAndPauseBtn.addSubview(indicatorView)
@@ -188,9 +205,21 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
                 self.playAndPauseBtn.isSelected = true
                 indicatorView.removeFromSuperview()
                 indicatorView.stopAnimating()
+                //有可能存在歌曲没播放或者没有歌曲的情况
+                if isFirstTapped {
+                    isFirstTapped = false
+                    updateProgress()
+                }
             default:
                 break
             }
+        }
+    }
+    
+    //MARK:-监听歌词播放进度
+    @objc fileprivate func musicBufferProgress(_ sender: Notification) {
+        if let progress = sender.object as? CGFloat {
+            self.musicSliderView.bufferValue = progress
         }
     }
     
@@ -274,58 +303,13 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
             let tt = CMTime(value: CMTimeValue(t)!, timescale: CMTimeScale(1.0))
             let cs = CMTimeGetSeconds(ct)
             let ts = CMTimeGetSeconds(tt)
-            startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
-            totalTimeLbl.text = timeIntervalToMMSSFormat(interval: ts)
-            //当前播放进度
-            sliderView.minimumValue = 0.0
-            sliderView.maximumValue = Float(ts)
-            if !isSlider {
-               sliderView.value = Float(cs)
+            if !isFirstTapped {
+                self.totalTime = ts
+                self.currentTime = cs
             }
         }
     }
-    
-    @objc fileprivate func touchDown(_ slider: UISlider) {
-        isSlider = true
-    }
-    
-    @objc fileprivate func touchUpInside(_ slider: UISlider) {
-        //暂停情况--->滑动默认播放
-        if !self.playAndPauseBtn.isSelected {
-            self.playAndPause(self.playAndPauseBtn)
-        }
-        //滑动结束更新播放进度
-        PlayerManager.shared.playerProgress(with: Double(slider.value), completionHandler: { [weak self](value) in
-            let cs = CMTimeGetSeconds(value)
-            self?.sliderView.value = Float(cs)
-            self?.isSlider = false
-        })
-    }
-    
-    @objc fileprivate func tap(_ sender: UITapGestureRecognizer) {
-        let rate = sender.location(in: sender.view).x/(sender.view?.frame.width)!
-        guard let totalTime = PlayerManager.shared.getTotalTime() else { return }
-        let tapTime = Double(totalTime)! * Double(rate)
-        //这里只更新开始时间
-        let ct = CMTime(value: CMTimeValue(tapTime), timescale: CMTimeScale(1.0))
-        let cs = CMTimeGetSeconds(ct)
-        startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
-        //滑动结束更新播放进度
-        PlayerManager.shared.playerProgress(with: tapTime, completionHandler: { [weak self](value) in
-            let cs = CMTimeGetSeconds(value)
-            self?.sliderView.value = Float(cs)
-            self?.isSlider = false
-        })
-    }
-    
-    @objc fileprivate func valueChanged(_ slider: UISlider) {
-        isSlider = true
-        //这里只更新开始时间
-        let ct = CMTime(value: CMTimeValue(slider.value), timescale: CMTimeScale(1.0))
-        let cs = CMTimeGetSeconds(ct)
-        startTimeLbl.text = timeIntervalToMMSSFormat(interval: cs)
-    }
-  
+ 
     //MARK:-前一首
     @objc func previusAction(_ sender: UIButton) {
         playAndPauseBtn.isSelected = true
@@ -355,6 +339,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     
     deinit {
         NotificationCenter.removeObserver(observer: self, name: .kMusicLrcProgress)
+        NotificationCenter.removeObserver(observer: self, name: .MusicBufferProgress)
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
         NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)
@@ -364,7 +349,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
     // MARK: - UIViewControllerTransitioningDelegate
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         if presented is MoreListViewController {
-            let vc = OverlayPresentationController(presentedViewController:presented, presenting:presenting, offset: screenHeight - 100)
+            let vc = OverlayPresentationController(presentedViewController:presented, presenting:presenting, offset: screenHeight - 150)
             vc.isTapped = true
             return vc
         } else {
@@ -390,5 +375,69 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         } else {
             return nil
         }
+    }
+}
+
+extension PlayDetailViewController: MusicSliderViewDelegate {
+    func sliderTouchBegan(value: CGFloat) {
+        isSlider = true
+    }
+    
+    func sliderTouchEnded(value: CGFloat) {
+        //滑动结束更新播放进度
+        updateSliderAndTap(value: value)
+    }
+    
+    func sliderValueChanged(value: CGFloat) {
+        isSlider = true
+        //这里只更新开始时间
+        guard let ts = self.totalTime else { return }
+        let time = Float64(value*CGFloat(ts))
+        self.currentTime = time
+    }
+    
+    func sliderTapped(value: CGFloat) {
+        updateSliderAndTap(value: value)
+    }
+    
+    //MARK:-更新点击或者滑动的进度
+    func updateSliderAndTap(value: CGFloat) {
+        //表示歌曲不存在
+        guard let ts = self.totalTime else {
+            isFirstTapped = true
+            self.playAndPause(self.playAndPauseBtn)
+            return
+        }
+        
+        //表示歌曲存在但是没有点击开始播放
+        if PlayerManager.shared.isFristPlayerPauseBtn {
+            isFirstTapped = true
+            let time = Float64(value*CGFloat(ts))
+            self.currentTime = time
+            self.playAndPause(self.playAndPauseBtn)
+            return
+        }
+        
+        isFirstTapped = false
+        //暂停情况--->滑动默认播放
+        if !PlayerManager.shared.isPlaying {
+            self.playAndPause(self.playAndPauseBtn)
+        }
+        
+        let time = Float64(value*CGFloat(ts))
+        self.currentTime = time
+        updateProgress()
+    }
+    //MARK:-进度更新设置值
+    func updateProgress() {
+        guard let time = self.currentTime else {
+            return
+        }
+        //滑动结束更新播放进度
+        PlayerManager.shared.playerProgress(with: Double(time), completionHandler: { [weak self](value) in
+            let cs = CMTimeGetSeconds(value)
+            self?.musicSliderView.value = CGFloat(cs/(self?.totalTime)!)
+            self?.isSlider = false
+        })
     }
 }
