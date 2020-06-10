@@ -15,7 +15,6 @@ class LrcAnalyzer: NSObject {
     var lrcProgress: CADisplayLink?
     
     func analyzerLrc(by url: URL) -> [Lrclink]? {
-        self.lrcArray = []
         if let lrcConnect = try? String(contentsOf: url, encoding: .utf8) {
             self.analyzerLrc(lrcConnect: lrcConnect)
         }
@@ -23,7 +22,6 @@ class LrcAnalyzer: NSObject {
     }
     
     func analyzerLrc(by path: String) -> [Lrclink]? {
-        self.lrcArray = []
         if let lrcConnect = try? String(contentsOfFile: path, encoding: .utf8) {
             self.analyzerLrc(lrcConnect: lrcConnect)
         }

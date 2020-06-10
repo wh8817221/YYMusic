@@ -373,6 +373,7 @@ class PlayerManager: NSObject {
         self.lrcStatus = .loadding
         self.musicStatus = .loadding
         self.isFristPlayerPauseBtn = false
+        LrcAnalyzer.shared.lrcArray = []
         var param = [String: Any]()
         param["method"] = "baidu.ting.song.play"
         param["songid"] = model?.song_id
