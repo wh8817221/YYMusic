@@ -9,18 +9,17 @@
 import UIKit
 
 class OverlayPresentationController: UIPresentationController {
+    //配置信息
+    var confige = OverlayModalConfige()
     
-    lazy var dimmingView: UIView = {
+    fileprivate lazy var dimmingView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(white: 0, alpha: 0.5)
         return view
     }()
-    /**点击阴影消失*/
-    var isTapped: Bool = true
-    fileprivate var offset: CGFloat = 260.0
-    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, offset: CGFloat = 260.0) {
+    
+    override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
-        self.offset = offset
         let tap = UITapGestureRecognizer(target: self, action: #selector(dimmingViewTapped(_:)))
         dimmingView.addGestureRecognizer(tap)
     }
@@ -62,7 +61,6 @@ class OverlayPresentationController: UIPresentationController {
         guard let containerView = self.containerView, let presentedView = presentedView else {
             return
         }
-        
         dimmingView.frame = containerView.bounds
         presentedView.frame = frameOfPresentedViewInContainerView
     }
@@ -72,21 +70,41 @@ class OverlayPresentationController: UIPresentationController {
         guard let containerView = self.containerView else {
             return CGRect.zero
         }
-        
-        var presentedViewFrame = CGRect.zero
         let containerBounds = containerView.bounds
-        presentedViewFrame.size = size(forChildContentContainer: presentedViewController, withParentContainerSize: containerBounds.size)
-        presentedViewFrame.origin.y = containerBounds.size.height - presentedViewFrame.size.height
+        var presentedViewFrame = CGRect.zero
+        let tempSize = size(forChildContentContainer: presentedViewController, withParentContainerSize: containerBounds.size)
+        
+        switch confige.modelStyle {
+        case .bottom:
+            presentedViewFrame.size = tempSize
+            presentedViewFrame.origin.y = containerBounds.size.height - presentedViewFrame.size.height
+        case .right:
+            presentedViewFrame.size = tempSize
+            presentedViewFrame.origin.x = containerBounds.size.width - presentedViewFrame.size.width
+        case .left, .top:
+            presentedViewFrame.size = tempSize
+        case .center:
+            presentedViewFrame.size = tempSize
+            presentedViewFrame.origin.x = (containerBounds.size.width - presentedViewFrame.size.width)/2
+            presentedViewFrame.origin.y = (containerBounds.size.height - presentedViewFrame.size.height)/2
+        }
 
         return presentedViewFrame;
     }
     
     override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
-        return CGSize(width: parentSize.width, height: self.offset)
+        switch confige.modelStyle {
+        case .bottom, .top:
+            return CGSize(width: parentSize.width, height: parentSize.height-confige.offsetY)
+        case .left, .right:
+            return CGSize(width: parentSize.width-confige.offsetX, height: parentSize.height)
+        case .center:
+            return CGSize(width: parentSize.width-confige.offsetX, height: parentSize.height-confige.offsetY)
+        }
     }
     
     @objc func dimmingViewTapped(_ gesture: UIGestureRecognizer) {
-        if !isTapped { return }
+        if !confige.isTappedDismiss { return }
         if (gesture.state == UIGestureRecognizer.State.recognized) {
             presentingViewController.dismiss(animated: true, completion: nil)
         }

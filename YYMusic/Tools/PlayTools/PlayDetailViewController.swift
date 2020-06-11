@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class PlayDetailViewController: UIViewController, UIViewControllerTransitioningDelegate {
+class PlayDetailViewController: UIViewController {
     
     var model: BDSongModel?
     @IBOutlet weak var musicSliderView: MusicSliderView!
@@ -268,11 +268,7 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
 
     //MARK:-更多列表
     @objc fileprivate func moreList() {
-        let vc = MoreListViewController()
-        vc.musicModel = self.model
-        vc.transitioningDelegate = self
-        vc.modalPresentationStyle = .custom
-        self.present(vc, animated: true, completion: nil)
+        OverlayModalPresentation.shared.modalPresention(delegate: self)
     }
     
     //MARK:-暂停播放
@@ -349,38 +345,6 @@ class PlayDetailViewController: UIViewController, UIViewControllerTransitioningD
         NotificationCenter.removeObserver(observer: self, name: .kMusicTimeInterval)
         NotificationCenter.removeObserver(observer: self, name: .kLrcLoadStatus)
         NotificationCenter.removeObserver(observer: self, name: .kMusicLoadStatus)
-        
-    }
-    
-    // MARK: - UIViewControllerTransitioningDelegate
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        if presented is MoreListViewController {
-            let vc = OverlayPresentationController(presentedViewController:presented, presenting:presenting, offset: screenHeight - 150)
-            vc.isTapped = true
-            return vc
-        } else {
-            return nil
-        }
-    }
-    
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if presented is MoreListViewController {
-            let controller = OverlayAnimatedTransitioning()
-            controller.isPresentation = true
-            return controller
-        } else {
-            return nil
-        }
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if dismissed is MoreListViewController {
-            let controller = OverlayAnimatedTransitioning()
-            controller.isPresentation = false
-            return controller
-        } else {
-            return nil
-        }
     }
 }
 
@@ -446,4 +410,20 @@ extension PlayDetailViewController: MusicSliderViewDelegate {
             self?.isSlider = false
         })
     }
+}
+
+extension PlayDetailViewController: OverlayModalPresentationDelegate {
+    func getOverlayModalView() -> Any? {
+        let vc = MoreListViewController()
+        vc.musicModel = self.model
+        return vc
+    }
+    
+    func getOverlayModalConfige() -> OverlayModalConfige {
+        let confige = OverlayModalConfige()
+        confige.offsetY = 150
+        confige.modelStyle = .center
+        return confige
+    }
+    
 }

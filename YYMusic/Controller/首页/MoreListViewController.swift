@@ -28,9 +28,10 @@ class MoreListViewController: UIViewController {
         
         let effect = UIBlurEffect(style: .light)
         visualEffectView = UIVisualEffectView(effect: effect)
-        visualEffectView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
         self.view.addSubview(visualEffectView)
-        
+        visualEffectView.snp.makeConstraints { (make) in
+            make.left.right.bottom.top.equalTo(self.view)
+        }
         
         topContentView = UIView()
         self.view.addSubview(topContentView)
@@ -103,6 +104,9 @@ class MoreListViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    deinit {
+        print("\(self)释放了")
+    }
 }
 
 extension MoreListViewController: UITableViewDelegate, UITableViewDataSource {

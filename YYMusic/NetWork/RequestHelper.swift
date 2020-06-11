@@ -1,7 +1,7 @@
 import Alamofire
 
 enum RequestHelper {
-    static let baseURL = "https://musicapi.qianqian.com"
+    static let baseURL = "http://musicapi.qianqian.com"
     case getMusicList([String: Any])
     case getCommonList([String: Any])
     fileprivate func extend(_ params: [String: Any]) -> [String: Any] {

@@ -9,14 +9,9 @@
 import UIKit
 
 class ZFTableViewCell: UITableViewCell {
-    
-    
-    
     static let identifier = String(describing: ZFTableViewCell.self)
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        
     }
     
     required init?(coder: NSCoder) {
