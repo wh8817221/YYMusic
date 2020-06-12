@@ -23,9 +23,9 @@ enum OverlayModalStyle {
 class OverlayModalConfige: NSObject {
     /**点击阴影消失 默认点击消失*/
     var isTappedDismiss: Bool = true
-    /**Y偏移量 默认150*/
+    /**Y偏移量 默认150.0*/
     var offsetY: CGFloat = 150.0
-    /**X偏移量 默认75*/
+    /**X偏移量 默认75.0*/
     var offsetX: CGFloat = 75.0
     /**modal样式 默认底向上*/
     var modelStyle: OverlayModalStyle = .bottom
@@ -37,14 +37,17 @@ class OverlayModalConfige: NSObject {
     @objc optional func getOverlayModalConfige() -> OverlayModalConfige
 }
 
-class OverlayModalPresentation: NSObject, UIViewControllerTransitioningDelegate{
+class OverlayModalPresentation: NSObject, UIViewControllerTransitioningDelegate {
     
     static let shared = OverlayModalPresentation()
-    
     fileprivate weak var delegate: OverlayModalPresentationDelegate?
     
-    func modalPresention(delegate: OverlayModalPresentationDelegate?) {
+    public convenience init(delegate: OverlayModalPresentationDelegate) {
+        self.init()
         self.delegate = delegate
+    }
+ 
+    func show() {
         guard let delegate = delegate else {
             print("代理getOverlayModalController没有实现")
             return

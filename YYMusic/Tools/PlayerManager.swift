@@ -381,7 +381,7 @@ class PlayerManager: NSObject {
     //MARK:- 展示音乐播放界面
     func presentPlayController(model: BDSongModel?) {
         self.playModel = model
-        OverlayModalPresentation.shared.modalPresention(delegate: self)
+        OverlayModalPresentation(delegate: self).show()
     }
 
     //MARK:- 监听音乐时间变化

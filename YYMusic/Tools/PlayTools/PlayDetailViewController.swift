@@ -269,7 +269,7 @@ class PlayDetailViewController: UIViewController {
 
     //MARK:-更多列表
     @objc fileprivate func moreList() {
-        OverlayModalPresentation.shared.modalPresention(delegate: self)
+        OverlayModalPresentation(delegate: self).show()
     }
     
     //MARK:-暂停播放
@@ -417,7 +417,7 @@ extension PlayDetailViewController: OverlayModalPresentationDelegate {
     
     func getOverlayModalConfige() -> OverlayModalConfige {
         let confige = OverlayModalConfige()
-        confige.modelStyle = .left
+        confige.modelStyle = .top
         return confige
     }
     

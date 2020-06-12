@@ -11,10 +11,7 @@ import UIKit
 class OverlayPresentationController: UIPresentationController {
     //配置信息
     var confige = OverlayModalConfige()
-    fileprivate var isFinishedAnimation: Bool = true
     fileprivate var pointStart: CGPoint? //触摸开始的坐标
-    fileprivate var pointLast: CGPoint? //上一次触摸的坐标
-    fileprivate var pointEnd: CGPoint? //最后一次触摸的坐标//是否结束动画
     fileprivate var originCenter: CGPoint = CGPoint.zero
     fileprivate lazy var dimmingView: UIView = {
         let view = UIView()
@@ -58,12 +55,29 @@ class OverlayPresentationController: UIPresentationController {
     }
     
     override func dismissalTransitionWillBegin() {
-        if let coordinator = presentedViewController.transitionCoordinator {
-            coordinator.animate(alongsideTransition: { (context: UIViewControllerTransitionCoordinatorContext!) -> Void in
+        guard let presentedView = self.presentedView else {
+            return
+        }
+        if let coordinator = presentingViewController.transitionCoordinator {
+            coordinator.animate(alongsideTransition: { (context) in
+                switch self.confige.modelStyle {
+                case .bottom:
+                    presentedView.center = CGPoint(x: self.originCenter.x, y: self.originCenter.y+presentedView.frame.height)
+                case .top:
+                    presentedView.center = CGPoint(x: self.originCenter.x, y: -presentedView.frame.height)
+                case .right:
+                    presentedView.center = CGPoint(x: self.originCenter.x+presentedView.frame.width, y: self.originCenter.y)
+                case .left:
+                    presentedView.center = CGPoint(x: -presentedView.frame.width, y: self.originCenter.y)
+                default:
+                    break
+                }
                 self.dimmingView.alpha = 0
-                }, completion: nil)
+            }, completion: { (context) in
+                presentedView.isHidden = true
+            })
         } else {
-            dimmingView.alpha = 0
+            self.dimmingView.alpha = 0
         }
     }
     
@@ -127,12 +141,10 @@ class OverlayPresentationController: UIPresentationController {
         }
     }
     
-    
     @objc fileprivate func pan(_ sender: UIPanGestureRecognizer) {
         guard let presentedView = self.presentedView else {
             return
         }
-        if !isFinishedAnimation { return }
         let translation = sender.translation(in: dimmingView)
         /**滑动速度--speed.y > 920表示关闭意图*/
         let speedPoint = sender.velocity(in: dimmingView)
@@ -174,52 +186,46 @@ class OverlayPresentationController: UIPresentationController {
         }
         
         if sender.state == .ended {
-            
             switch confige.modelStyle {
             case .bottom: //向下滑动
                 let yTotalMove = translation.y - self.pointStart!.y
                 if yTotalMove > presentedView.frame.height/4 || speedPoint.y > 920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
-                    UIView.animate(withDuration: 0.25, animations: {
-                        presentedView.center = self.originCenter
-                        self.dimmingView.alpha = 1
-                    })
+                    rebackOriginCenter(presentedView: presentedView)
                 }
             case .top:  //向上滑动
                 let yTotalMove = translation.y - self.pointStart!.y
                 if yTotalMove < -presentedView.frame.height/4 || speedPoint.y < -920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
-                    UIView.animate(withDuration: 0.25, animations: {
-                        presentedView.center = self.originCenter
-                        self.dimmingView.alpha = 1
-                    })
+                    rebackOriginCenter(presentedView: presentedView)
                 }
             case .right: //向右滑动
                 let xTotalMove = translation.x - self.pointStart!.x
                 if xTotalMove > presentedView.frame.width/4 || speedPoint.x > 920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
-                    UIView.animate(withDuration: 0.25, animations: {
-                        presentedView.center = self.originCenter
-                        self.dimmingView.alpha = 1
-                    })
+                    rebackOriginCenter(presentedView: presentedView)
                 }
             case .left: //向左滑动
                 let xTotalMove = translation.x - self.pointStart!.x
                 if xTotalMove < -presentedView.frame.width/4  || speedPoint.x < -920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
-                    UIView.animate(withDuration: 0.25, animations: {
-                        presentedView.center = self.originCenter
-                        self.dimmingView.alpha = 1
-                    })
+                    rebackOriginCenter(presentedView: presentedView)
                 }
             default:
                 break
             }
-            
         }
+    }
+ 
+    //恢复到原位
+    func rebackOriginCenter(presentedView: UIView) {
+        UIView.animate(withDuration: 0.25, animations: {
+            presentedView.center = self.originCenter
+            self.dimmingView.alpha = 1
+        })
     }
 }
