@@ -134,6 +134,8 @@ class OverlayPresentationController: UIPresentationController {
         }
         if !isFinishedAnimation { return }
         let translation = sender.translation(in: dimmingView)
+        /**滑动速度--speed.y > 920表示关闭意图*/
+        let speedPoint = sender.velocity(in: dimmingView)
         if sender.state == .began {
             self.pointStart = translation
         }
@@ -145,9 +147,9 @@ class OverlayPresentationController: UIPresentationController {
                 if yMove > 0 {
                     presentedView.center = CGPoint(x: originCenter.x, y: originCenter.y+yMove)
                     dimmingView.alpha = 1-(yMove/presentedView.frame.height)
-                    print(dimmingView.alpha)
                 }
             case .top:  //向上滑动
+                
                 let yMove = translation.y - self.pointStart!.y
                 if yMove < 0 {
                     presentedView.center = CGPoint(x: originCenter.x, y: originCenter.y+yMove)
@@ -172,10 +174,11 @@ class OverlayPresentationController: UIPresentationController {
         }
         
         if sender.state == .ended {
+            
             switch confige.modelStyle {
             case .bottom: //向下滑动
                 let yTotalMove = translation.y - self.pointStart!.y
-                if yTotalMove > presentedView.frame.height/3 {
+                if yTotalMove > presentedView.frame.height/4 || speedPoint.y > 920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {
@@ -185,7 +188,7 @@ class OverlayPresentationController: UIPresentationController {
                 }
             case .top:  //向上滑动
                 let yTotalMove = translation.y - self.pointStart!.y
-                if yTotalMove < -presentedView.frame.height/3 {
+                if yTotalMove < -presentedView.frame.height/4 || speedPoint.y < -920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {
@@ -195,7 +198,7 @@ class OverlayPresentationController: UIPresentationController {
                 }
             case .right: //向右滑动
                 let xTotalMove = translation.x - self.pointStart!.x
-                if xTotalMove > presentedView.frame.width/3 {
+                if xTotalMove > presentedView.frame.width/4 || speedPoint.x > 920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {
@@ -205,7 +208,7 @@ class OverlayPresentationController: UIPresentationController {
                 }
             case .left: //向左滑动
                 let xTotalMove = translation.x - self.pointStart!.x
-                if xTotalMove < -presentedView.frame.width/3 {
+                if xTotalMove < -presentedView.frame.width/4  || speedPoint.x < -920 {
                     presentingViewController.dismiss(animated: true, completion: nil)
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {

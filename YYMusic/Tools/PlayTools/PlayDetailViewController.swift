@@ -417,7 +417,7 @@ extension PlayDetailViewController: OverlayModalPresentationDelegate {
     
     func getOverlayModalConfige() -> OverlayModalConfige {
         let confige = OverlayModalConfige()
-        confige.modelStyle = .bottom
+        confige.modelStyle = .left
         return confige
     }
     

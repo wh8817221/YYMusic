@@ -33,8 +33,10 @@ class MainPlayViewController: BaseViewController, PageScrollViewDelegate {
         if screenHeight >= 812 {
             topConstraint.constant = 20+24
         }
+        
         //更新状态栏
         self.statusBarStyle = .lightContent
+        
         self.addPanRecognizer()
         self.setUI()
 

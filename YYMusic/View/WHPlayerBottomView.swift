@@ -289,7 +289,6 @@ extension WHPlayerBottomView: InfiniteCycleViewDelegate {
     }
     
     func infiniteCycleViewDidSelect(_ currentView: UIView?) {
-        let vc = UIApplication.shared.keyWindow?.rootViewController
-        PlayerManager.shared.presentPlayController(vc: vc, model: self.musicModel)
+        PlayerManager.shared.presentPlayController(model: self.musicModel)
     }
 }

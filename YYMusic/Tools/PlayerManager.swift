@@ -379,12 +379,9 @@ class PlayerManager: NSObject {
     }
     
     //MARK:- 展示音乐播放界面
-    func presentPlayController(vc: UIViewController?, model: BDSongModel?) {
-        let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
-        playVC.model = model
-//        vc?.presentPanModal(playVC)
-        playVC.modalPresentationStyle = .fullScreen
-        vc?.present(playVC, animated: true, completion: nil)
+    func presentPlayController(model: BDSongModel?) {
+        self.playModel = model
+        OverlayModalPresentation.shared.modalPresention(delegate: self)
     }
 
     //MARK:- 监听音乐时间变化
@@ -400,6 +397,7 @@ class PlayerManager: NSObject {
             tempTime = ct
             if let duration = self?.player.currentItem?.duration {
                 let tt = CMTimeGetSeconds(duration)
+                if tt.isNaN { return }
                 NotificationCenter.post(name: .kMusicTimeInterval, object: [ct,tt])
             }
         }
@@ -496,14 +494,26 @@ class PlayerManager: NSObject {
     }
 }
 
-//extension PlayerManager: ResourceLoaderDelegate {
-//    
+extension PlayerManager: OverlayModalPresentationDelegate {
+    func getOverlayModalView() -> Any? {
+        let playVC = MainPlayViewController(nibName: "MainPlayViewController", bundle: nil)
+        playVC.model = self.playModel
+        return playVC
+    }
+    
+    func getOverlayModalConfige() -> OverlayModalConfige {
+        let confige = OverlayModalConfige()
+        confige.offsetY = 0
+        confige.modelStyle = .bottom
+        return confige
+    }
+//
 //    func loader(_ loader: ResourceLoader, cache progress: CGFloat) {
 //        print(progress)
 //        self.bufferProgress = progress
 //    }
-//    
+//
 //    func loader(_ loader: ResourceLoader, failLoading error: Error) {
 //        print("failLoading")
 //    }
-//}
+}
