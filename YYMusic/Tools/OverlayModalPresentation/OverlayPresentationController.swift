@@ -11,7 +11,11 @@ import UIKit
 class OverlayPresentationController: UIPresentationController {
     //配置信息
     var confige = OverlayModalConfige()
-    
+    fileprivate var isFinishedAnimation: Bool = true
+    fileprivate var pointStart: CGPoint? //触摸开始的坐标
+    fileprivate var pointLast: CGPoint? //上一次触摸的坐标
+    fileprivate var pointEnd: CGPoint? //最后一次触摸的坐标//是否结束动画
+    fileprivate var originCenter: CGPoint = CGPoint.zero
     fileprivate lazy var dimmingView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(white: 0, alpha: 0.5)
@@ -22,6 +26,9 @@ class OverlayPresentationController: UIPresentationController {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         let tap = UITapGestureRecognizer(target: self, action: #selector(dimmingViewTapped(_:)))
         dimmingView.addGestureRecognizer(tap)
+        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+        dimmingView.addGestureRecognizer(pan)
     }
     
     override func presentationTransitionWillBegin() {
@@ -39,6 +46,15 @@ class OverlayPresentationController: UIPresentationController {
         } else {
             dimmingView.alpha = 1
         }
+        
+        //center模式下不加入滑动手势
+        if confige.modelStyle != .center {
+            //加入滑动手势
+            let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+            dimmingView.addGestureRecognizer(pan)
+            self.presentedView?.addGestureRecognizer(pan)
+        }
+        
     }
     
     override func dismissalTransitionWillBegin() {
@@ -63,6 +79,7 @@ class OverlayPresentationController: UIPresentationController {
         }
         dimmingView.frame = containerView.bounds
         presentedView.frame = frameOfPresentedViewInContainerView
+        originCenter = presentedView.center
     }
     
 
@@ -88,7 +105,7 @@ class OverlayPresentationController: UIPresentationController {
             presentedViewFrame.origin.x = (containerBounds.size.width - presentedViewFrame.size.width)/2
             presentedViewFrame.origin.y = (containerBounds.size.height - presentedViewFrame.size.height)/2
         }
-
+    
         return presentedViewFrame;
     }
     
@@ -107,6 +124,99 @@ class OverlayPresentationController: UIPresentationController {
         if !confige.isTappedDismiss { return }
         if (gesture.state == UIGestureRecognizer.State.recognized) {
             presentingViewController.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    
+    @objc fileprivate func pan(_ sender: UIPanGestureRecognizer) {
+        guard let presentedView = self.presentedView else {
+            return
+        }
+        if !isFinishedAnimation { return }
+        let translation = sender.translation(in: dimmingView)
+        if sender.state == .began {
+            self.pointStart = translation
+        }
+        
+        if sender.state == .changed {
+            switch confige.modelStyle {
+            case .bottom: //向下滑动
+                let yMove = translation.y - self.pointStart!.y
+                if yMove > 0 {
+                    presentedView.center = CGPoint(x: originCenter.x, y: originCenter.y+yMove)
+                    dimmingView.alpha = 1-(yMove/presentedView.frame.height)
+                    print(dimmingView.alpha)
+                }
+            case .top:  //向上滑动
+                let yMove = translation.y - self.pointStart!.y
+                if yMove < 0 {
+                    presentedView.center = CGPoint(x: originCenter.x, y: originCenter.y+yMove)
+                    dimmingView.alpha = 1+(yMove/presentedView.frame.height)
+                }
+            case .right:  //向右滑动
+                let xMove = translation.x - self.pointStart!.x
+                if xMove > 0 {
+                    presentedView.center = CGPoint(x: originCenter.x+xMove, y: originCenter.y)
+                    dimmingView.alpha = 1-(xMove/presentedView.frame.width)
+                }
+            case .left:  //向左滑动
+                let xMove = translation.x - self.pointStart!.x
+                if xMove < 0 {
+                    presentedView.center = CGPoint(x: originCenter.x+xMove, y: originCenter.y)
+                    dimmingView.alpha = 1+(xMove/presentedView.frame.width)
+                }
+            default:
+                break
+            }
+            
+        }
+        
+        if sender.state == .ended {
+            switch confige.modelStyle {
+            case .bottom: //向下滑动
+                let yTotalMove = translation.y - self.pointStart!.y
+                if yTotalMove > presentedView.frame.height/3 {
+                    presentingViewController.dismiss(animated: true, completion: nil)
+                } else {
+                    UIView.animate(withDuration: 0.25, animations: {
+                        presentedView.center = self.originCenter
+                        self.dimmingView.alpha = 1
+                    })
+                }
+            case .top:  //向上滑动
+                let yTotalMove = translation.y - self.pointStart!.y
+                if yTotalMove < -presentedView.frame.height/3 {
+                    presentingViewController.dismiss(animated: true, completion: nil)
+                } else {
+                    UIView.animate(withDuration: 0.25, animations: {
+                        presentedView.center = self.originCenter
+                        self.dimmingView.alpha = 1
+                    })
+                }
+            case .right: //向右滑动
+                let xTotalMove = translation.x - self.pointStart!.x
+                if xTotalMove > presentedView.frame.width/3 {
+                    presentingViewController.dismiss(animated: true, completion: nil)
+                } else {
+                    UIView.animate(withDuration: 0.25, animations: {
+                        presentedView.center = self.originCenter
+                        self.dimmingView.alpha = 1
+                    })
+                }
+            case .left: //向左滑动
+                let xTotalMove = translation.x - self.pointStart!.x
+                if xTotalMove < -presentedView.frame.width/3 {
+                    presentingViewController.dismiss(animated: true, completion: nil)
+                } else {
+                    UIView.animate(withDuration: 0.25, animations: {
+                        presentedView.center = self.originCenter
+                        self.dimmingView.alpha = 1
+                    })
+                }
+            default:
+                break
+            }
+            
         }
     }
 }

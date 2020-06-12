@@ -210,30 +210,6 @@ class PlayerManager: NSObject {
         }
     }
     
-    //MARK:- 当前时间
-    func getCurrentTime() -> String? {
-        //获取当前时间
-        let value = self.player.currentTime().value
-        let timescale = self.player.currentTime().timescale
-        if self.player.currentTime().timescale > 0  {
-            let currentTime = value/Int64(timescale)
-            return "\(currentTime)"
-        }
-        return nil
-    }
-    
-    //MARK:- 总时长
-    func getTotalTime() -> String? {
-        //获取音乐总时长
-        let d = self.player.currentItem?.duration.value
-        let t = self.player.currentItem?.duration.timescale
-        if self.player.currentItem?.duration.timescale != 0 {
-            let totalTime = d!/Int64(t!)
-            return "\(totalTime)"
-        }
-        return nil
-    }
-    
     //MARK:- 播放状态
     func playerStatus() -> Int {
         if currentPlayerItem.status == .readyToPlay {
@@ -260,7 +236,7 @@ class PlayerManager: NSObject {
     //MARK:- 播放歌曲
     func playMusic(model: BDSongModel?) {
         //当前播放的歌曲
-        if model?.song_id == currentModel?.song_id && isPlaying {
+        if model?.song_id == playModel?.song_id && isPlaying {
             return
         }
         self.playReplaceItem(with: model)
@@ -447,7 +423,7 @@ class PlayerManager: NSObject {
                 switch item.status {
                 case .readyToPlay:
                     //存储歌曲总时间
-                    if let t = self.getTotalTime(), (Int(t) ?? 0) > 0{
+                    if let t = self.duration, t > 0{
                         UserDefaultsManager.shared.userDefaultsSet(object: "\(t)", key: TOTALTIME)
                     }
                     //歌曲切换更新锁屏歌曲
@@ -491,13 +467,11 @@ class PlayerManager: NSObject {
         guard let model = self.playModel else {
             return
         }
-        let tt = self.getTotalTime()
-        let ct = self.getCurrentTime()
         var info = [String: Any]()
         // 设置持续时间（歌曲的总时间）
-        info[MPMediaItemPropertyPlaybackDuration] = tt
+        info[MPMediaItemPropertyPlaybackDuration] = self.duration
         // 设置当前播放进度
-        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = ct
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.currentTime
         //设置歌曲名
         info[MPMediaItemPropertyTitle] = model.title ?? ""
         //设置演唱者
@@ -512,7 +486,10 @@ class PlayerManager: NSObject {
                 info[MPMediaItemPropertyArtwork] = artwork
             }
         }
-        info[MPNowPlayingInfoPropertyPlaybackProgress] = Int(ct!)!/Int(tt!)!
+        if let duration = self.duration {
+            info[MPNowPlayingInfoPropertyPlaybackProgress] = self.currentTime/duration
+        }
+        
         //进度光标的速度（这个随 自己的播放速率调整，我默认是原速播放）
         info[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info

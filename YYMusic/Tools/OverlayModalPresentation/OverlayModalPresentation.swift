@@ -8,15 +8,15 @@
 import UIKit
 
 enum OverlayModalStyle {
-    /**从顶向下modal*/
+    /**从顶向下弹出*/
     case top
-    /**从底向上modal*/
+    /**从底向上弹出*/
     case bottom
-    /**从左向右modal*/
+    /**从左向右弹出*/
     case left
-    /**从右向左modal*/
+    /**从右向左弹出*/
     case right
-    /**中心modal*/
+    /**中心弹出*/
     case center
 }
 

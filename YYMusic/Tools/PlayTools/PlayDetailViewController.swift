@@ -39,7 +39,7 @@ class PlayDetailViewController: UIViewController {
     private var currentTime: Float64? {
         didSet{
             startTimeLbl.text = timeIntervalToMMSSFormat(interval: currentTime!)
-            if !isSlider {
+            if !isSlider  {
                 if let tt = self.totalTime, let ct = currentTime {
                     musicSliderView.value = CGFloat(ct/tt)
                 }
@@ -138,12 +138,13 @@ class PlayDetailViewController: UIViewController {
         playAndPauseBtn.addTarget(self, action: #selector(playAndPause(_:)), for: .touchUpInside)
                 
         if PlayerManager.shared.isPlaying {
-            let currentTime = PlayerManager.shared.getCurrentTime()
-            let totalTime = PlayerManager.shared.getTotalTime()
-            self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
+            if let totalTime = PlayerManager.shared.duration {
+                let currentTime = PlayerManager.shared.currentTime
+                self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
+            }
         } else {
-            if let currentTime = PlayerManager.shared.getCurrentTime() {
-                let totalTime = PlayerManager.shared.getTotalTime()
+            if let totalTime = PlayerManager.shared.duration {
+                let currentTime = PlayerManager.shared.currentTime
                 self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
                 //更新歌词
                 if let lrc = LrcAnalyzer.shared.getLrc() {
@@ -152,8 +153,8 @@ class PlayDetailViewController: UIViewController {
                     self.lrcLbl?.progress = lrc.progress ?? 0
                 }
             } else {
-                if let totalTime = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String {
-                    self.updateProgressLabelCurrentTime(currentTime: "0", totalTime: totalTime)
+                if let totalTime = UserDefaultsManager.shared.userDefaultsGet(key: TOTALTIME) as? String,  let tt = Float64(totalTime) {
+                    self.updateProgressLabelCurrentTime(currentTime: 0, totalTime: tt)
                 }
             }
         }
@@ -258,8 +259,8 @@ class PlayDetailViewController: UIViewController {
     
     //MARK:-监听音乐时间变化
     @objc fileprivate func musicTimeInterval(_ sender: Notification) {
-        let currentTime = PlayerManager.shared.getCurrentTime()
-        let totalTime = PlayerManager.shared.getTotalTime()
+        let currentTime = PlayerManager.shared.currentTime
+        let totalTime = PlayerManager.shared.duration
         //滑动状态不更新
         if !isSlider {
            self.updateProgressLabelCurrentTime(currentTime: currentTime, totalTime: totalTime)
@@ -295,23 +296,18 @@ class PlayDetailViewController: UIViewController {
                 PlayerManager.shared.playerPlay()
             }
         }
-        
     }
     
     //MARK:-更新时间和滑块
-    func updateProgressLabelCurrentTime(currentTime: String?, totalTime: String?) {
-        if let c = currentTime, let t = totalTime {
-            let ct = CMTime(value: CMTimeValue(c)!, timescale: CMTimeScale(1.0))
-            let tt = CMTime(value: CMTimeValue(t)!, timescale: CMTimeScale(1.0))
-            let cs = CMTimeGetSeconds(ct)
-            let ts = CMTimeGetSeconds(tt)
+    func updateProgressLabelCurrentTime(currentTime: Float64?, totalTime: Float64?) {
+        if let cs = currentTime, let ts = totalTime {
             if !isFirstTapped {
                 self.totalTime = ts
                 self.currentTime = cs
             }
         }
     }
- 
+
     //MARK:-前一首
     @objc func previusAction(_ sender: UIButton) {
         playAndPauseBtn.isSelected = true
@@ -421,8 +417,7 @@ extension PlayDetailViewController: OverlayModalPresentationDelegate {
     
     func getOverlayModalConfige() -> OverlayModalConfige {
         let confige = OverlayModalConfige()
-        confige.offsetY = 150
-        confige.modelStyle = .center
+        confige.modelStyle = .bottom
         return confige
     }
     

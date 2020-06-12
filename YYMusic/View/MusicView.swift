@@ -14,6 +14,11 @@ class MusicView: UIView {
     var model: BDSongModel? {
         didSet {
             if let m = model {
+                if model == tempMode {
+                    return
+                }
+                tempMode = m
+                self.removerAnimation()
                 let url = URL(string: m.pic_small!)
                 headerImageView.kf.setImage(with: url, placeholder: UIImage(named: "musicicon"), options: nil, progressBlock: nil, completionHandler: {(result) in
                 })
@@ -21,7 +26,7 @@ class MusicView: UIView {
             }
         }
     }
-    
+    var tempMode: BDSongModel?
     /*歌手头像*/
     var headerImageView: UIImageView!
     /*歌名-歌手名*/
@@ -91,6 +96,10 @@ class MusicView: UIView {
         let pauseTime = layer.convertTime(CACurrentMediaTime(), from: nil)
         layer.speed = 0.0
         layer.timeOffset = pauseTime
+    }
+    
+    func removerAnimation() {
+        headerImageView.layer.removeAllAnimations()
     }
     
     required init?(coder: NSCoder) {

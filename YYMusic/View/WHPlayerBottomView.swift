@@ -136,11 +136,9 @@ class WHPlayerBottomView: UIView {
     }
     
     @objc fileprivate func musicTimeInterval() {
-        let currentTime = PlayerManager.shared.getCurrentTime()
-        let totalTime = PlayerManager.shared.getTotalTime()
-        let cT = Double(currentTime ?? "0")
-        let dT = Double(totalTime ?? "0")
-        if let ct = cT, let dt = dT, dt > 0.0 {
+        let ct = PlayerManager.shared.currentTime
+        let tt = PlayerManager.shared.duration
+        if let dt = tt, dt > 0.0 {
             self.progress = CGFloat(ct/dt)
             if CGFloat(ct/dt) >= 1.0 {
                 self.progress = 0.0
