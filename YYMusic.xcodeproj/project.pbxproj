@@ -41,6 +41,7 @@
 		D28DACE0247F881F00D1A4AB /* SelectConfigue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */; };
 		D28DACE1247F881F00D1A4AB /* TitleScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */; };
 		D28DACE2247F881F00D1A4AB /* PageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28DACDF247F881F00D1A4AB /* PageScrollView.swift */; };
+		D28FE51224A1EB5D009B2EAB /* OverlayPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28FE51124A1EB5D009B2EAB /* OverlayPickerViewController.swift */; };
 		D2B2F48324753202007FECBF /* LyricViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F48124753202007FECBF /* LyricViewController.swift */; };
 		D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B2F48224753202007FECBF /* LyricViewController.xib */; };
 		D2B2F49224767BDA007FECBF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B2F49124767BDA007FECBF /* BaseViewController.swift */; };
@@ -129,6 +130,7 @@
 		D28DACDD247F881F00D1A4AB /* SelectConfigue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectConfigue.swift; sourceTree = "<group>"; };
 		D28DACDE247F881F00D1A4AB /* TitleScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScrollView.swift; sourceTree = "<group>"; };
 		D28DACDF247F881F00D1A4AB /* PageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageScrollView.swift; sourceTree = "<group>"; };
+		D28FE51124A1EB5D009B2EAB /* OverlayPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayPickerViewController.swift; sourceTree = "<group>"; };
 		D2B2F48124753202007FECBF /* LyricViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricViewController.swift; sourceTree = "<group>"; };
 		D2B2F48224753202007FECBF /* LyricViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LyricViewController.xib; sourceTree = "<group>"; };
 		D2B2F49124767BDA007FECBF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 		D224F08B249214300038473A /* OverlayModalPresentation */ = {
 			isa = PBXGroup;
 			children = (
+				D28FE51124A1EB5D009B2EAB /* OverlayPickerViewController.swift */,
 				D224F08C249214300038473A /* OverlayModalPresentation.swift */,
 				D224F08D249214300038473A /* OverlayPresentationController.swift */,
 				D224F08E249214300038473A /* OverlayAnimatedTransitioner.swift */,
@@ -708,6 +711,7 @@
 				D2D10CB32473B1C20051E3E2 /* BDModel.swift in Sources */,
 				D2D92D8E2488E90900734F28 /* MoreListViewController.swift in Sources */,
 				D224F07C248F36B00038473A /* ResourceLoader.swift in Sources */,
+				D28FE51224A1EB5D009B2EAB /* OverlayPickerViewController.swift in Sources */,
 				D2D10CB92473C6F70051E3E2 /* BaseNavigationViewController.swift in Sources */,
 				D2D10CD52474DA4D0051E3E2 /* PlayDetailViewController.swift in Sources */,
 				D24C883E246CF779002F7CD0 /* DeviceInfo.swift in Sources */,

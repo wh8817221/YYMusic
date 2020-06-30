@@ -410,6 +410,17 @@ extension PlayDetailViewController: MusicSliderViewDelegate {
 
 extension PlayDetailViewController: OverlayModalPresentationDelegate {
     func getOverlayModalView() -> Any? {
+//        let overlayVC = OverlayPickerViewController()
+//        overlayVC.popType = .date
+//        overlayVC.selectedDate = Date()
+//        overlayVC.optionTitle = "选择日期"
+//        overlayVC.callback = { (value: Any) -> Void in
+//            guard let selected = value as? Date else {
+//                return
+//            }
+//            print(selected)
+//        }
+//        return overlayVC
         let vc = MoreListViewController()
         vc.musicModel = self.model
         return vc
@@ -417,7 +428,7 @@ extension PlayDetailViewController: OverlayModalPresentationDelegate {
     
     func getOverlayModalConfige() -> OverlayModalConfige {
         let confige = OverlayModalConfige()
-        confige.modelStyle = .top
+        confige.modelStyle = .bottom
         return confige
     }
     

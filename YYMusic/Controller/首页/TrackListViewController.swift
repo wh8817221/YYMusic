@@ -16,8 +16,9 @@ class TrackListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     fileprivate var songs: [BDSongModel] = [] {
         didSet {
-            if self.type == .new {
+            if self.type == .new || isSelectedMusic{
                 PlayerManager.shared.musicArray = songs
+                PlayerManager.shared.resetIndex(model: currentModel)
             }
         }
     }
@@ -25,7 +26,7 @@ class TrackListViewController: UIViewController {
     fileprivate var currentModel: BDSongModel?
     fileprivate var size = 20
     fileprivate var page = 0
-    
+    fileprivate var isSelectedMusic: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = kBackgroundColor
@@ -84,15 +85,17 @@ class TrackListViewController: UIViewController {
             self?.tableView.mj_header?.endRefreshing()
             self?.tableView.mj_footer?.endRefreshing()
             if let d = data {
-                if let list = d.song_list {
-                   self?.songs.append(contentsOf: list)
-                }
-                self?.tableView.reloadData()
                 if d.billboard?.havemore == true {
                     self?.tableView.mj_footer?.isHidden = false
                 } else {
                     self?.tableView.mj_footer?.isHidden = true
                 }
+                
+                if let list = d.song_list {
+                    self?.songs = (self?.songs)! + list
+                }
+                
+                self?.tableView.reloadData()
             }
         })
     }
@@ -139,7 +142,7 @@ extension TrackListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        PlayerManager.shared.musicArray = songs
+        isSelectedMusic = true
         tableView.deselectRow(at: indexPath, animated: true)
         let song = songs[indexPath.row]
         PlayerManager.shared.playMusic(model: song)

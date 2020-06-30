@@ -503,6 +503,7 @@ extension PlayerManager: OverlayModalPresentationDelegate {
     
     func getOverlayModalConfige() -> OverlayModalConfige {
         let confige = OverlayModalConfige()
+//        confige.isPanEnabled = false
         confige.offsetY = 0
         confige.modelStyle = .bottom
         return confige

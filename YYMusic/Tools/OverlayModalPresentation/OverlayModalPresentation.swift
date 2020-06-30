@@ -29,11 +29,14 @@ class OverlayModalConfige: NSObject {
     var offsetX: CGFloat = 75.0
     /**modal样式 默认底向上*/
     var modelStyle: OverlayModalStyle = .bottom
+    /**是否禁用滑动手势, 默认有滑动手势*/
+    var isPanEnabled: Bool = true
 }
 
 @objc protocol OverlayModalPresentationDelegate: NSObjectProtocol {
     //获取modal视图
     func getOverlayModalView() -> Any?
+    /**获取配置信息, 如果是OverlayPickerViewController*/
     @objc optional func getOverlayModalConfige() -> OverlayModalConfige
 }
 
@@ -57,6 +60,7 @@ class OverlayModalPresentation: NSObject, UIViewControllerTransitioningDelegate 
             guard let modalView = delegate.getOverlayModalView() else {
                 return
             }
+            
             if let vc = modalView as? UIViewController {
                 modalVC = vc
             }
@@ -101,8 +105,16 @@ class OverlayModalPresentation: NSObject, UIViewControllerTransitioningDelegate 
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         if let d = delegate {
             let vc = OverlayPresentationController(presentedViewController:presented, presenting:presenting)
-            if d.responds(to: #selector(d.getOverlayModalConfige)) {
-                vc.confige = d.getOverlayModalConfige!()
+            if presented is OverlayPickerViewController {
+                let confige = OverlayModalConfige()
+                confige.modelStyle = .bottom
+                confige.isPanEnabled = false
+                confige.offsetY = UIScreen.main.bounds.height-260
+                vc.confige = confige
+            } else {
+                if d.responds(to: #selector(d.getOverlayModalConfige)) {
+                    vc.confige = d.getOverlayModalConfige!()
+                }
             }
             return vc
         }

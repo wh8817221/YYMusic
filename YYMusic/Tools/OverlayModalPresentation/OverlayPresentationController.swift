@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OverlayPresentationController: UIPresentationController {
+class OverlayPresentationController: UIPresentationController, UIGestureRecognizerDelegate {
     //配置信息
     var confige = OverlayModalConfige()
     fileprivate var pointStart: CGPoint? //触摸开始的坐标
@@ -23,9 +23,6 @@ class OverlayPresentationController: UIPresentationController {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         let tap = UITapGestureRecognizer(target: self, action: #selector(dimmingViewTapped(_:)))
         dimmingView.addGestureRecognizer(tap)
-        
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
-        dimmingView.addGestureRecognizer(pan)
     }
     
     override func presentationTransitionWillBegin() {
@@ -45,11 +42,14 @@ class OverlayPresentationController: UIPresentationController {
         }
         
         //center模式下不加入滑动手势
-        if confige.modelStyle != .center {
+        if confige.modelStyle != .center && confige.isPanEnabled {
             //加入滑动手势
-            let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
-            dimmingView.addGestureRecognizer(pan)
-            self.presentedView?.addGestureRecognizer(pan)
+            let pan1 = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+            pan1.delegate = self
+            let pan2 = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+            pan2.delegate = self
+            dimmingView.addGestureRecognizer(pan1)
+            self.presentedView?.addGestureRecognizer(pan2)
         }
         
     }
@@ -220,7 +220,15 @@ class OverlayPresentationController: UIPresentationController {
             }
         }
     }
- 
+    //防止页面滑动事件影响到页面上的按钮
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.isKind(of: UIButton.self) ?? false {
+            return false
+        }
+        return true
+    }
+
+    
     //恢复到原位
     func rebackOriginCenter(presentedView: UIView) {
         UIView.animate(withDuration: 0.25, animations: {
