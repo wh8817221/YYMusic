@@ -17,6 +17,9 @@
 		D224F08F249214300038473A /* OverlayModalPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D224F08C249214300038473A /* OverlayModalPresentation.swift */; };
 		D224F090249214300038473A /* OverlayPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D224F08D249214300038473A /* OverlayPresentationController.swift */; };
 		D224F091249214300038473A /* OverlayAnimatedTransitioner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D224F08E249214300038473A /* OverlayAnimatedTransitioner.swift */; };
+		D24BEA4924AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png in Resources */ = {isa = PBXBuildFile; fileRef = D24BEA4624AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png */; };
+		D24BEA4A24AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png in Resources */ = {isa = PBXBuildFile; fileRef = D24BEA4724AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png */; };
+		D24BEA4B24AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png in Resources */ = {isa = PBXBuildFile; fileRef = D24BEA4824AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png */; };
 		D24C87F3246BFC53002F7CD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */; };
 		D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D24C87F8246BFC53002F7CD0 /* Main.storyboard */; };
 		D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D24C87FB246BFC55002F7CD0 /* Assets.xcassets */; };
@@ -100,6 +103,9 @@
 		D224F08C249214300038473A /* OverlayModalPresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayModalPresentation.swift; sourceTree = "<group>"; };
 		D224F08D249214300038473A /* OverlayPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayPresentationController.swift; sourceTree = "<group>"; };
 		D224F08E249214300038473A /* OverlayAnimatedTransitioner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayAnimatedTransitioner.swift; sourceTree = "<group>"; };
+		D24BEA4624AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png"; sourceTree = "<group>"; };
+		D24BEA4724AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png"; sourceTree = "<group>"; };
+		D24BEA4824AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png"; sourceTree = "<group>"; };
 		D24C87EF246BFC53002F7CD0 /* YYMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YYMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D24C87F9246BFC53002F7CD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -228,6 +234,16 @@
 			path = OverlayModalPresentation;
 			sourceTree = "<group>";
 		};
+		D24BEA4524AB36AE006C0283 /* screenshot */ = {
+			isa = PBXGroup;
+			children = (
+				D24BEA4624AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png */,
+				D24BEA4724AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png */,
+				D24BEA4824AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png */,
+			);
+			path = screenshot;
+			sourceTree = "<group>";
+		};
 		D24C87E6246BFC53002F7CD0 = {
 			isa = PBXGroup;
 			children = (
@@ -253,6 +269,7 @@
 		D24C87F1246BFC53002F7CD0 /* YYMusic */ = {
 			isa = PBXGroup;
 			children = (
+				D24BEA4524AB36AE006C0283 /* screenshot */,
 				D24C87F2246BFC53002F7CD0 /* AppDelegate.swift */,
 				D24C87F8246BFC53002F7CD0 /* Main.storyboard */,
 				D24C87FB246BFC55002F7CD0 /* Assets.xcassets */,
@@ -522,11 +539,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2B2F48424753202007FECBF /* LyricViewController.xib in Resources */,
+				D24BEA4A24AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.37.png in Resources */,
 				D24C87FF246BFC55002F7CD0 /* LaunchScreen.storyboard in Resources */,
 				D24C87FC246BFC55002F7CD0 /* Assets.xcassets in Resources */,
 				D24C87FA246BFC53002F7CD0 /* Main.storyboard in Resources */,
 				D2D10CCE2474C8200051E3E2 /* MainPlayViewController.xib in Resources */,
+				D24BEA4924AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.53.png in Resources */,
 				D2D10CD62474DA4D0051E3E2 /* PlayDetailViewController.xib in Resources */,
+				D24BEA4B24AB36AE006C0283 /* Simulator Screen Shot - iPhone 8 - 2020-06-30 at 16.58.49.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
